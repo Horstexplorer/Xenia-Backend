@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RolesPermission extends TableImpl<RolesPermissionRecord> {
 
-    private static final long serialVersionUID = 192030599;
+    private static final long serialVersionUID = -834365812;
 
     /**
      * The reference instance of <code>public.roles_permission</code>
@@ -54,12 +54,12 @@ public class RolesPermission extends TableImpl<RolesPermissionRecord> {
     /**
      * The column <code>public.roles_permission.permission_id</code>.
      */
-    public final TableField<RolesPermissionRecord, Integer> PERMISSION_ID = createField(DSL.name("permission_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<RolesPermissionRecord, Long> PERMISSION_ID = createField(DSL.name("permission_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.roles_permission.permission_value</code>.
+     * The column <code>public.roles_permission.permission_granted</code>.
      */
-    public final TableField<RolesPermissionRecord, String> PERMISSION_VALUE = createField(DSL.name("permission_value"), org.jooq.impl.SQLDataType.CHAR(5).nullable(false).defaultValue(org.jooq.impl.DSL.field("'deny'::character(1)", org.jooq.impl.SQLDataType.CHAR)), this, "");
+    public final TableField<RolesPermissionRecord, Boolean> PERMISSION_GRANTED = createField(DSL.name("permission_granted"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.roles_permission</code> table reference
@@ -101,25 +101,25 @@ public class RolesPermission extends TableImpl<RolesPermissionRecord> {
 
     @Override
     public UniqueKey<RolesPermissionRecord> getPrimaryKey() {
-        return Keys.ROLES_PERMISSION_ROLE_ID_PERMISSION_ID;
+        return Keys.ROLE_PERMISSION_ROLE_ID_PERMISSION_ID;
     }
 
     @Override
     public List<UniqueKey<RolesPermissionRecord>> getKeys() {
-        return Arrays.<UniqueKey<RolesPermissionRecord>>asList(Keys.ROLES_PERMISSION_ROLE_ID_PERMISSION_ID);
+        return Arrays.<UniqueKey<RolesPermissionRecord>>asList(Keys.ROLE_PERMISSION_ROLE_ID_PERMISSION_ID);
     }
 
     @Override
     public List<ForeignKey<RolesPermissionRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<RolesPermissionRecord, ?>>asList(Keys.ROLES_PERMISSION__ROLES_PERMISSION_ROLE_ID_FKEY, Keys.ROLES_PERMISSION__ROLES_PERMISSION_PERMISSION_ID_FKEY);
+        return Arrays.<ForeignKey<RolesPermissionRecord, ?>>asList(Keys.ROLES_PERMISSION__ROLE_PERMISSION_ROLE_ID_FKEY, Keys.ROLES_PERMISSION__ROLE_PERMISSION_PERMISSION_ID_FKEY);
     }
 
     public Roles roles() {
-        return new Roles(this, Keys.ROLES_PERMISSION__ROLES_PERMISSION_ROLE_ID_FKEY);
+        return new Roles(this, Keys.ROLES_PERMISSION__ROLE_PERMISSION_ROLE_ID_FKEY);
     }
 
     public Permission permission() {
-        return new Permission(this, Keys.ROLES_PERMISSION__ROLES_PERMISSION_PERMISSION_ID_FKEY);
+        return new Permission(this, Keys.ROLES_PERMISSION__ROLE_PERMISSION_PERMISSION_ID_FKEY);
     }
 
     @Override
@@ -153,7 +153,7 @@ public class RolesPermission extends TableImpl<RolesPermissionRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Long, Integer, String> fieldsRow() {
+    public Row3<Long, Long, Boolean> fieldsRow() {
         return (Row3) super.fieldsRow();
     }
 }

@@ -16,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Users extends TableImpl<UsersRecord> {
 
-    private static final long serialVersionUID = 247089379;
+    private static final long serialVersionUID = -446264965;
 
     /**
      * The reference instance of <code>public.users</code>
@@ -58,9 +58,14 @@ public class Users extends TableImpl<UsersRecord> {
     public final TableField<UsersRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
 
     /**
-     * The column <code>public.users.prefered_language</code>.
+     * The column <code>public.users.internal_role</code>.
      */
-    public final TableField<UsersRecord, String> PREFERED_LANGUAGE = createField(DSL.name("prefered_language"), org.jooq.impl.SQLDataType.CHAR(2).defaultValue(org.jooq.impl.DSL.field("NULL::bpchar", org.jooq.impl.SQLDataType.CHAR)), this, "");
+    public final TableField<UsersRecord, String> INTERNAL_ROLE = createField(DSL.name("internal_role"), org.jooq.impl.SQLDataType.VARCHAR(16).nullable(false).defaultValue(org.jooq.impl.DSL.field("'default'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>public.users.preferred_language</code>.
+     */
+    public final TableField<UsersRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), org.jooq.impl.SQLDataType.VARCHAR(16).nullable(false).defaultValue(org.jooq.impl.DSL.field("'undefined'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * Create a <code>public.users</code> table reference
@@ -137,11 +142,11 @@ public class Users extends TableImpl<UsersRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Long, LocalDateTime, String> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Long, LocalDateTime, String, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

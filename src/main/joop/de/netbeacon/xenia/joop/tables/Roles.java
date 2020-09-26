@@ -8,6 +8,7 @@ import de.netbeacon.xenia.joop.Keys;
 import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.RolesRecord;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Roles extends TableImpl<RolesRecord> {
 
-    private static final long serialVersionUID = -1484492482;
+    private static final long serialVersionUID = 1608956363;
 
     /**
      * The reference instance of <code>public.roles</code>
@@ -50,17 +51,22 @@ public class Roles extends TableImpl<RolesRecord> {
     /**
      * The column <code>public.roles.role_id</code>.
      */
-    public final TableField<RolesRecord, Integer> ROLE_ID = createField(DSL.name("role_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('roles_role_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
-
-    /**
-     * The column <code>public.roles.role_name</code>.
-     */
-    public final TableField<RolesRecord, String> ROLE_NAME = createField(DSL.name("role_name"), org.jooq.impl.SQLDataType.CHAR(32).nullable(false), this, "");
+    public final TableField<RolesRecord, Long> ROLE_ID = createField(DSL.name("role_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('roles_role_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * The column <code>public.roles.guild_id</code>.
      */
     public final TableField<RolesRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.roles.creation_timestamp</code>.
+     */
+    public final TableField<RolesRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>public.roles.role_name</code>.
+     */
+    public final TableField<RolesRecord, String> ROLE_NAME = createField(DSL.name("role_name"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.field("'unnamed_role'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * Create a <code>public.roles</code> table reference
@@ -101,7 +107,7 @@ public class Roles extends TableImpl<RolesRecord> {
     }
 
     @Override
-    public Identity<RolesRecord, Integer> getIdentity() {
+    public Identity<RolesRecord, Long> getIdentity() {
         return Keys.IDENTITY_ROLES;
     }
 
@@ -112,16 +118,7 @@ public class Roles extends TableImpl<RolesRecord> {
 
     @Override
     public List<UniqueKey<RolesRecord>> getKeys() {
-        return Arrays.<UniqueKey<RolesRecord>>asList(Keys.ROLES_ROLE_ID);
-    }
-
-    @Override
-    public List<ForeignKey<RolesRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<RolesRecord, ?>>asList(Keys.ROLES__ROLES_GUILD_ID_FKEY);
-    }
-
-    public Guilds guilds() {
-        return new Guilds(this, Keys.ROLES__ROLES_GUILD_ID_FKEY);
+        return Arrays.<UniqueKey<RolesRecord>>asList(Keys.ROLES_ROLE_ID, Keys.ROLES_GUILD_ID_ROLE_NAME);
     }
 
     @Override
@@ -151,11 +148,11 @@ public class Roles extends TableImpl<RolesRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Integer, String, Long> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Long, Long, LocalDateTime, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

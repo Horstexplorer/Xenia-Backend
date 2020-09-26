@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Permission extends TableImpl<PermissionRecord> {
 
-    private static final long serialVersionUID = -588786158;
+    private static final long serialVersionUID = -275218376;
 
     /**
      * The reference instance of <code>public.permission</code>
@@ -50,17 +50,17 @@ public class Permission extends TableImpl<PermissionRecord> {
     /**
      * The column <code>public.permission.permission_id</code>.
      */
-    public final TableField<PermissionRecord, Integer> PERMISSION_ID = createField(DSL.name("permission_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('permission_def_permission_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<PermissionRecord, Integer> PERMISSION_ID = createField(DSL.name("permission_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('permission_permission_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.permission.permission_name</code>.
      */
-    public final TableField<PermissionRecord, String> PERMISSION_NAME = createField(DSL.name("permission_name"), org.jooq.impl.SQLDataType.CHAR(32).nullable(false), this, "");
+    public final TableField<PermissionRecord, String> PERMISSION_NAME = createField(DSL.name("permission_name"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
      * The column <code>public.permission.permission_description</code>.
      */
-    public final TableField<PermissionRecord, String> PERMISSION_DESCRIPTION = createField(DSL.name("permission_description"), org.jooq.impl.SQLDataType.CHAR(255).nullable(false), this, "");
+    public final TableField<PermissionRecord, String> PERMISSION_DESCRIPTION = createField(DSL.name("permission_description"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * Create a <code>public.permission</code> table reference
@@ -107,12 +107,12 @@ public class Permission extends TableImpl<PermissionRecord> {
 
     @Override
     public UniqueKey<PermissionRecord> getPrimaryKey() {
-        return Keys.PERMISSION_DEF_PERMISSION_ID;
+        return Keys.PERMISSION_PERMISSION_ID;
     }
 
     @Override
     public List<UniqueKey<PermissionRecord>> getKeys() {
-        return Arrays.<UniqueKey<PermissionRecord>>asList(Keys.PERMISSION_DEF_PERMISSION_ID);
+        return Arrays.<UniqueKey<PermissionRecord>>asList(Keys.PERMISSION_PERMISSION_ID);
     }
 
     @Override

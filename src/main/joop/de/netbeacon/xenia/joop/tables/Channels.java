@@ -8,6 +8,7 @@ import de.netbeacon.xenia.joop.Keys;
 import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.ChannelsRecord;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Channels extends TableImpl<ChannelsRecord> {
 
-    private static final long serialVersionUID = 310289892;
+    private static final long serialVersionUID = 171543204;
 
     /**
      * The reference instance of <code>public.channels</code>
@@ -57,6 +58,11 @@ public class Channels extends TableImpl<ChannelsRecord> {
     public final TableField<ChannelsRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
+     * The column <code>public.channels.creation_timestamp</code>.
+     */
+    public final TableField<ChannelsRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
      * The column <code>public.channels.access_restriction</code>.
      */
     public final TableField<ChannelsRecord, Boolean> ACCESS_RESTRICTION = createField(DSL.name("access_restriction"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
@@ -64,7 +70,12 @@ public class Channels extends TableImpl<ChannelsRecord> {
     /**
      * The column <code>public.channels.channel_type</code>.
      */
-    public final TableField<ChannelsRecord, String> CHANNEL_TYPE = createField(DSL.name("channel_type"), org.jooq.impl.SQLDataType.CHAR(10).nullable(false).defaultValue(org.jooq.impl.DSL.field("'default'::bpchar", org.jooq.impl.SQLDataType.CHAR)), this, "");
+    public final TableField<ChannelsRecord, String> CHANNEL_TYPE = createField(DSL.name("channel_type"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false).defaultValue(org.jooq.impl.DSL.field("'default'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>public.channels.channel_mode</code>.
+     */
+    public final TableField<ChannelsRecord, String> CHANNEL_MODE = createField(DSL.name("channel_mode"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false).defaultValue(org.jooq.impl.DSL.field("'default'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * Create a <code>public.channels</code> table reference
@@ -150,11 +161,11 @@ public class Channels extends TableImpl<ChannelsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, Long, Boolean, String> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row6<Long, Long, LocalDateTime, Boolean, String, String> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

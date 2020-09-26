@@ -16,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Guilds extends TableImpl<GuildsRecord> {
 
-    private static final long serialVersionUID = 1603455858;
+    private static final long serialVersionUID = 2102825123;
 
     /**
      * The reference instance of <code>public.guilds</code>
@@ -58,14 +58,9 @@ public class Guilds extends TableImpl<GuildsRecord> {
     public final TableField<GuildsRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
 
     /**
-     * The column <code>public.guilds.prefered_language</code>.
+     * The column <code>public.guilds.preferred_language</code>.
      */
-    public final TableField<GuildsRecord, String> PREFERED_LANGUAGE = createField(DSL.name("prefered_language"), org.jooq.impl.SQLDataType.CHAR(2).defaultValue(org.jooq.impl.DSL.field("NULL::bpchar", org.jooq.impl.SQLDataType.CHAR)), this, "");
-
-    /**
-     * The column <code>public.guilds.use_extended_permissions</code>.
-     */
-    public final TableField<GuildsRecord, Boolean> USE_EXTENDED_PERMISSIONS = createField(DSL.name("use_extended_permissions"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<GuildsRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), org.jooq.impl.SQLDataType.VARCHAR(16).nullable(false).defaultValue(org.jooq.impl.DSL.field("'undefined'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * Create a <code>public.guilds</code> table reference
@@ -142,11 +137,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, LocalDateTime, String, Boolean> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row3<Long, LocalDateTime, String> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }

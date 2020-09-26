@@ -15,14 +15,9 @@ import org.jooq.impl.Internal;
 public class Sequences {
 
     /**
-     * The sequence <code>public.client_bot_settings_bot_id_seq</code>
+     * The sequence <code>public.permission_permission_id_seq</code>
      */
-    public static final Sequence<Integer> CLIENT_BOT_SETTINGS_BOT_ID_SEQ = Internal.createSequence("client_bot_settings_bot_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.permission_def_permission_id_seq</code>
-     */
-    public static final Sequence<Integer> PERMISSION_DEF_PERMISSION_ID_SEQ = Internal.createSequence("permission_def_permission_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Integer> PERMISSION_PERMISSION_ID_SEQ = Internal.createSequence("permission_permission_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.roles_role_id_seq</code>

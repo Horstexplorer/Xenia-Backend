@@ -5,14 +5,12 @@ package de.netbeacon.xenia.joop;
 
 
 import de.netbeacon.xenia.joop.tables.Channels;
-import de.netbeacon.xenia.joop.tables.ClientSettings;
-import de.netbeacon.xenia.joop.tables.ClientShards;
 import de.netbeacon.xenia.joop.tables.Guilds;
 import de.netbeacon.xenia.joop.tables.Members;
+import de.netbeacon.xenia.joop.tables.MembersRoles;
 import de.netbeacon.xenia.joop.tables.Permission;
 import de.netbeacon.xenia.joop.tables.Roles;
 import de.netbeacon.xenia.joop.tables.RolesPermission;
-import de.netbeacon.xenia.joop.tables.RolesUser;
 import de.netbeacon.xenia.joop.tables.Users;
 
 
@@ -28,16 +26,6 @@ public class Tables {
     public static final Channels CHANNELS = Channels.CHANNELS;
 
     /**
-     * The table <code>public.client_settings</code>.
-     */
-    public static final ClientSettings CLIENT_SETTINGS = ClientSettings.CLIENT_SETTINGS;
-
-    /**
-     * The table <code>public.client_shards</code>.
-     */
-    public static final ClientShards CLIENT_SHARDS = ClientShards.CLIENT_SHARDS;
-
-    /**
      * The table <code>public.guilds</code>.
      */
     public static final Guilds GUILDS = Guilds.GUILDS;
@@ -46,6 +34,11 @@ public class Tables {
      * The table <code>public.members</code>.
      */
     public static final Members MEMBERS = Members.MEMBERS;
+
+    /**
+     * The table <code>public.members_roles</code>.
+     */
+    public static final MembersRoles MEMBERS_ROLES = MembersRoles.MEMBERS_ROLES;
 
     /**
      * The table <code>public.permission</code>.
@@ -61,11 +54,6 @@ public class Tables {
      * The table <code>public.roles_permission</code>.
      */
     public static final RolesPermission ROLES_PERMISSION = RolesPermission.ROLES_PERMISSION;
-
-    /**
-     * The table <code>public.roles_user</code>.
-     */
-    public static final RolesUser ROLES_USER = RolesUser.ROLES_USER;
 
     /**
      * The table <code>public.users</code>.

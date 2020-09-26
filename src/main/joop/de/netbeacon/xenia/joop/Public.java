@@ -5,14 +5,12 @@ package de.netbeacon.xenia.joop;
 
 
 import de.netbeacon.xenia.joop.tables.Channels;
-import de.netbeacon.xenia.joop.tables.ClientSettings;
-import de.netbeacon.xenia.joop.tables.ClientShards;
 import de.netbeacon.xenia.joop.tables.Guilds;
 import de.netbeacon.xenia.joop.tables.Members;
+import de.netbeacon.xenia.joop.tables.MembersRoles;
 import de.netbeacon.xenia.joop.tables.Permission;
 import de.netbeacon.xenia.joop.tables.Roles;
 import de.netbeacon.xenia.joop.tables.RolesPermission;
-import de.netbeacon.xenia.joop.tables.RolesUser;
 import de.netbeacon.xenia.joop.tables.Users;
 
 import java.util.Arrays;
@@ -30,7 +28,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 255692196;
+    private static final long serialVersionUID = -747460699;
 
     /**
      * The reference instance of <code>public</code>
@@ -43,16 +41,6 @@ public class Public extends SchemaImpl {
     public final Channels CHANNELS = Channels.CHANNELS;
 
     /**
-     * The table <code>public.client_settings</code>.
-     */
-    public final ClientSettings CLIENT_SETTINGS = ClientSettings.CLIENT_SETTINGS;
-
-    /**
-     * The table <code>public.client_shards</code>.
-     */
-    public final ClientShards CLIENT_SHARDS = ClientShards.CLIENT_SHARDS;
-
-    /**
      * The table <code>public.guilds</code>.
      */
     public final Guilds GUILDS = Guilds.GUILDS;
@@ -61,6 +49,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.members</code>.
      */
     public final Members MEMBERS = Members.MEMBERS;
+
+    /**
+     * The table <code>public.members_roles</code>.
+     */
+    public final MembersRoles MEMBERS_ROLES = MembersRoles.MEMBERS_ROLES;
 
     /**
      * The table <code>public.permission</code>.
@@ -76,11 +69,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.roles_permission</code>.
      */
     public final RolesPermission ROLES_PERMISSION = RolesPermission.ROLES_PERMISSION;
-
-    /**
-     * The table <code>public.roles_user</code>.
-     */
-    public final RolesUser ROLES_USER = RolesUser.ROLES_USER;
 
     /**
      * The table <code>public.users</code>.
@@ -103,8 +91,7 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Sequence<?>> getSequences() {
         return Arrays.<Sequence<?>>asList(
-            Sequences.CLIENT_BOT_SETTINGS_BOT_ID_SEQ,
-            Sequences.PERMISSION_DEF_PERMISSION_ID_SEQ,
+            Sequences.PERMISSION_PERMISSION_ID_SEQ,
             Sequences.ROLES_ROLE_ID_SEQ);
     }
 
@@ -112,14 +99,12 @@ public class Public extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
             Channels.CHANNELS,
-            ClientSettings.CLIENT_SETTINGS,
-            ClientShards.CLIENT_SHARDS,
             Guilds.GUILDS,
             Members.MEMBERS,
+            MembersRoles.MEMBERS_ROLES,
             Permission.PERMISSION,
             Roles.ROLES,
             RolesPermission.ROLES_PERMISSION,
-            RolesUser.ROLES_USER,
             Users.USERS);
     }
 }

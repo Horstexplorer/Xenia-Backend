@@ -16,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Members extends TableImpl<MembersRecord> {
 
-    private static final long serialVersionUID = -2053656413;
+    private static final long serialVersionUID = -922531179;
 
     /**
      * The reference instance of <code>public.members</code>
@@ -61,11 +61,6 @@ public class Members extends TableImpl<MembersRecord> {
      * The column <code>public.members.creation_timestamp</code>.
      */
     public final TableField<MembersRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
-
-    /**
-     * The column <code>public.members.gained_xp</code>.
-     */
-    public final TableField<MembersRecord, Long> GAINED_XP = createField(DSL.name("gained_xp"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("'0'::bigint", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.members</code> table reference
@@ -155,11 +150,11 @@ public class Members extends TableImpl<MembersRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, Long, LocalDateTime, Long> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row3<Long, Long, LocalDateTime> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }
