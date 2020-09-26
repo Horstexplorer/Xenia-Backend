@@ -1,0 +1,104 @@
+buildscript{
+    repositories {
+        maven {
+            url "https://dl.bintray.com/kittybot-org/gradle-jooq-plugin"
+        }
+    }
+    dependencies {
+        classpath 'de.kittybot:gradle-jooq-plugin:5.1.5'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+    //id 'nu.studer.jooq' version '5.1.1'
+}
+
+apply plugin: 'de.kittybot'
+
+group 'de.netbeacon'
+mainClassName = 'de.netbeacon.xenia.backend.core.Core'
+compileJava.options.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    
+    // JAVALIN
+
+    implementation group: 'io.javalin', name: 'javalin', version: '3.10.1' // https://mvnrepository.com/artifact/io.javalin/javalin
+
+    // JSON
+
+    implementation group: 'org.json', name: 'json', version: '20200518' // https://mvnrepository.com/artifact/org.json/json
+
+    // LOGGING
+
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30' // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.30' // https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12
+    implementation group: 'club.minnced', name: 'discord-webhooks', version: '0.4.1' // https://mvnrepository.com/artifact/club.minnced/discord-webhooks
+
+    // AUTH THINGS
+
+    implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4' // https://mvnrepository.com/artifact/org.mindrot/jbcrypt
+    implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.66' // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on
+    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.66' // https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on
+
+    // SQL/DB
+
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '3.4.5' // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.16' // https://mvnrepository.com/artifact/org.postgresql/postgresql
+    implementation group: 'org.jooq', name: 'jooq', version: '3.13.4' // https://mvnrepository.com/artifact/org.jooq/jooq
+    implementation group: 'org.jooq', name: 'jooq-meta', version: '3.13.4' // https://mvnrepository.com/artifact/org.jooq/jooq-meta
+    implementation group: 'org.jooq', name: 'jooq-codegen', version: '3.13.4' // https://mvnrepository.com/artifact/org.jooq/jooq-codegen
+    jooqGenerator group: 'org.postgresql', name: 'postgresql', version: '42.2.16'
+
+    // OTHER THINGS
+
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11' // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9' // https://mvnrepository.com/artifact/org.apache.commons/commons-text
+    implementation group: 'commons-io', name: 'commons-io', version: '2.7' // https://mvnrepository.com/artifact/commons-io/commons-io
+}
+
+jooq {
+    version = '3.13.4'
+    edition = de.kittybot.gradle.jooq.JooqEdition.OSS
+
+    configurations {
+        main {
+            generateSchemaSourceOnCompilation = false
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                jdbc {
+                    driver = 'org.postgresql.Driver'
+                    url = System.getenv('xenia_backend_db_url')
+                    user = System.getenv('xenia_backend_db_user')
+                    password = System.getenv('xenia_backend_db_pass')
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        inputSchema = 'public'
+                        includes = '.*'
+                        excludes = ''
+                    }
+                    generate {
+                        records = true
+                        fluentSetters = true
+                    }
+                    target {
+                        packageName = 'de.netbeacon.xenia.joop'
+                        directory = 'src/main/joop'
+                    }
+                    strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
+                }
+            }
+        }
+    }
+}
