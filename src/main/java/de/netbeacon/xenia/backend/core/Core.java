@@ -80,6 +80,7 @@ public class Core {
                             path("token", ()->{
                                 get(ctx -> {
                                    // get token with password
+                                    processor.next("auth").next("token").get(securityManager.authorizeConnection(null, ctx), ctx);
                                 });
                             });
                         });
@@ -87,6 +88,7 @@ public class Core {
                             path("bot", ()->{
                                 get(ctx -> {
                                     // get setup data
+                                    processor.next("setup").next("bot").get(securityManager.authorizeConnection(null, ctx), ctx);
                                 });
                             });
                         });
@@ -95,15 +97,19 @@ public class Core {
                                 path(":userId", ()->{
                                     get(ctx -> {
                                         // get user data
+                                        processor.next("data").next("guild").next("user").get(securityManager.authorizeConnection(null, ctx), ctx);
                                     });
                                     put(ctx -> {
                                         // update user data
+                                        processor.next("data").next("guild").next("user").put(securityManager.authorizeConnection(null, ctx), ctx);
                                     });
                                     post(ctx -> {
                                         // create new
+                                        processor.next("data").next("guild").next("user").post(securityManager.authorizeConnection(null, ctx), ctx);
                                     });
                                     delete(ctx -> {
-                                        // delete guild
+                                        // delete user
+                                        processor.next("data").next("guild").next("user").delete(securityManager.authorizeConnection(null, ctx), ctx);
                                     });
                                 });
                             });
