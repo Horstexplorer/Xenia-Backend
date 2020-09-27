@@ -16,5 +16,102 @@
 
 package de.netbeacon.xenia.backend.clients.objects;
 
-public class Client {
+import de.netbeacon.utils.json.serial.IJSONSerializable;
+import de.netbeacon.utils.json.serial.JSONSerializationException;
+import de.netbeacon.utils.security.auth.Auth;
+import org.json.JSONObject;
+
+import java.util.HashSet;
+import java.util.Random;
+
+public class Client implements IJSONSerializable {
+
+    private long clientId;
+    private String clientName;
+    private Type clientType = Type.Undefined;
+    private Auth clientAuth = new Auth();
+
+    private final static HashSet<Long> usedIds = new HashSet<>();
+
+    public enum Type{
+        System,
+        Bot,
+        WebInterface,
+        Undefined
+    }
+
+    public Client(){
+        Random random = new Random();
+        this.clientId = random.nextLong();
+        while(usedIds.contains(this.clientId)){
+            this.clientId = random.nextLong();
+        }
+        usedIds.add(this.clientId);
+    }
+
+    public Client(Type type, String clientName, String password){
+        Random random = new Random();
+        this.clientId = random.nextLong();
+        while(usedIds.contains(this.clientId)){
+            this.clientId = random.nextLong();
+        }
+        usedIds.add(this.clientId);
+        this.clientType = type;
+        this.clientName = clientName;
+        this.clientAuth.setPassword(password);
+    }
+
+    public Client(JSONObject jsonObject){
+        if(usedIds.contains(jsonObject.getLong("clientId"))){
+            throw new RuntimeException("ID Already In Use");
+        }
+        usedIds.remove(this.clientId); // remove old
+        this.clientId = jsonObject.getLong("clientId");
+        usedIds.add(this.clientId); // add new
+        this.clientType = Type.valueOf(jsonObject.getString("clientType"));
+        this.clientName = jsonObject.getString("clientName");
+        this.clientAuth = new Auth(jsonObject.getJSONObject("clientAuth"));
+    }
+
+
+
+    public long getClientId(){
+        return clientId;
+    }
+
+    public String getClientName(){
+        return clientName;
+    }
+
+    public Type getClientType(){
+        return clientType;
+    }
+
+    public Auth getClientAuth() {
+        return clientAuth;
+    }
+
+
+
+    @Override
+    public JSONObject asJSON() throws JSONSerializationException {
+        return new JSONObject()
+                .put("clientId", clientId)
+                .put("clientName", clientName)
+                .put("clientType", clientType)
+                .put("clientAuth", clientAuth.asJSON());
+    }
+
+    @Override
+    public void fromJSON(JSONObject jsonObject) throws JSONSerializationException {
+        if(usedIds.contains(jsonObject.getLong("clientId"))){
+            throw new RuntimeException("ID Already In Use");
+        }
+        usedIds.remove(this.clientId); // remove old
+        this.clientId = jsonObject.getLong("clientId");
+        usedIds.add(this.clientId); // add new
+        this.clientType = Type.valueOf(jsonObject.getString("clientType"));
+        this.clientName = jsonObject.getString("clientName");
+        this.clientAuth = new Auth(jsonObject.getJSONObject("clientAuth"));
+    }
 }

@@ -16,5 +16,52 @@
 
 package de.netbeacon.xenia.backend.clients;
 
-public class ClientManager {
+import de.netbeacon.utils.shutdownhook.IShutdown;
+import de.netbeacon.xenia.backend.clients.objects.Client;
+
+
+import java.io.File;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class ClientManager implements IShutdown {
+
+    private final File data;
+    private final ConcurrentHashMap<Long, Client> clientMap = new ConcurrentHashMap<>();
+
+    public ClientManager(File data){
+        this.data = data;
+    }
+
+
+
+    public Client getClient(long userId){
+        return clientMap.get(userId);
+    }
+
+    public Client createClient(Client.Type type, String clientName, String clientPassword){
+        Client client = new Client(type, clientName, clientPassword);
+        clientMap.put(client.getClientId(), client);
+        return client;
+    }
+
+    public void deleteClient(long userId){
+        clientMap.remove(userId);
+    }
+
+
+
+    public ClientManager loadFromFile() {
+        return this;
+    }
+
+    public ClientManager writeToFile() {
+        return this;
+    }
+
+
+
+    @Override
+    public void onShutdown() throws Exception {
+        writeToFile();
+    }
 }
