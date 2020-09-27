@@ -221,7 +221,7 @@ public class Core {
                             });
                         });
                         get("/", ctx -> {
-                            ctx.html("<h1> Xenia-Backend </h1>\n Build: " + AppInfo.get("buildNumber"));
+                            ctx.html("<h1> Xenia-Backend </h1>\n"+"Running: "+AppInfo.get("buildVersion")+"_"+ AppInfo.get("buildNumber"));
                         });
                     })
                     .after(ctx -> {
