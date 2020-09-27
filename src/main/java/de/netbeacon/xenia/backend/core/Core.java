@@ -16,6 +16,7 @@
 
 package de.netbeacon.xenia.backend.core;
 
+import de.netbeacon.utils.appinfo.AppInfo;
 import de.netbeacon.utils.config.Config;
 import de.netbeacon.utils.shutdownhook.IShutdown;
 import de.netbeacon.utils.shutdownhook.ShutdownHook;
@@ -220,7 +221,7 @@ public class Core {
                             });
                         });
                         get("/", ctx -> {
-                            ctx.result("Xenia-Backend");
+                            ctx.html("<h1> Xenia-Backend </h1>\n Build: " + AppInfo.get("buildNumber"));
                         });
                     })
                     .after(ctx -> {

@@ -52,6 +52,16 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.7' // https://mvnrepository.com/artifact/commons-io/commons-io
 }
 
+processResources {
+    //inject values into app.properties
+    filesMatching("**/app.properties") {
+        filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
+                "env.BUILD_NUMBER"  : (System.getenv('CI') ? System.getenv('BUILD_NUMBER') : 'Unofficial'),
+                "env.BUILD_TIME"    : System.currentTimeMillis() + ''
+        ]
+    }
+}
+
 jooq {
     version = '3.13.4'
     edition = nu.studer.gradle.jooq.JooqEdition.OSS
