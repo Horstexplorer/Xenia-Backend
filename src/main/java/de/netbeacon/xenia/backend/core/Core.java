@@ -70,6 +70,7 @@ public class Core {
             SecuritySettings tokenRequestSecSet = new SecuritySettings(SecuritySettings.AuthType.Basic, SecuritySettings.ClientType.Any);
             SecuritySettings botSetupSecSet = new SecuritySettings(SecuritySettings.AuthType.Token, SecuritySettings.ClientType.Bot);
             SecuritySettings dataSettingsSecSet = new SecuritySettings(SecuritySettings.AuthType.Token, SecuritySettings.ClientType.Any);
+            SecuritySettings managementSecSet = new SecuritySettings(SecuritySettings.AuthType.Token, SecuritySettings.ClientType.Any);
             // add to shutdown hook
             shutdownHook.addShutdownAble(securityManager);
             // prepare processor
@@ -216,6 +217,44 @@ public class Core {
                                         // delete guild
                                         processor.next("data").next("guild").delete(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                     });
+                                });
+                            });
+                        });
+                        path("management", ()->{
+                            path("clients", ()->{
+                                get(ctx -> {
+                                    // get channel data
+                                    processor.next("management").next("clients").get(securityManager.authorizeConnection(managementSecSet, ctx), ctx);
+                                });
+                                put(ctx -> {
+                                    // update channel data
+                                    processor.next("management").next("clients").put(securityManager.authorizeConnection(managementSecSet, ctx), ctx);
+                                });
+                                post(ctx -> {
+                                    // create new
+                                    processor.next("management").next("clients").post(securityManager.authorizeConnection(managementSecSet, ctx), ctx);
+                                });
+                                delete(ctx -> {
+                                    // delete channel
+                                    processor.next("management").next("clients").delete(securityManager.authorizeConnection(managementSecSet, ctx), ctx);
+                                });
+                            });
+                            path("licenses", ()->{
+                                get(ctx -> {
+                                    // get channel data
+                                    processor.next("management").next("licenses").get(securityManager.authorizeConnection(managementSecSet, ctx), ctx);
+                                });
+                                put(ctx -> {
+                                    // update channel data
+                                    processor.next("management").next("licenses").put(securityManager.authorizeConnection(managementSecSet, ctx), ctx);
+                                });
+                                post(ctx -> {
+                                    // create new
+                                    processor.next("management").next("licenses").post(securityManager.authorizeConnection(managementSecSet, ctx), ctx);
+                                });
+                                delete(ctx -> {
+                                    // delete channel
+                                    processor.next("management").next("licenses").delete(securityManager.authorizeConnection(managementSecSet, ctx), ctx);
                                 });
                             });
                         });
