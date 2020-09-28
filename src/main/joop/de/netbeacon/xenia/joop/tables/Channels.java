@@ -16,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Channels extends TableImpl<ChannelsRecord> {
 
-    private static final long serialVersionUID = 171543204;
+    private static final long serialVersionUID = 1634015355;
 
     /**
      * The reference instance of <code>public.channels</code>
@@ -76,6 +76,11 @@ public class Channels extends TableImpl<ChannelsRecord> {
      * The column <code>public.channels.channel_mode</code>.
      */
     public final TableField<ChannelsRecord, String> CHANNEL_MODE = createField(DSL.name("channel_mode"), org.jooq.impl.SQLDataType.VARCHAR.nullable(false).defaultValue(org.jooq.impl.DSL.field("'default'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>public.channels.tmp_logging_active</code>.
+     */
+    public final TableField<ChannelsRecord, Boolean> TMP_LOGGING_ACTIVE = createField(DSL.name("tmp_logging_active"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.channels</code> table reference
@@ -161,11 +166,11 @@ public class Channels extends TableImpl<ChannelsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, Long, LocalDateTime, Boolean, String, String> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Long, Long, LocalDateTime, Boolean, String, String, Boolean> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

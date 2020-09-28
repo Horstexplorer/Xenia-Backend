@@ -6,6 +6,8 @@ package de.netbeacon.xenia.joop;
 
 import de.netbeacon.xenia.joop.tables.Channels;
 import de.netbeacon.xenia.joop.tables.Guilds;
+import de.netbeacon.xenia.joop.tables.LicenseTypes;
+import de.netbeacon.xenia.joop.tables.Licenses;
 import de.netbeacon.xenia.joop.tables.Members;
 import de.netbeacon.xenia.joop.tables.MembersRoles;
 import de.netbeacon.xenia.joop.tables.Permission;
@@ -28,7 +30,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -747460699;
+    private static final long serialVersionUID = -1718931697;
 
     /**
      * The reference instance of <code>public</code>
@@ -44,6 +46,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.guilds</code>.
      */
     public final Guilds GUILDS = Guilds.GUILDS;
+
+    /**
+     * The table <code>public.license_types</code>.
+     */
+    public final LicenseTypes LICENSE_TYPES = LicenseTypes.LICENSE_TYPES;
+
+    /**
+     * The table <code>public.licenses</code>.
+     */
+    public final Licenses LICENSES = Licenses.LICENSES;
 
     /**
      * The table <code>public.members</code>.
@@ -91,6 +103,7 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Sequence<?>> getSequences() {
         return Arrays.<Sequence<?>>asList(
+            Sequences.LICENSES_LICENSE_ID_SEQ,
             Sequences.PERMISSION_PERMISSION_ID_SEQ,
             Sequences.ROLES_ROLE_ID_SEQ);
     }
@@ -100,6 +113,8 @@ public class Public extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             Channels.CHANNELS,
             Guilds.GUILDS,
+            LicenseTypes.LICENSE_TYPES,
+            Licenses.LICENSES,
             Members.MEMBERS,
             MembersRoles.MEMBERS_ROLES,
             Permission.PERMISSION,

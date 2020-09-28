@@ -16,7 +16,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Guilds extends TableImpl<GuildsRecord> {
 
-    private static final long serialVersionUID = 2102825123;
+    private static final long serialVersionUID = -454956054;
 
     /**
      * The reference instance of <code>public.guilds</code>
@@ -61,6 +61,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
      * The column <code>public.guilds.preferred_language</code>.
      */
     public final TableField<GuildsRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), org.jooq.impl.SQLDataType.VARCHAR(16).nullable(false).defaultValue(org.jooq.impl.DSL.field("'undefined'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>public.guilds.license_id</code>.
+     */
+    public final TableField<GuildsRecord, Integer> LICENSE_ID = createField(DSL.name("license_id"), org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>public.guilds</code> table reference
@@ -107,7 +112,16 @@ public class Guilds extends TableImpl<GuildsRecord> {
 
     @Override
     public List<UniqueKey<GuildsRecord>> getKeys() {
-        return Arrays.<UniqueKey<GuildsRecord>>asList(Keys.GUILDS_GUILD_ID);
+        return Arrays.<UniqueKey<GuildsRecord>>asList(Keys.GUILDS_GUILD_ID, Keys.GUILDS_LICENSE_ID);
+    }
+
+    @Override
+    public List<ForeignKey<GuildsRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<GuildsRecord, ?>>asList(Keys.GUILDS__GUILDS_LICENSE_ID_FKEY);
+    }
+
+    public Licenses licenses() {
+        return new Licenses(this, Keys.GUILDS__GUILDS_LICENSE_ID_FKEY);
     }
 
     @Override
@@ -137,11 +151,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Long, LocalDateTime, String> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Long, LocalDateTime, String, Integer> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

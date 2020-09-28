@@ -6,6 +6,8 @@ package de.netbeacon.xenia.joop;
 
 import de.netbeacon.xenia.joop.tables.Channels;
 import de.netbeacon.xenia.joop.tables.Guilds;
+import de.netbeacon.xenia.joop.tables.LicenseTypes;
+import de.netbeacon.xenia.joop.tables.Licenses;
 import de.netbeacon.xenia.joop.tables.Members;
 import de.netbeacon.xenia.joop.tables.MembersRoles;
 import de.netbeacon.xenia.joop.tables.Permission;
@@ -29,6 +31,16 @@ public class Tables {
      * The table <code>public.guilds</code>.
      */
     public static final Guilds GUILDS = Guilds.GUILDS;
+
+    /**
+     * The table <code>public.license_types</code>.
+     */
+    public static final LicenseTypes LICENSE_TYPES = LicenseTypes.LICENSE_TYPES;
+
+    /**
+     * The table <code>public.licenses</code>.
+     */
+    public static final Licenses LICENSES = Licenses.LICENSES;
 
     /**
      * The table <code>public.members</code>.

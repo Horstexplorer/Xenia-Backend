@@ -6,6 +6,8 @@ package de.netbeacon.xenia.joop;
 
 import de.netbeacon.xenia.joop.tables.Channels;
 import de.netbeacon.xenia.joop.tables.Guilds;
+import de.netbeacon.xenia.joop.tables.LicenseTypes;
+import de.netbeacon.xenia.joop.tables.Licenses;
 import de.netbeacon.xenia.joop.tables.Members;
 import de.netbeacon.xenia.joop.tables.MembersRoles;
 import de.netbeacon.xenia.joop.tables.Permission;
@@ -14,6 +16,8 @@ import de.netbeacon.xenia.joop.tables.RolesPermission;
 import de.netbeacon.xenia.joop.tables.Users;
 import de.netbeacon.xenia.joop.tables.records.ChannelsRecord;
 import de.netbeacon.xenia.joop.tables.records.GuildsRecord;
+import de.netbeacon.xenia.joop.tables.records.LicenseTypesRecord;
+import de.netbeacon.xenia.joop.tables.records.LicensesRecord;
 import de.netbeacon.xenia.joop.tables.records.MembersRecord;
 import de.netbeacon.xenia.joop.tables.records.MembersRolesRecord;
 import de.netbeacon.xenia.joop.tables.records.PermissionRecord;
@@ -39,6 +43,7 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<LicensesRecord, Integer> IDENTITY_LICENSES = Identities0.IDENTITY_LICENSES;
     public static final Identity<PermissionRecord, Integer> IDENTITY_PERMISSION = Identities0.IDENTITY_PERMISSION;
     public static final Identity<RolesRecord, Long> IDENTITY_ROLES = Identities0.IDENTITY_ROLES;
 
@@ -48,6 +53,10 @@ public class Keys {
 
     public static final UniqueKey<ChannelsRecord> CHANNELS_CHANNEL_ID = UniqueKeys0.CHANNELS_CHANNEL_ID;
     public static final UniqueKey<GuildsRecord> GUILDS_GUILD_ID = UniqueKeys0.GUILDS_GUILD_ID;
+    public static final UniqueKey<GuildsRecord> GUILDS_LICENSE_ID = UniqueKeys0.GUILDS_LICENSE_ID;
+    public static final UniqueKey<LicenseTypesRecord> LICENSE_TYPES_LICENSE_TYPE_ID = UniqueKeys0.LICENSE_TYPES_LICENSE_TYPE_ID;
+    public static final UniqueKey<LicensesRecord> LICENSES_LICENSE_ID = UniqueKeys0.LICENSES_LICENSE_ID;
+    public static final UniqueKey<LicensesRecord> LICENSES_LICENSE_KEY = UniqueKeys0.LICENSES_LICENSE_KEY;
     public static final UniqueKey<MembersRecord> MEMBERS_GUILD_ID_USER_ID = UniqueKeys0.MEMBERS_GUILD_ID_USER_ID;
     public static final UniqueKey<MembersRolesRecord> MEMBERS_ROLES_MEMBER_ID_ROLE_ID = UniqueKeys0.MEMBERS_ROLES_MEMBER_ID_ROLE_ID;
     public static final UniqueKey<PermissionRecord> PERMISSION_PERMISSION_ID = UniqueKeys0.PERMISSION_PERMISSION_ID;
@@ -61,6 +70,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<ChannelsRecord, GuildsRecord> CHANNELS__CHANNELS_GUILD_ID_FKEY = ForeignKeys0.CHANNELS__CHANNELS_GUILD_ID_FKEY;
+    public static final ForeignKey<GuildsRecord, LicensesRecord> GUILDS__GUILDS_LICENSE_ID_FKEY = ForeignKeys0.GUILDS__GUILDS_LICENSE_ID_FKEY;
+    public static final ForeignKey<LicensesRecord, LicenseTypesRecord> LICENSES__LICENSES_LICENSE_TYPE_FKEY = ForeignKeys0.LICENSES__LICENSES_LICENSE_TYPE_FKEY;
     public static final ForeignKey<MembersRecord, GuildsRecord> MEMBERS__MEMBERS_GUILD_ID_FKEY = ForeignKeys0.MEMBERS__MEMBERS_GUILD_ID_FKEY;
     public static final ForeignKey<MembersRecord, UsersRecord> MEMBERS__MEMBERS_USER_ID_FKEY = ForeignKeys0.MEMBERS__MEMBERS_USER_ID_FKEY;
     public static final ForeignKey<MembersRolesRecord, UsersRecord> MEMBERS_ROLES__MEMBERS_ROLES_MEMBER_ID_FKEY = ForeignKeys0.MEMBERS_ROLES__MEMBERS_ROLES_MEMBER_ID_FKEY;
@@ -73,6 +84,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<LicensesRecord, Integer> IDENTITY_LICENSES = Internal.createIdentity(Licenses.LICENSES, Licenses.LICENSES.LICENSE_ID);
         public static Identity<PermissionRecord, Integer> IDENTITY_PERMISSION = Internal.createIdentity(Permission.PERMISSION, Permission.PERMISSION.PERMISSION_ID);
         public static Identity<RolesRecord, Long> IDENTITY_ROLES = Internal.createIdentity(Roles.ROLES, Roles.ROLES.ROLE_ID);
     }
@@ -80,6 +92,10 @@ public class Keys {
     private static class UniqueKeys0 {
         public static final UniqueKey<ChannelsRecord> CHANNELS_CHANNEL_ID = Internal.createUniqueKey(Channels.CHANNELS, "channels_channel_id", new TableField[] { Channels.CHANNELS.CHANNEL_ID }, true);
         public static final UniqueKey<GuildsRecord> GUILDS_GUILD_ID = Internal.createUniqueKey(Guilds.GUILDS, "guilds_guild_id", new TableField[] { Guilds.GUILDS.GUILD_ID }, true);
+        public static final UniqueKey<GuildsRecord> GUILDS_LICENSE_ID = Internal.createUniqueKey(Guilds.GUILDS, "guilds_license_id", new TableField[] { Guilds.GUILDS.LICENSE_ID }, true);
+        public static final UniqueKey<LicenseTypesRecord> LICENSE_TYPES_LICENSE_TYPE_ID = Internal.createUniqueKey(LicenseTypes.LICENSE_TYPES, "license_types_license_type_id", new TableField[] { LicenseTypes.LICENSE_TYPES.LICENSE_TYPE_ID }, true);
+        public static final UniqueKey<LicensesRecord> LICENSES_LICENSE_ID = Internal.createUniqueKey(Licenses.LICENSES, "licenses_license_id", new TableField[] { Licenses.LICENSES.LICENSE_ID }, true);
+        public static final UniqueKey<LicensesRecord> LICENSES_LICENSE_KEY = Internal.createUniqueKey(Licenses.LICENSES, "licenses_license_key", new TableField[] { Licenses.LICENSES.LICENSE_KEY }, true);
         public static final UniqueKey<MembersRecord> MEMBERS_GUILD_ID_USER_ID = Internal.createUniqueKey(Members.MEMBERS, "members_guild_id_user_id", new TableField[] { Members.MEMBERS.GUILD_ID, Members.MEMBERS.USER_ID }, true);
         public static final UniqueKey<MembersRolesRecord> MEMBERS_ROLES_MEMBER_ID_ROLE_ID = Internal.createUniqueKey(MembersRoles.MEMBERS_ROLES, "members_roles_member_id_role_id", new TableField[] { MembersRoles.MEMBERS_ROLES.USER_ID, MembersRoles.MEMBERS_ROLES.ROLE_ID }, true);
         public static final UniqueKey<PermissionRecord> PERMISSION_PERMISSION_ID = Internal.createUniqueKey(Permission.PERMISSION, "permission_permission_id", new TableField[] { Permission.PERMISSION.PERMISSION_ID }, true);
@@ -91,6 +107,8 @@ public class Keys {
 
     private static class ForeignKeys0 {
         public static final ForeignKey<ChannelsRecord, GuildsRecord> CHANNELS__CHANNELS_GUILD_ID_FKEY = Internal.createForeignKey(Keys.GUILDS_GUILD_ID, Channels.CHANNELS, "channels_guild_id_fkey", new TableField[] { Channels.CHANNELS.GUILD_ID }, true);
+        public static final ForeignKey<GuildsRecord, LicensesRecord> GUILDS__GUILDS_LICENSE_ID_FKEY = Internal.createForeignKey(Keys.LICENSES_LICENSE_ID, Guilds.GUILDS, "guilds_license_id_fkey", new TableField[] { Guilds.GUILDS.LICENSE_ID }, true);
+        public static final ForeignKey<LicensesRecord, LicenseTypesRecord> LICENSES__LICENSES_LICENSE_TYPE_FKEY = Internal.createForeignKey(Keys.LICENSE_TYPES_LICENSE_TYPE_ID, Licenses.LICENSES, "licenses_license_type_fkey", new TableField[] { Licenses.LICENSES.LICENSE_TYPE }, true);
         public static final ForeignKey<MembersRecord, GuildsRecord> MEMBERS__MEMBERS_GUILD_ID_FKEY = Internal.createForeignKey(Keys.GUILDS_GUILD_ID, Members.MEMBERS, "members_guild_id_fkey", new TableField[] { Members.MEMBERS.GUILD_ID }, true);
         public static final ForeignKey<MembersRecord, UsersRecord> MEMBERS__MEMBERS_USER_ID_FKEY = Internal.createForeignKey(Keys.USERS_USER_ID, Members.MEMBERS, "members_user_id_fkey", new TableField[] { Members.MEMBERS.USER_ID }, true);
         public static final ForeignKey<MembersRolesRecord, UsersRecord> MEMBERS_ROLES__MEMBERS_ROLES_MEMBER_ID_FKEY = Internal.createForeignKey(Keys.USERS_USER_ID, MembersRoles.MEMBERS_ROLES, "members_roles_member_id_fkey", new TableField[] { MembersRoles.MEMBERS_ROLES.USER_ID }, true);
