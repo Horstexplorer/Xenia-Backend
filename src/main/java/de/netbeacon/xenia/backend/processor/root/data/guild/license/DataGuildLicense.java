@@ -14,26 +14,17 @@
  * limitations under the License.
  */
 
-package de.netbeacon.xenia.backend.processor.root.data.guild;
+package de.netbeacon.xenia.backend.processor.root.data.guild.license;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.root.data.guild.channel.DataGuildChannel;
-import de.netbeacon.xenia.backend.processor.root.data.guild.license.DataGuildLicense;
-import de.netbeacon.xenia.backend.processor.root.data.guild.member.DataGuildMember;
-import de.netbeacon.xenia.backend.processor.root.data.guild.role.DataGuildRole;
 import io.javalin.http.Context;
 
-public class DataGuild extends RequestProcessor {
+public class DataGuildLicense extends RequestProcessor {
 
-    public DataGuild(SQLConnectionPool sqlConnectionPool) {
-        super("guild", sqlConnectionPool,
-                new DataGuildMember(sqlConnectionPool),
-                new DataGuildChannel(sqlConnectionPool),
-                new DataGuildRole(sqlConnectionPool),
-                new DataGuildLicense(sqlConnectionPool)
-        );
+    public DataGuildLicense(SQLConnectionPool sqlConnectionPool) {
+        super("license", sqlConnectionPool);
     }
 
     @Override
@@ -44,15 +35,5 @@ public class DataGuild extends RequestProcessor {
     @Override
     public void put(Client client, Context ctx) {
         super.put(client, ctx);
-    }
-
-    @Override
-    public void post(Client client, Context ctx) {
-        super.post(client, ctx);
-    }
-
-    @Override
-    public void delete(Client client, Context ctx) {
-        super.delete(client, ctx);
     }
 }

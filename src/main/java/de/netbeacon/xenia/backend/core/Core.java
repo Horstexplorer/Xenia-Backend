@@ -191,6 +191,16 @@ public class Core {
                                             processor.next("data").next("guild").next("channel").get(securityManager.authorizeConnection(null, ctx), ctx);
                                         });
                                     });
+                                    path("license", ()->{
+                                            get(ctx -> {
+                                                // get current license
+                                                processor.next("data").next("guild").next("license").get(securityManager.authorizeConnection(null, ctx), ctx);
+                                            });
+                                            put(ctx -> {
+                                                // update current license
+                                                processor.next("data").next("guild").next("license").put(securityManager.authorizeConnection(null, ctx), ctx);
+                                            });
+                                    });
                                     get(ctx -> {
                                         // get full guild data
                                         processor.next("data").next("guild").get(securityManager.authorizeConnection(null, ctx), ctx);
