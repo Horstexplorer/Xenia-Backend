@@ -27,6 +27,7 @@ import de.netbeacon.xenia.backend.clients.ClientManager;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.root.Root;
 import de.netbeacon.xenia.backend.security.SecurityManager;
+import de.netbeacon.xenia.backend.security.SecuritySettings;
 import io.javalin.Javalin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,9 @@ public class Core {
             // prepare security manager
             SecurityManager securityManager = new SecurityManager(clientManager, new File("./xenia-backend/config/security")).loadFromFile();
             // prepare security settings
-
+            SecuritySettings tokenRequestSecSet = new SecuritySettings(SecuritySettings.AuthType.Basic, SecuritySettings.ClientType.Any);
+            SecuritySettings botSetupSecSet = new SecuritySettings(SecuritySettings.AuthType.Token, SecuritySettings.ClientType.Bot);
+            SecuritySettings dataSettingsSecSet = new SecuritySettings(SecuritySettings.AuthType.Token, SecuritySettings.ClientType.Any);
             // add to shutdown hook
             shutdownHook.addShutdownAble(securityManager);
             // prepare processor
@@ -81,7 +84,7 @@ public class Core {
                             path("token", ()->{
                                 get(ctx -> {
                                    // get token with password
-                                    processor.next("auth").next("token").get(securityManager.authorizeConnection(null, ctx), ctx);
+                                    processor.next("auth").next("token").get(securityManager.authorizeConnection(tokenRequestSecSet, ctx), ctx);
                                 });
                             });
                         });
@@ -89,7 +92,7 @@ public class Core {
                             path("bot", ()->{
                                 get(ctx -> {
                                     // get setup data
-                                    processor.next("setup").next("bot").get(securityManager.authorizeConnection(null, ctx), ctx);
+                                    processor.next("setup").next("bot").get(securityManager.authorizeConnection(botSetupSecSet, ctx), ctx);
                                 });
                             });
                         });
@@ -98,19 +101,19 @@ public class Core {
                                 path(":userId", ()->{
                                     get(ctx -> {
                                         // get user data
-                                        processor.next("data").next("guild").next("user").get(securityManager.authorizeConnection(null, ctx), ctx);
+                                        processor.next("data").next("guild").next("user").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                     });
                                     put(ctx -> {
                                         // update user data
-                                        processor.next("data").next("guild").next("user").put(securityManager.authorizeConnection(null, ctx), ctx);
+                                        processor.next("data").next("guild").next("user").put(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                     });
                                     post(ctx -> {
                                         // create new
-                                        processor.next("data").next("guild").next("user").post(securityManager.authorizeConnection(null, ctx), ctx);
+                                        processor.next("data").next("guild").next("user").post(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                     });
                                     delete(ctx -> {
                                         // delete user
-                                        processor.next("data").next("guild").next("user").delete(securityManager.authorizeConnection(null, ctx), ctx);
+                                        processor.next("data").next("guild").next("user").delete(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                     });
                                 });
                             });
@@ -121,24 +124,24 @@ public class Core {
                                         path(":userId", ()->{
                                             get(ctx -> {
                                                 // get member data
-                                                processor.next("data").next("guild").next("member").get(securityManager.authorizeConnection(null, ctx), ctx);
+                                                processor.next("data").next("guild").next("member").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                             });
                                             put(ctx -> {
                                                 // update member data
-                                                processor.next("data").next("guild").next("member").put(securityManager.authorizeConnection(null, ctx), ctx);
+                                                processor.next("data").next("guild").next("member").put(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                             });
                                             post(ctx -> {
                                                 // create new
-                                                processor.next("data").next("guild").next("member").post(securityManager.authorizeConnection(null, ctx), ctx);
+                                                processor.next("data").next("guild").next("member").post(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                             });
                                             delete(ctx -> {
                                                 // delete member
-                                                processor.next("data").next("guild").next("member").delete(securityManager.authorizeConnection(null, ctx), ctx);
+                                                processor.next("data").next("guild").next("member").delete(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                             });
                                         });
                                         get(ctx -> {
                                             // get data of all members
-                                            processor.next("data").next("guild").next("member").get(securityManager.authorizeConnection(null, ctx), ctx);
+                                            processor.next("data").next("guild").next("member").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                         });
                                     });
                                     // role
@@ -146,24 +149,24 @@ public class Core {
                                         path(":roleId", ()->{
                                             get(ctx -> {
                                                 // get role data
-                                                processor.next("data").next("guild").next("role").get(securityManager.authorizeConnection(null, ctx), ctx);
+                                                processor.next("data").next("guild").next("role").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                             });
                                             put(ctx -> {
                                                 // get update role data
-                                                processor.next("data").next("guild").next("role").put(securityManager.authorizeConnection(null, ctx), ctx);
+                                                processor.next("data").next("guild").next("role").put(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                             });
                                             post(ctx -> {
                                                 // create new
-                                                processor.next("data").next("guild").next("role").post(securityManager.authorizeConnection(null, ctx), ctx);
+                                                processor.next("data").next("guild").next("role").post(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                             });
                                             delete(ctx -> {
                                                 // delete role
-                                                processor.next("data").next("guild").next("role").delete(securityManager.authorizeConnection(null, ctx), ctx);
+                                                processor.next("data").next("guild").next("role").delete(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                             });
                                         });
                                         get(ctx -> {
                                             // get data of all roles
-                                            processor.next("data").next("guild").next("role").get(securityManager.authorizeConnection(null, ctx), ctx);
+                                            processor.next("data").next("guild").next("role").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                         });
                                     });
                                     // channel
@@ -171,47 +174,47 @@ public class Core {
                                         path(":channelId", ()->{
                                             get(ctx -> {
                                                 // get channel data
-                                                processor.next("data").next("guild").next("channel").get(securityManager.authorizeConnection(null, ctx), ctx);
+                                                processor.next("data").next("guild").next("channel").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                             });
                                             put(ctx -> {
                                                 // update channel data
-                                                processor.next("data").next("guild").next("channel").put(securityManager.authorizeConnection(null, ctx), ctx);
+                                                processor.next("data").next("guild").next("channel").put(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                             });
                                             post(ctx -> {
                                                 // create new
-                                                processor.next("data").next("guild").next("channel").post(securityManager.authorizeConnection(null, ctx), ctx);
+                                                processor.next("data").next("guild").next("channel").post(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                             });
                                             delete(ctx -> {
                                                 // delete channel
-                                                processor.next("data").next("guild").next("channel").delete(securityManager.authorizeConnection(null, ctx), ctx);
+                                                processor.next("data").next("guild").next("channel").delete(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                             });
                                         });
                                         get(ctx -> {
                                             // get data of all channels
-                                            processor.next("data").next("guild").next("channel").get(securityManager.authorizeConnection(null, ctx), ctx);
+                                            processor.next("data").next("guild").next("channel").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                         });
                                     });
                                     path("license", ()->{
                                             get(ctx -> {
                                                 // get current license
-                                                processor.next("data").next("guild").next("license").get(securityManager.authorizeConnection(null, ctx), ctx);
+                                                processor.next("data").next("guild").next("license").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                             });
                                             put(ctx -> {
                                                 // update current license
-                                                processor.next("data").next("guild").next("license").put(securityManager.authorizeConnection(null, ctx), ctx);
+                                                processor.next("data").next("guild").next("license").put(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                             });
                                     });
                                     get(ctx -> {
                                         // get full guild data
-                                        processor.next("data").next("guild").get(securityManager.authorizeConnection(null, ctx), ctx);
+                                        processor.next("data").next("guild").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                     });
                                     post(ctx -> {
                                         // create guild data
-                                        processor.next("data").next("guild").post(securityManager.authorizeConnection(null, ctx), ctx);
+                                        processor.next("data").next("guild").post(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                     });
                                     delete(ctx -> {
                                         // delete guild
-                                        processor.next("data").next("guild").delete(securityManager.authorizeConnection(null, ctx), ctx);
+                                        processor.next("data").next("guild").delete(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                     });
                                 });
                             });
@@ -220,13 +223,13 @@ public class Core {
                             path("public", ()->{
                                 get(ctx -> {
                                     // get public stats
-                                    processor.next("info").next("public").get(securityManager.authorizeConnection(null, ctx), ctx);
+                                    processor.next("info").next("public").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                 });
                             });
                             path("private", ()->{
                                 get(ctx -> {
                                     // get private stats
-                                    processor.next("info").next("private").get(securityManager.authorizeConnection(null, ctx), ctx);
+                                    processor.next("info").next("private").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx);
                                 });
                             });
                         });

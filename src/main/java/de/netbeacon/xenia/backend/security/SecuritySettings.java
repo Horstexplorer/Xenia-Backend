@@ -16,5 +16,37 @@
 
 package de.netbeacon.xenia.backend.security;
 
+import de.netbeacon.xenia.backend.clients.objects.Client;
+
 public class SecuritySettings {
+
+    public enum AuthType {
+        Optional,
+        Required,
+        Basic,
+        Token;
+    }
+
+    public enum ClientType {
+        Any,
+        System,
+        Bot,
+        WebInterface;
+    }
+
+    private final AuthType authType;
+    private final ClientType clientType;
+
+    public SecuritySettings(AuthType authType, ClientType clientType){
+        this.authType = authType;
+        this.clientType = clientType;
+    }
+
+    public AuthType getRequiredAuthType() {
+        return authType;
+    }
+
+    public ClientType getRequiredClientType() {
+        return clientType;
+    }
 }
