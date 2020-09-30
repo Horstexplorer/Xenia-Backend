@@ -31,7 +31,8 @@ public class SecuritySettings {
         Any,
         System,
         Bot,
-        WebInterface;
+        WebInterface,
+        Unknown;
     }
 
     private final AuthType authType;

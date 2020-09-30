@@ -19,6 +19,7 @@ package de.netbeacon.xenia.backend.clients.objects;
 import de.netbeacon.utils.json.serial.IJSONSerializable;
 import de.netbeacon.utils.json.serial.JSONSerializationException;
 import de.netbeacon.utils.security.auth.Auth;
+import de.netbeacon.xenia.backend.security.SecuritySettings;
 import org.json.JSONObject;
 
 import java.util.HashSet;
@@ -28,17 +29,11 @@ public class Client implements IJSONSerializable {
 
     private long clientId;
     private String clientName;
-    private Type clientType = Type.Undefined;
+    private SecuritySettings.ClientType clientType = SecuritySettings.ClientType.Unknown;
     private Auth clientAuth = new Auth();
 
     private final static HashSet<Long> usedIds = new HashSet<>();
 
-    public enum Type{
-        System,
-        Bot,
-        WebInterface,
-        Undefined
-    }
 
     public Client(){
         Random random = new Random();
@@ -49,7 +44,7 @@ public class Client implements IJSONSerializable {
         usedIds.add(this.clientId);
     }
 
-    public Client(Type type, String clientName, String password){
+    public Client(SecuritySettings.ClientType type, String clientName, String password){
         Random random = new Random();
         this.clientId = random.nextLong();
         while(usedIds.contains(this.clientId)){
@@ -68,7 +63,7 @@ public class Client implements IJSONSerializable {
         usedIds.remove(this.clientId); // remove old
         this.clientId = jsonObject.getLong("clientId");
         usedIds.add(this.clientId); // add new
-        this.clientType = Type.valueOf(jsonObject.getString("clientType"));
+        this.clientType = SecuritySettings.ClientType.valueOf(jsonObject.getString("clientType"));
         this.clientName = jsonObject.getString("clientName");
         this.clientAuth = new Auth(jsonObject.getJSONObject("clientAuth"));
     }
@@ -83,7 +78,7 @@ public class Client implements IJSONSerializable {
         return clientName;
     }
 
-    public Type getClientType(){
+    public SecuritySettings.ClientType getClientType(){
         return clientType;
     }
 
@@ -110,7 +105,7 @@ public class Client implements IJSONSerializable {
         usedIds.remove(this.clientId); // remove old
         this.clientId = jsonObject.getLong("clientId");
         usedIds.add(this.clientId); // add new
-        this.clientType = Type.valueOf(jsonObject.getString("clientType"));
+        this.clientType = SecuritySettings.ClientType.valueOf(jsonObject.getString("clientType"));
         this.clientName = jsonObject.getString("clientName");
         this.clientAuth = new Auth(jsonObject.getJSONObject("clientAuth"));
     }
