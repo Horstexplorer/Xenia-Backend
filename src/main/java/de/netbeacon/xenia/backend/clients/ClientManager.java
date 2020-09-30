@@ -18,18 +18,21 @@ package de.netbeacon.xenia.backend.clients;
 
 import de.netbeacon.utils.shutdownhook.IShutdown;
 import de.netbeacon.xenia.backend.clients.objects.Client;
+import de.netbeacon.xenia.backend.security.SecuritySettings;
+import org.json.JSONObject;
 
 
-import java.io.File;
+import java.io.*;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientManager implements IShutdown {
 
-    private final File data;
+    private final File file;
     private final ConcurrentHashMap<Long, Client> clientMap = new ConcurrentHashMap<>();
 
     public ClientManager(File data){
-        this.data = data;
+        this.file = data;
     }
 
 
@@ -38,7 +41,7 @@ public class ClientManager implements IShutdown {
         return clientMap.get(userId);
     }
 
-    public Client createClient(Client.Type type, String clientName, String clientPassword){
+    public Client createClient(SecuritySettings.ClientType type, String clientName, String clientPassword){
         Client client = new Client(type, clientName, clientPassword);
         clientMap.put(client.getClientId(), client);
         return client;
@@ -50,11 +53,28 @@ public class ClientManager implements IShutdown {
 
 
 
-    public ClientManager loadFromFile() {
+    public ClientManager loadFromFile() throws IOException {
+        try(BufferedReader bufferedReader = new BufferedReader(new FileReader(file))){
+            String line;
+            while((line = bufferedReader.readLine()) != null){
+                if(line.isBlank())
+                    continue;
+                JSONObject clientO = new JSONObject(line);
+                Client client = new Client(clientO);
+                clientMap.put(client.getClientId(), client);
+            }
+        }
         return this;
     }
 
-    public ClientManager writeToFile() {
+    public ClientManager writeToFile() throws IOException {
+        try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))){
+            for(Map.Entry<Long, Client> entry : clientMap.entrySet()){
+                bufferedWriter.write(entry.getValue().toString());
+                bufferedWriter.newLine();
+                bufferedWriter.flush();
+            }
+        }
         return this;
     }
 
