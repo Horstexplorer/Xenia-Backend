@@ -36,7 +36,7 @@ public class DataUser extends RequestProcessor {
     public void get(Client client, Context ctx) {
         // get user data
         try(var con = getSqlConnectionPool().getConnection(); var context = getSqlConnectionPool().getContext(con)){
-            long userid = Long.parseLong(ctx.pathParam("userid"));
+            long userid = Long.parseLong(ctx.pathParam("userId"));
             UsersRecord usersRecord = context.selectFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(userid)).fetch().get(0);
             // build a nice fluffy json
             JSONObject jsonObject = new JSONObject()
@@ -58,7 +58,7 @@ public class DataUser extends RequestProcessor {
     public void put(Client client, Context ctx) {
         // update user data
         try(var con = getSqlConnectionPool().getConnection(); var context = getSqlConnectionPool().getContext(con)){
-            long userid = Long.parseLong(ctx.pathParam("userid"));
+            long userid = Long.parseLong(ctx.pathParam("userId"));
             // get the current user data
             UsersRecord usersRecord = context.selectFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(userid)).fetch().get(0);
             // get the json body
@@ -91,7 +91,7 @@ public class DataUser extends RequestProcessor {
     public void post(Client client, Context ctx) {
         // create new
         try(var con = getSqlConnectionPool().getConnection(); var context = getSqlConnectionPool().getContext(con)){
-            long userid = Long.parseLong(ctx.pathParam("userid"));
+            long userid = Long.parseLong(ctx.pathParam("userId"));
             // insert create new user
             context.insertInto(Tables.USERS, Tables.USERS.USER_ID).values(userid).execute();
             // fetch this user
@@ -116,7 +116,7 @@ public class DataUser extends RequestProcessor {
     public void delete(Client client, Context ctx) {
         // delete user
         try(var con = getSqlConnectionPool().getConnection(); var context = getSqlConnectionPool().getContext(con)){
-            long userid = Long.parseLong(ctx.pathParam("userid"));
+            long userid = Long.parseLong(ctx.pathParam("userId"));
             context.deleteFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(userid)).execute();
             ctx.status(200);
         }catch (Exception e) {
