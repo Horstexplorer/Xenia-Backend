@@ -79,6 +79,10 @@ public class SQLConnectionPool implements IShutdown {
         return DSL.using(hikariDataSource.getConnection(), SQLDialect.POSTGRES);
     }
 
+    public DSLContext getContext(Connection connection){
+        return DSL.using(connection, SQLDialect.POSTGRES);
+    }
+
     /**
      * Returns the DSLContext used for JOOP with a given dialect
      *
