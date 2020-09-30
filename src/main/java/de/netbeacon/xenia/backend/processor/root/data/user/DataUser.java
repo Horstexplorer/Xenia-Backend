@@ -25,6 +25,8 @@ import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import org.json.JSONObject;
 
+import java.time.ZoneOffset;
+
 
 public class DataUser extends RequestProcessor {
 
@@ -41,7 +43,7 @@ public class DataUser extends RequestProcessor {
             // build a nice fluffy json
             JSONObject jsonObject = new JSONObject()
                     .put("userId", usersRecord.getUserId())
-                    .put("creationTime", usersRecord.getCreationTimestamp())
+                    .put("creationTime", usersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
                     .put("internalRole", usersRecord.getInternalRole())
                     .put("preferredLanguage", usersRecord.getPreferredLanguage());
             // return those values
@@ -74,7 +76,7 @@ public class DataUser extends RequestProcessor {
             // build a nice fluffy json
             JSONObject clientObject = new JSONObject()
                     .put("userId", usersRecord.getUserId())
-                    .put("creationTime", usersRecord.getCreationTimestamp())
+                    .put("creationTime", usersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
                     .put("internalRole", usersRecord.getInternalRole())
                     .put("preferredLanguage", usersRecord.getPreferredLanguage());
             // return those values
@@ -99,7 +101,7 @@ public class DataUser extends RequestProcessor {
             // build a nice fluffy json
             JSONObject jsonObject = new JSONObject()
                     .put("userId", usersRecord.getUserId())
-                    .put("creationTime", usersRecord.getCreationTimestamp())
+                    .put("creationTimestamp", usersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
                     .put("internalRole", usersRecord.getInternalRole())
                     .put("preferredLanguage", usersRecord.getPreferredLanguage());
             // return those values
