@@ -57,23 +57,15 @@ public class DataGuildLicense extends RequestProcessor {
                 // get default values which should be used
                 record = context.select().from(Tables.LICENSE_TYPES).where(Tables.LICENSE_TYPES.LICENSE_TYPE_ID.eq(0)).fetch().get(0);
             }
-            // prepare values
-            String licenseName = record.get(Tables.LICENSE_TYPES.LICENSE_NAME);
-            String licenseDescription = record.get(Tables.LICENSE_TYPES.LICENSE_DESCRIPTION);
-            LocalDateTime activationTime = record.get(Tables.LICENSES.LICENSE_ACTIVATION_TIMESTAMP);
-            int durationDays = record.get(Tables.LICENSES.LICENSE_DURATION_DAYS);
-            // prepare perks
-            boolean channelLoggingPcb = record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_PCB);
-            int channelLoggingMc = record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_MC);
             // prepare json
             JSONObject jsonObject = new JSONObject()
-                    .put("licenseName", licenseName)
-                    .put("licenseDescription", licenseDescription)
-                    .put("activationTime", activationTime.toEpochSecond(ZoneOffset.UTC))
-                    .put("durationDays", durationDays)
+                    .put("licenseName", record.get(Tables.LICENSE_TYPES.LICENSE_NAME))
+                    .put("licenseDescription", record.get(Tables.LICENSE_TYPES.LICENSE_DESCRIPTION))
+                    .put("activationTime", record.get(Tables.LICENSES.LICENSE_ACTIVATION_TIMESTAMP).toEpochSecond(ZoneOffset.UTC))
+                    .put("durationDays", record.get(Tables.LICENSES.LICENSE_DURATION_DAYS))
                     .put("perks", new JSONObject()
-                            .put("channelLoggingPcb", channelLoggingPcb)
-                            .put("channelLoggingMc", channelLoggingMc)
+                            .put("channelLoggingPcb", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_PCB))
+                            .put("channelLoggingMc", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_MC))
                     );
             // send result
             ctx.status(200);
