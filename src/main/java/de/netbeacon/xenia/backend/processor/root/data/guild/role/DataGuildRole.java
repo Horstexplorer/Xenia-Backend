@@ -20,8 +20,12 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import io.javalin.http.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DataGuildRole extends RequestProcessor {
+
+    public final Logger logger = LoggerFactory.getLogger(DataGuildRole.class);
 
     public DataGuildRole(SQLConnectionPool sqlConnectionPool) {
         super("role", sqlConnectionPool);
@@ -44,6 +48,6 @@ public class DataGuildRole extends RequestProcessor {
 
     @Override
     public void delete(Client client, Context ctx) {
-        super.get(client, ctx);
+
     }
 }
