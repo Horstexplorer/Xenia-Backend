@@ -53,74 +53,79 @@ public class SecurityManager implements IShutdown {
 
 
     public Client authorizeConnection(SecuritySettings securitySettings, Context ctx){
+        // check if running behind proxy and we should use the sent ip
+        String clientIP = ctx.header("X-Real-IP");
+        if(clientIP == null || clientIP.isBlank()){
+            clientIP = ctx.ip(); // use the default one
+        }
         try{
             // check ip block
-            if(blockedIPs.contains(ctx.ip())){
+            if(blockedIPs.contains(clientIP)){
                 throw new ForbiddenResponse();
             }
             // check auth if specified
             Client client = null;
             if(ctx.header("userid") != null && ctx.header("token") != null){
                 if(securitySettings.getRequiredAuthType() == SecuritySettings.AuthType.Basic){
-                    logger.warn("Client At "+ctx.ip()+" Specified The Wrong Auth Method (Req: Basic; Has: Token) For Path "+ctx.path());
+                    logger.warn("Client At "+clientIP+" Specified The Wrong Auth Method (Req: Basic; Has: Token) For Path "+ctx.path());
                     throw new UnauthorizedResponse(); // wrong auth method
                 }
                 // get client id & token
                 long clientId;
                 try{ clientId = Long.parseLong(ctx.header("userid")); }
                 catch (Exception e){
-                    logger.warn("Client At "+ctx.ip()+" Specified Bad ClientID For Path "+ctx.path());
+                    logger.warn("Client At "+clientIP+" Specified Bad ClientID For Path "+ctx.path());
                     throw new BadRequestResponse();
                 }
                 String token = ctx.header("token");
                 // get client & verify token
                 client = clientManager.getClient(clientId);
                 if(client == null || !client.getClientAuth().verifyToken(token)){
-                    logger.warn("Client At "+ctx.ip()+" Failed Auth For Path "+ctx.path());
+                    logger.warn("Client At "+clientIP+" Failed Auth For Path "+ctx.path());
                     throw new UnauthorizedResponse();
                 }
             }else if(ctx.basicAuthCredentialsExist()){
                 if(securitySettings.getRequiredAuthType() == SecuritySettings.AuthType.Token){
-                    logger.warn("Client At "+ctx.ip()+" Specified The Wrong Auth Method (Req: Token; Has: Basic) For Path "+ctx.path());
+                    logger.warn("Client At "+clientIP+" Specified The Wrong Auth Method (Req: Token; Has: Basic) For Path "+ctx.path());
                     throw new UnauthorizedResponse(); // wrong auth method
                 }
                 // get clientId & pass
                 long clientId;
                 try{ clientId = Long.parseLong(ctx.basicAuthCredentials().getUsername()); }
                 catch (Exception e){
-                    logger.warn("Client At "+ctx.ip()+" Specified Bad ClientID For Path "+ctx.path());
+                    logger.warn("Client At "+clientIP+" Specified Bad ClientID For Path "+ctx.path());
                     throw new BadRequestResponse();
                 }
                 String password = ctx.basicAuthCredentials().getPassword();
                 // get client & verify passwd
                 client = clientManager.getClient(clientId);
                 if(client == null || !client.getClientAuth().verifyPassword(password)){
-                    logger.warn("Client At "+ctx.ip()+" Failed Auth For Path "+ctx.path());
+                    logger.warn("Client At "+clientIP+" Failed Auth For Path "+ctx.path());
                     throw new UnauthorizedResponse();
                 }
             }else {
                 // no auth specified
                 if(securitySettings.getRequiredAuthType() != SecuritySettings.AuthType.Optional){
-                    logger.warn("Client At "+ctx.ip()+" Specified No Auth Which Is Required For The Requested Path "+ctx.path());
+                    logger.warn("Client At "+clientIP+" Specified No Auth Which Is Required For The Requested Path "+ctx.path());
                     throw new ForbiddenResponse();
                 }
             }
             // check client type
             if(securitySettings.getRequiredClientType() != SecuritySettings.ClientType.Any && securitySettings.getRequiredAuthType() != SecuritySettings.AuthType.Optional && client != null){
                 if(client.getClientType() != securitySettings.getRequiredClientType()){
-                    logger.warn("Client At "+ctx.ip()+" Logged In Successful But Does Not Match The Required Client Type (Req: "+securitySettings.getRequiredClientType()+"; Has: "+client.getClientType()+")");
+                    logger.warn("Client At "+clientIP+" Logged In Successful But Does Not Match The Required Client Type (Req: "+securitySettings.getRequiredClientType()+"; Has: "+client.getClientType()+")");
                     throw new ForbiddenResponse();
                 }
             }
             return client;
         }catch (HttpResponseException e){
-            if(!rateLimiterMap.containsKey(ctx.ip())){
+            if(!rateLimiterMap.containsKey(clientIP)){
                 RateLimiter rateLimiter = new RateLimiter(TimeUnit.MINUTES, 5);
                 rateLimiter.setMaxUsages(35);
-                rateLimiterMap.put(ctx.ip(), rateLimiter);
+                rateLimiterMap.put(clientIP, rateLimiter);
             }
-            if(!rateLimiterMap.get(ctx.ip()).takeNice()){
-                logger.warn("Client At "+ctx.ip()+" Hit The RateLimit");
+            if(!rateLimiterMap.get(clientIP).takeNice()){
+                logger.warn("Client At "+clientIP+" Hit The RateLimit");
                 throw new HttpResponseException(429, "Too Many Requests", new HashMap<>());
             }
             throw e;
