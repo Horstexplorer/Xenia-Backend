@@ -7,22 +7,12 @@ package de.netbeacon.xenia.joop.tables;
 import de.netbeacon.xenia.joop.Keys;
 import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.RolesPermissionRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row3;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -31,7 +21,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RolesPermission extends TableImpl<RolesPermissionRecord> {
 
-    private static final long serialVersionUID = -834365812;
+    private static final long serialVersionUID = -832992513;
 
     /**
      * The reference instance of <code>public.roles_permission</code>
@@ -54,7 +44,7 @@ public class RolesPermission extends TableImpl<RolesPermissionRecord> {
     /**
      * The column <code>public.roles_permission.permission_id</code>.
      */
-    public final TableField<RolesPermissionRecord, Long> PERMISSION_ID = createField(DSL.name("permission_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<RolesPermissionRecord, Integer> PERMISSION_ID = createField(DSL.name("permission_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.roles_permission.permission_granted</code>.
@@ -153,7 +143,7 @@ public class RolesPermission extends TableImpl<RolesPermissionRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Long, Long, Boolean> fieldsRow() {
+    public Row3<Long, Integer, Boolean> fieldsRow() {
         return (Row3) super.fieldsRow();
     }
 }
