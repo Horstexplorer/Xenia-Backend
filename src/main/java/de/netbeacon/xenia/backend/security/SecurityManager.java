@@ -144,7 +144,7 @@ public class SecurityManager implements IShutdown {
 
     public SecurityManager writeToFile() throws IOException {
         try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))){
-            JSONObject jsonObject = new JSONObject().put("blockedIPS", blockedIPs);
+            JSONObject jsonObject = new JSONObject().put("blockedIPs", blockedIPs);
             bufferedWriter.write(jsonObject.toString());
             bufferedWriter.newLine();
             bufferedWriter.flush();
