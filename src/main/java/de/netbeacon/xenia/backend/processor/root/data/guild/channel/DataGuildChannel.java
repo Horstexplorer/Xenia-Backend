@@ -173,7 +173,7 @@ public class DataGuildChannel extends RequestProcessor {
                     .put("channelMode", channelsRecord.getChannelMode())
                     .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive());
             // return response
-            ctx.status(200);
+            ctx.status(202);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
