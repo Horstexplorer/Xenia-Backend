@@ -7,22 +7,12 @@ package de.netbeacon.xenia.joop.tables;
 import de.netbeacon.xenia.joop.Keys;
 import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.MembersRolesRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row2;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -31,7 +21,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MembersRoles extends TableImpl<MembersRolesRecord> {
 
-    private static final long serialVersionUID = -2056860370;
+    private static final long serialVersionUID = -175036281;
 
     /**
      * The reference instance of <code>public.members_roles</code>
@@ -45,6 +35,11 @@ public class MembersRoles extends TableImpl<MembersRolesRecord> {
     public Class<MembersRolesRecord> getRecordType() {
         return MembersRolesRecord.class;
     }
+
+    /**
+     * The column <code>public.members_roles.guild_id</code>.
+     */
+    public final TableField<MembersRolesRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.members_roles.user_id</code>.
@@ -96,21 +91,25 @@ public class MembersRoles extends TableImpl<MembersRolesRecord> {
 
     @Override
     public UniqueKey<MembersRolesRecord> getPrimaryKey() {
-        return Keys.MEMBERS_ROLES_MEMBER_ID_ROLE_ID;
+        return Keys.MEMBERS_ROLES_USER_ID_ROLE_ID;
     }
 
     @Override
     public List<UniqueKey<MembersRolesRecord>> getKeys() {
-        return Arrays.<UniqueKey<MembersRolesRecord>>asList(Keys.MEMBERS_ROLES_MEMBER_ID_ROLE_ID);
+        return Arrays.<UniqueKey<MembersRolesRecord>>asList(Keys.MEMBERS_ROLES_USER_ID_ROLE_ID);
     }
 
     @Override
     public List<ForeignKey<MembersRolesRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<MembersRolesRecord, ?>>asList(Keys.MEMBERS_ROLES__MEMBERS_ROLES_MEMBER_ID_FKEY, Keys.MEMBERS_ROLES__MEMBERS_ROLES_ROLE_ID_FKEY);
+        return Arrays.<ForeignKey<MembersRolesRecord, ?>>asList(Keys.MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_FKEY, Keys.MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_USER_ID_FKEY, Keys.MEMBERS_ROLES__MEMBERS_ROLES_ROLE_ID_FKEY);
     }
 
-    public Users users() {
-        return new Users(this, Keys.MEMBERS_ROLES__MEMBERS_ROLES_MEMBER_ID_FKEY);
+    public Guilds guilds() {
+        return new Guilds(this, Keys.MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_FKEY);
+    }
+
+    public Members members() {
+        return new Members(this, Keys.MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_USER_ID_FKEY);
     }
 
     public Roles roles() {
@@ -144,11 +143,11 @@ public class MembersRoles extends TableImpl<MembersRolesRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row2 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Long, Long> fieldsRow() {
-        return (Row2) super.fieldsRow();
+    public Row3<Long, Long, Long> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }

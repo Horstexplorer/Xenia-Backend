@@ -7,23 +7,13 @@ package de.netbeacon.xenia.joop.tables;
 import de.netbeacon.xenia.joop.Keys;
 import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.MembersRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row3;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -32,7 +22,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Members extends TableImpl<MembersRecord> {
 
-    private static final long serialVersionUID = -922531179;
+    private static final long serialVersionUID = 1151185890;
 
     /**
      * The reference instance of <code>public.members</code>
@@ -107,7 +97,7 @@ public class Members extends TableImpl<MembersRecord> {
 
     @Override
     public List<UniqueKey<MembersRecord>> getKeys() {
-        return Arrays.<UniqueKey<MembersRecord>>asList(Keys.MEMBERS_GUILD_ID_USER_ID);
+        return Arrays.<UniqueKey<MembersRecord>>asList(Keys.MEMBERS_GUILD_ID_USER_ID, Keys.MEMBERS_GUILD_ID_USER_ID_UNIQUE);
     }
 
     @Override
