@@ -26,6 +26,7 @@ import io.javalin.http.Context;
 import io.javalin.http.HttpResponseException;
 import io.javalin.http.NotFoundResponse;
 import org.jooq.Result;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,22 +44,44 @@ public class DataGuildChannel extends RequestProcessor {
     @Override
     public void get(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-            long channelId = Long.parseLong(ctx.pathParam("channelId"));
-            // fetch
-            Result<ChannelsRecord> channelsRecords = sqlContext.selectFrom(Tables.CHANNELS).where(Tables.CHANNELS.CHANNEL_ID.eq(channelId)).fetch();
-            if(channelsRecords.isEmpty()){
-                throw new NotFoundResponse();
+            String channelIds = ctx.pathParam("channelId");
+            long guildId = Long.parseLong(ctx.pathParam("guildId"));
+            JSONObject jsonObject = new JSONObject();
+            if(channelIds.isBlank()){
+                // get for all channels
+                Result<ChannelsRecord> channelsRecords = sqlContext.selectFrom(Tables.CHANNELS).where(Tables.CHANNELS.GUILD_ID.eq(guildId)).fetch();
+                JSONArray jsonArray = new JSONArray();
+                jsonObject.put("channels", jsonArray);
+                for(ChannelsRecord channelsRecord : channelsRecords){
+                    jsonArray.put(new JSONObject()
+                            .put("channelId", channelsRecord.getChannelId())
+                            .put("guildId", channelsRecord.getGuildId())
+                            .put("creationTimestamp", channelsRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                            .put("accessRestricted", channelsRecord.getAccessRestriction())
+                            .put("channelType", channelsRecord.getChannelType())
+                            .put("channelMode", channelsRecord.getChannelMode())
+                            .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
+                    );
+                }
+            }else{
+                // get for specific channel
+                long channelId = Long.parseLong(ctx.pathParam("channelId"));
+                // fetch
+                Result<ChannelsRecord> channelsRecords = sqlContext.selectFrom(Tables.CHANNELS).where(Tables.CHANNELS.CHANNEL_ID.eq(channelId)).fetch();
+                if(channelsRecords.isEmpty()){
+                    throw new NotFoundResponse();
+                }
+                ChannelsRecord channelsRecord = channelsRecords.get(0);
+                // build fluffy json
+               jsonObject
+                        .put("channelId", channelsRecord.getChannelId())
+                        .put("guildId", channelsRecord.getGuildId())
+                        .put("creationTimestamp", channelsRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                        .put("accessRestricted", channelsRecord.getAccessRestriction())
+                        .put("channelType", channelsRecord.getChannelType())
+                        .put("channelMode", channelsRecord.getChannelMode())
+                        .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive());
             }
-            ChannelsRecord channelsRecord = channelsRecords.get(0);
-            // build fluffy json
-            JSONObject jsonObject = new JSONObject()
-                    .put("channelId", channelsRecord.getChannelId())
-                    .put("guildId", channelsRecord.getGuildId())
-                    .put("creationTimestamp", channelsRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
-                    .put("accessRestricted", channelsRecord.getAccessRestriction())
-                    .put("channelType", channelsRecord.getChannelType())
-                    .put("channelMode", channelsRecord.getChannelMode())
-                    .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive());
             // return response
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
