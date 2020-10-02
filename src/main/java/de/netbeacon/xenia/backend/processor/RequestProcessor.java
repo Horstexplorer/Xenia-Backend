@@ -27,16 +27,19 @@ public abstract class RequestProcessor {
 
     private final String identifier;
     private final SQLConnectionPool sqlConnectionPool;
+    private final WebsocketProcessor websocketProcessor;
     private final ConcurrentHashMap<String, RequestProcessor> processorHashMap = new ConcurrentHashMap<>();
 
-    public RequestProcessor(String identifier, SQLConnectionPool sqlConnectionPool){
+    public RequestProcessor(String identifier, SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor){
         this.identifier = identifier;
         this.sqlConnectionPool = sqlConnectionPool;
+        this.websocketProcessor = websocketProcessor;
     }
 
-    public RequestProcessor(String identifier, SQLConnectionPool sqlConnectionPool, RequestProcessor...requestProcessors){
+    public RequestProcessor(String identifier, SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor, RequestProcessor...requestProcessors){
         this.identifier = identifier;
         this.sqlConnectionPool = sqlConnectionPool;
+        this.websocketProcessor = websocketProcessor;
         Arrays.stream(requestProcessors).forEach(p->processorHashMap.put(p.getIdentifier(), p));
     }
 
@@ -46,6 +49,10 @@ public abstract class RequestProcessor {
 
     public SQLConnectionPool getSqlConnectionPool(){
         return sqlConnectionPool;
+    }
+
+    public WebsocketProcessor getWebsocketProcessor(){
+        return websocketProcessor;
     }
 
     public RequestProcessor next(String identifier){

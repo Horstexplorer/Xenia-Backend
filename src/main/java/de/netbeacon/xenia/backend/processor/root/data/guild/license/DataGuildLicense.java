@@ -19,6 +19,7 @@ package de.netbeacon.xenia.backend.processor.root.data.guild.license;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
+import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.joop.Tables;
 import de.netbeacon.xenia.joop.tables.records.GuildsRecord;
 import de.netbeacon.xenia.joop.tables.records.LicenseTypesRecord;
@@ -41,8 +42,8 @@ public class DataGuildLicense extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(DataGuildLicense.class);
 
-    public DataGuildLicense(SQLConnectionPool sqlConnectionPool) {
-        super("license", sqlConnectionPool);
+    public DataGuildLicense(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("license", sqlConnectionPool, websocketProcessor);
     }
 
     @Override

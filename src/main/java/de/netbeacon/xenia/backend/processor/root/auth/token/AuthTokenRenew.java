@@ -19,12 +19,13 @@ package de.netbeacon.xenia.backend.processor.root.auth.token;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
+import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import io.javalin.http.Context;
 
 public class AuthTokenRenew extends RequestProcessor {
 
-    public AuthTokenRenew(SQLConnectionPool sqlConnectionPool) {
-        super("renew", sqlConnectionPool);
+    public AuthTokenRenew(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("renew", sqlConnectionPool, websocketProcessor);
     }
 
     @Override

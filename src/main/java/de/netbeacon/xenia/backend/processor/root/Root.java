@@ -19,6 +19,7 @@ package de.netbeacon.xenia.backend.processor.root;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.ClientManager;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
+import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.auth.AuthRoot;
 import de.netbeacon.xenia.backend.processor.root.data.DataRoot;
 import de.netbeacon.xenia.backend.processor.root.info.InfoRoot;
@@ -27,13 +28,13 @@ import de.netbeacon.xenia.backend.processor.root.setup.SetupRoot;
 
 public class Root extends RequestProcessor {
 
-    public Root(ClientManager clientManager, SQLConnectionPool sqlConnectionPool) {
-        super("", sqlConnectionPool,
-                new AuthRoot(sqlConnectionPool),
-                new SetupRoot(sqlConnectionPool),
-                new InfoRoot(sqlConnectionPool),
-                new DataRoot(sqlConnectionPool),
-                new ManagementRoot(clientManager, sqlConnectionPool)
+    public Root(ClientManager clientManager, SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("", sqlConnectionPool, websocketProcessor,
+                new AuthRoot(sqlConnectionPool, websocketProcessor),
+                new SetupRoot(sqlConnectionPool, websocketProcessor),
+                new InfoRoot(sqlConnectionPool, websocketProcessor),
+                new DataRoot(sqlConnectionPool, websocketProcessor),
+                new ManagementRoot(clientManager, sqlConnectionPool, websocketProcessor)
         );
     }
 }

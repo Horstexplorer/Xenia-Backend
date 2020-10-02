@@ -19,6 +19,7 @@ package de.netbeacon.xenia.backend.processor.root.data.user;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
+import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.joop.Tables;
 import de.netbeacon.xenia.joop.tables.records.UsersRecord;
 import io.javalin.http.*;
@@ -34,8 +35,8 @@ public class DataUser extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(DataUser.class);
 
-    public DataUser(SQLConnectionPool sqlConnectionPool) {
-        super("user", sqlConnectionPool);
+    public DataUser(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("user", sqlConnectionPool, websocketProcessor);
     }
 
     @Override

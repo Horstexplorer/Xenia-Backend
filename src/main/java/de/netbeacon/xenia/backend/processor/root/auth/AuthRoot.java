@@ -18,15 +18,16 @@ package de.netbeacon.xenia.backend.processor.root.auth;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
+import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.auth.token.AuthToken;
 import de.netbeacon.xenia.backend.processor.root.auth.token.AuthTokenRenew;
 
 public class AuthRoot extends RequestProcessor {
 
-    public AuthRoot(SQLConnectionPool sqlConnectionPool) {
-        super("auth", sqlConnectionPool,
-                new AuthToken(sqlConnectionPool),
-                new AuthTokenRenew(sqlConnectionPool)
+    public AuthRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("auth", sqlConnectionPool, websocketProcessor,
+                new AuthToken(sqlConnectionPool, websocketProcessor),
+                new AuthTokenRenew(sqlConnectionPool, websocketProcessor)
         );
     }
 

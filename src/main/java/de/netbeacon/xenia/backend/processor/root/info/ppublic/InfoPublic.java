@@ -19,6 +19,7 @@ package de.netbeacon.xenia.backend.processor.root.info.ppublic;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
+import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.joop.Tables;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
@@ -31,8 +32,8 @@ public class InfoPublic extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(InfoPublic.class);
 
-    public InfoPublic(SQLConnectionPool sqlConnectionPool) {
-        super("public", sqlConnectionPool);
+    public InfoPublic(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("public", sqlConnectionPool, websocketProcessor);
     }
 
     @Override

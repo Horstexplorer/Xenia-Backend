@@ -19,6 +19,7 @@ package de.netbeacon.xenia.backend.processor.root.data.guild.role;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
+import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.joop.Tables;
 import de.netbeacon.xenia.joop.tables.records.PermissionRecord;
 import de.netbeacon.xenia.joop.tables.records.RolesPermissionRecord;
@@ -39,8 +40,8 @@ public class DataGuildRole extends RequestProcessor {
 
     public final Logger logger = LoggerFactory.getLogger(DataGuildRole.class);
 
-    public DataGuildRole(SQLConnectionPool sqlConnectionPool) {
-        super("role", sqlConnectionPool);
+    public DataGuildRole(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("role", sqlConnectionPool, websocketProcessor);
     }
 
     @Override

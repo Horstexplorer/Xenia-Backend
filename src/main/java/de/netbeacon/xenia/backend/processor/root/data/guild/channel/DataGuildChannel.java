@@ -19,6 +19,7 @@ package de.netbeacon.xenia.backend.processor.root.data.guild.channel;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
+import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.joop.Tables;
 import de.netbeacon.xenia.joop.tables.records.ChannelsRecord;
 import io.javalin.http.*;
@@ -34,8 +35,8 @@ public class DataGuildChannel extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(DataGuildChannel.class);
 
-    public DataGuildChannel(SQLConnectionPool sqlConnectionPool) {
-        super("channel", sqlConnectionPool);
+    public DataGuildChannel(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("channel", sqlConnectionPool, websocketProcessor);
     }
 
     @Override

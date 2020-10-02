@@ -19,6 +19,7 @@ package de.netbeacon.xenia.backend.processor.root.setup.bot;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
+import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.joop.Tables;
 import de.netbeacon.xenia.joop.tables.records.InternalBotDataRecord;
 import de.netbeacon.xenia.joop.tables.records.InternalBotShardsRecord;
@@ -35,8 +36,8 @@ public class SetupBot extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(SetupBot.class);
 
-    public SetupBot(SQLConnectionPool sqlConnectionPool) {
-        super("bot", sqlConnectionPool);
+    public SetupBot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("bot", sqlConnectionPool, websocketProcessor);
     }
 
     @Override

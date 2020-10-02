@@ -19,6 +19,7 @@ package de.netbeacon.xenia.backend.processor.root.auth.token;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
+import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.HttpResponseException;
@@ -30,8 +31,8 @@ public class AuthToken extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(AuthToken.class);
 
-    public AuthToken(SQLConnectionPool sqlConnectionPool) {
-        super("token", sqlConnectionPool);
+    public AuthToken(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("token", sqlConnectionPool, websocketProcessor);
     }
 
     @Override

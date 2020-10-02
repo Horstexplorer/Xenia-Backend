@@ -19,6 +19,7 @@ package de.netbeacon.xenia.backend.processor.root.data.guild.member;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
+import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.joop.Tables;
 import de.netbeacon.xenia.joop.tables.records.MembersRecord;
 import de.netbeacon.xenia.joop.tables.records.MembersRolesRecord;
@@ -42,8 +43,8 @@ public class DataGuildMember extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(DataGuildMember.class);
 
-    public DataGuildMember(SQLConnectionPool sqlConnectionPool) {
-        super("member", sqlConnectionPool);
+    public DataGuildMember(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("member", sqlConnectionPool, websocketProcessor);
     }
 
     @Override

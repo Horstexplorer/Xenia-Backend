@@ -25,6 +25,7 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPoolSettings;
 import de.netbeacon.xenia.backend.clients.ClientManager;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
+import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.Root;
 import de.netbeacon.xenia.backend.security.SecurityManager;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
@@ -73,10 +74,13 @@ public class Core {
             SecuritySettings botSetupSecSet = new SecuritySettings(SecuritySettings.AuthType.Token, SecuritySettings.ClientType.Bot);
             SecuritySettings dataSettingsSecSet = new SecuritySettings(SecuritySettings.AuthType.Token, SecuritySettings.ClientType.Any);
             SecuritySettings managementSecSet = new SecuritySettings(SecuritySettings.AuthType.Token, SecuritySettings.ClientType.Any);
+            SecuritySettings websocketSecSet = new SecuritySettings(SecuritySettings.AuthType.Token, SecuritySettings.ClientType.Bot);
             // add to shutdown hook
             shutdownHook.addShutdownAble(securityManager);
+            // prepare websocket connection handler
+            WebsocketProcessor websocketProcessor = new WebsocketProcessor();
             // prepare processor
-            RequestProcessor processor = new Root(clientManager, connectionPool);
+            RequestProcessor processor = new Root(clientManager, connectionPool, websocketProcessor);
             // prepare javalin
             Javalin javalin = Javalin
                     .create(cnf -> {
@@ -238,6 +242,14 @@ public class Core {
                                 get(ctx -> {
                                     processor.next("info").next("private").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // get private stats
                                 });
+                            });
+                        });
+                        path("ws", ()->{
+                            ws(wsHandler -> {
+                                wsHandler.onConnect(wsCon->{
+                                    websocketProcessor.register(wsCon, securityManager.authorizeWsConnection(websocketSecSet, wsCon));
+                                });
+                                wsHandler.onClose(websocketProcessor::remove);
                             });
                         });
                         get("/", ctx -> {

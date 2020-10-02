@@ -21,6 +21,7 @@ import de.netbeacon.utils.shutdownhook.IShutdown;
 import de.netbeacon.xenia.backend.clients.ClientManager;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import io.javalin.http.*;
+import io.javalin.websocket.WsContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -107,6 +108,67 @@ public class SecurityManager implements IShutdown {
                 // no auth specified
                 if(securitySettings.getRequiredAuthType() != SecuritySettings.AuthType.Optional){
                     logger.warn("Client At "+clientIP+" Specified No Auth Which Is Required For The Requested Path "+ctx.path());
+                    throw new ForbiddenResponse();
+                }
+            }
+            // check client type
+            if(securitySettings.getRequiredClientType() != SecuritySettings.ClientType.Any && securitySettings.getRequiredAuthType() != SecuritySettings.AuthType.Optional && client != null){
+                if(client.getClientType() != securitySettings.getRequiredClientType()){
+                    logger.warn("Client At "+clientIP+" Logged In Successful But Does Not Match The Required Client Type (Req: "+securitySettings.getRequiredClientType()+"; Has: "+client.getClientType()+")");
+                    throw new ForbiddenResponse();
+                }
+            }
+            return client;
+        }catch (HttpResponseException e){
+            if(!rateLimiterMap.containsKey(clientIP)){
+                RateLimiter rateLimiter = new RateLimiter(TimeUnit.MINUTES, 5);
+                rateLimiter.setMaxUsages(35);
+                rateLimiterMap.put(clientIP, rateLimiter);
+            }
+            if(!rateLimiterMap.get(clientIP).takeNice()){
+                logger.warn("Client At "+clientIP+" Hit The RateLimit");
+                throw new HttpResponseException(429, "Too Many Requests", new HashMap<>());
+            }
+            throw e;
+        }
+    }
+
+    public Client authorizeWsConnection(SecuritySettings securitySettings, WsContext ctx){
+        // check if running behind proxy and we should use the sent ip
+        String clientIP = ctx.header("X-Real-IP");
+        if(clientIP == null || clientIP.isBlank()){
+            clientIP = ctx.host(); // use the default one
+        }
+        try{
+            // check ip block
+            if(blockedIPs.contains(clientIP)){
+                throw new ForbiddenResponse();
+            }
+            // check auth if specified
+            Client client = null;
+            if(ctx.header("userid") != null && ctx.header("token") != null){
+                if(securitySettings.getRequiredAuthType() == SecuritySettings.AuthType.Basic){
+                    logger.warn("Client At "+clientIP+" Specified The Wrong Auth Method (Req: Basic; Has: Token) For Path "+ctx.matchedPath());
+                    throw new UnauthorizedResponse(); // wrong auth method
+                }
+                // get client id & token
+                long clientId;
+                try{ clientId = Long.parseLong(ctx.header("userid")); }
+                catch (Exception e){
+                    logger.warn("Client At "+clientIP+" Specified Bad ClientID For Path "+ctx.matchedPath());
+                    throw new BadRequestResponse();
+                }
+                String token = ctx.header("token");
+                // get client & verify token
+                client = clientManager.getClient(clientId);
+                if(client == null || !client.getClientAuth().verifyToken(token)){
+                    logger.warn("Client At "+clientIP+" Failed Auth For Path "+ctx.matchedPath());
+                    throw new UnauthorizedResponse();
+                }
+            }else {
+                // no auth specified
+                if(securitySettings.getRequiredAuthType() != SecuritySettings.AuthType.Optional){
+                    logger.warn("Client At "+clientIP+" Specified No Auth Which Is Required For The Requested Path "+ctx.matchedPath());
                     throw new ForbiddenResponse();
                 }
             }
