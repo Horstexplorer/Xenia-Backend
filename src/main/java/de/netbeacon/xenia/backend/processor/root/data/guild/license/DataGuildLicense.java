@@ -143,6 +143,10 @@ public class DataGuildLicense extends RequestProcessor {
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
+            // send ws notification
+            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+            broadcastMessage.get().put("type", "GUILD_LICENSE").put("action", "UPDATE").put("guildId", guildId);
+            getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             throw e;
         }catch (NullPointerException e){

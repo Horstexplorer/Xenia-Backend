@@ -54,7 +54,7 @@ public class WebsocketProcessor {
 
         private final JSONObject message = new JSONObject();
 
-        public JSONObject getMessageObject(){
+        public JSONObject get(){
             return message;
         }
 

@@ -126,6 +126,10 @@ public class DataGuildChannel extends RequestProcessor {
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
+            // send ws notification
+            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+            broadcastMessage.get().put("type", "GUILD_CHANNEL").put("action", "UPDATE").put("guildId", guildId).put("channelId", channelId);
+            getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             throw e;
         }catch (NullPointerException e){
@@ -162,6 +166,10 @@ public class DataGuildChannel extends RequestProcessor {
             ctx.status(202);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
+            // send ws notification
+            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+            broadcastMessage.get().put("type", "GUILD_CHANNEL").put("action", "CREATE").put("guildId", guildId).put("channelId", channelId);
+            getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             throw e;
         }catch (NullPointerException e){
@@ -183,6 +191,10 @@ public class DataGuildChannel extends RequestProcessor {
                 throw new NotFoundResponse();
             }
             ctx.status(200);
+            // send ws notification
+            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+            broadcastMessage.get().put("type", "GUILD_CHANNEL").put("action", "DELETE").put("guildId", guildId).put("channelId", channelId);
+            getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             throw e;
         }catch (NullPointerException e){

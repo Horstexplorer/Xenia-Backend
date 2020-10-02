@@ -97,6 +97,10 @@ public class DataUser extends RequestProcessor {
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
+            // send ws notification
+            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+            broadcastMessage.get().put("type", "USER").put("action", "UPDATE").put("userId", userId);
+            getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             throw e;
         }catch (NullPointerException e){
@@ -130,6 +134,10 @@ public class DataUser extends RequestProcessor {
             ctx.status(202);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
+            // send ws notification
+            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+            broadcastMessage.get().put("type", "USER").put("action", "CREATE").put("userId", userId);
+            getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             throw e;
         }catch (NullPointerException e){
@@ -150,6 +158,10 @@ public class DataUser extends RequestProcessor {
                 throw new NotFoundResponse();
             }
             ctx.status(200);
+            // send ws notification
+            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+            broadcastMessage.get().put("type", "USER").put("action", "DELETE").put("userId", userId);
+            getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             throw e;
         }catch (NullPointerException e){
