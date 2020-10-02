@@ -19,9 +19,17 @@ package de.netbeacon.xenia.backend.processor.root.info.pprivate;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
+import de.netbeacon.xenia.joop.Tables;
+import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
+import io.javalin.http.HttpResponseException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InfoPrivate extends RequestProcessor {
+
+    private final Logger logger = LoggerFactory.getLogger(InfoPrivate.class);
 
     public InfoPrivate(SQLConnectionPool sqlConnectionPool) {
         super("private", sqlConnectionPool);
@@ -29,7 +37,34 @@ public class InfoPrivate extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        super.get(client, ctx);
+        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+            // the number of known users
+            int users = sqlContext.fetchCount(Tables.USERS);
+            // get the number of known guilds
+            int guilds = sqlContext.fetchCount(Tables.GUILDS);
+            // get the number of known members
+            int members = sqlContext.fetchCount(Tables.MEMBERS);
+            // get number of channels
+            int channels = sqlContext.fetchCount(Tables.CHANNELS);
+            int forbidden = sqlContext.selectCount().from(Tables.CHANNELS).where(Tables.CHANNELS.ACCESS_RESTRICTION.eq(true)).execute();
+            // build json
+            JSONObject jsonObject = new JSONObject()
+                    .put("guilds", guilds)
+                    .put("users", users)
+                    .put("members", members)
+                    .put("channels", new JSONObject()
+                            .put("total", channels)
+                            .put("forbidden", forbidden));
+            // return
+            ctx.status(200);
+            ctx.header("Content-Type", "application/json");
+            ctx.result(jsonObject.toString());
+        }catch (HttpResponseException e){
+            throw e;
+        }catch (Exception e){
+            logger.warn("An Error Occurred Processing InfoPrivate#GET ", e);
+            throw new BadRequestResponse();
+        }
     }
 
 }
