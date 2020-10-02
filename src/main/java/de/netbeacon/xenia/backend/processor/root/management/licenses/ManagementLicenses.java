@@ -67,6 +67,9 @@ public class ManagementLicenses extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing ManagementLicenses#GET ", e);
             throw new BadRequestResponse();
@@ -106,6 +109,9 @@ public class ManagementLicenses extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing ManagementLicenses#POST ", e);
             throw new BadRequestResponse();
@@ -130,6 +136,9 @@ public class ManagementLicenses extends RequestProcessor {
             ctx.status(200);
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing ManagementLicenses#DELETE ", e);
             throw new BadRequestResponse();

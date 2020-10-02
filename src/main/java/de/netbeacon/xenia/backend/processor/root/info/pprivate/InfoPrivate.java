@@ -61,6 +61,9 @@ public class InfoPrivate extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing InfoPrivate#GET ", e);
             throw new BadRequestResponse();

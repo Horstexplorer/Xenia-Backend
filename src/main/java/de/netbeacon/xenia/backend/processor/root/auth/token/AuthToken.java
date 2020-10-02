@@ -19,9 +19,16 @@ package de.netbeacon.xenia.backend.processor.root.auth.token;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
+import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
+import io.javalin.http.HttpResponseException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AuthToken extends RequestProcessor {
+
+    private final Logger logger = LoggerFactory.getLogger(AuthToken.class);
 
     public AuthToken(SQLConnectionPool sqlConnectionPool) {
         super("token", sqlConnectionPool);
@@ -29,6 +36,23 @@ public class AuthToken extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        super.get(client, ctx);
+        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+            String authToken = client.getClientAuth().getToken();
+            // json
+            JSONObject jsonObject = new JSONObject()
+                    .put("token", authToken);
+            // return
+            ctx.status(200);
+            ctx.header("Content-Type", "application/json");
+            ctx.result(jsonObject.toString());
+        }catch (HttpResponseException e){
+            throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
+        }catch (Exception e){
+            logger.warn("An Error Occurred Processing AuthToken#GET ", e);
+            throw new BadRequestResponse();
+        }
     }
 }
