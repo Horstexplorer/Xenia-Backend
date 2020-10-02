@@ -21,7 +21,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InternalBotShards extends TableImpl<InternalBotShardsRecord> {
 
-    private static final long serialVersionUID = -878586447;
+    private static final long serialVersionUID = -591805645;
 
     /**
      * The reference instance of <code>public.internal_bot_shards</code>
@@ -39,12 +39,12 @@ public class InternalBotShards extends TableImpl<InternalBotShardsRecord> {
     /**
      * The column <code>public.internal_bot_shards.shard_id</code>.
      */
-    public final TableField<InternalBotShardsRecord, Long> SHARD_ID = createField(DSL.name("shard_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<InternalBotShardsRecord, Integer> SHARD_ID = createField(DSL.name("shard_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.internal_bot_shards.client_id</code>.
      */
-    public final TableField<InternalBotShardsRecord, Integer> CLIENT_ID = createField(DSL.name("client_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<InternalBotShardsRecord, Long> CLIENT_ID = createField(DSL.name("client_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * Create a <code>public.internal_bot_shards</code> table reference
@@ -134,7 +134,7 @@ public class InternalBotShards extends TableImpl<InternalBotShardsRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Long, Integer> fieldsRow() {
+    public Row2<Integer, Long> fieldsRow() {
         return (Row2) super.fieldsRow();
     }
 }
