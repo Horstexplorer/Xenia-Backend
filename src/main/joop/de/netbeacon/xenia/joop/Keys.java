@@ -35,6 +35,8 @@ public class Keys {
     public static final UniqueKey<ChannelsRecord> CHANNELS_CHANNEL_ID = UniqueKeys0.CHANNELS_CHANNEL_ID;
     public static final UniqueKey<GuildsRecord> GUILDS_GUILD_ID = UniqueKeys0.GUILDS_GUILD_ID;
     public static final UniqueKey<GuildsRecord> GUILDS_LICENSE_ID = UniqueKeys0.GUILDS_LICENSE_ID;
+    public static final UniqueKey<InternalBotDataRecord> INTERNAL_BOT_DATA_CLIENT_ID = UniqueKeys0.INTERNAL_BOT_DATA_CLIENT_ID;
+    public static final UniqueKey<InternalBotShardsRecord> INTERNAL_BOT_SHARDS_SHARD_ID = UniqueKeys0.INTERNAL_BOT_SHARDS_SHARD_ID;
     public static final UniqueKey<LicenseTypesRecord> LICENSE_TYPES_LICENSE_TYPE_ID = UniqueKeys0.LICENSE_TYPES_LICENSE_TYPE_ID;
     public static final UniqueKey<LicensesRecord> LICENSES_LICENSE_ID = UniqueKeys0.LICENSES_LICENSE_ID;
     public static final UniqueKey<LicensesRecord> LICENSES_LICENSE_KEY = UniqueKeys0.LICENSES_LICENSE_KEY;
@@ -53,6 +55,7 @@ public class Keys {
 
     public static final ForeignKey<ChannelsRecord, GuildsRecord> CHANNELS__CHANNELS_GUILD_ID_FKEY = ForeignKeys0.CHANNELS__CHANNELS_GUILD_ID_FKEY;
     public static final ForeignKey<GuildsRecord, LicensesRecord> GUILDS__GUILDS_LICENSE_ID_FKEY = ForeignKeys0.GUILDS__GUILDS_LICENSE_ID_FKEY;
+    public static final ForeignKey<InternalBotShardsRecord, InternalBotDataRecord> INTERNAL_BOT_SHARDS__INTERNAL_BOT_SHARDS_CLIENT_ID_FKEY = ForeignKeys0.INTERNAL_BOT_SHARDS__INTERNAL_BOT_SHARDS_CLIENT_ID_FKEY;
     public static final ForeignKey<LicensesRecord, LicenseTypesRecord> LICENSES__LICENSES_LICENSE_TYPE_FKEY = ForeignKeys0.LICENSES__LICENSES_LICENSE_TYPE_FKEY;
     public static final ForeignKey<MembersRecord, GuildsRecord> MEMBERS__MEMBERS_GUILD_ID_FKEY = ForeignKeys0.MEMBERS__MEMBERS_GUILD_ID_FKEY;
     public static final ForeignKey<MembersRecord, UsersRecord> MEMBERS__MEMBERS_USER_ID_FKEY = ForeignKeys0.MEMBERS__MEMBERS_USER_ID_FKEY;
@@ -76,6 +79,8 @@ public class Keys {
         public static final UniqueKey<ChannelsRecord> CHANNELS_CHANNEL_ID = Internal.createUniqueKey(Channels.CHANNELS, "channels_channel_id", new TableField[] { Channels.CHANNELS.CHANNEL_ID }, true);
         public static final UniqueKey<GuildsRecord> GUILDS_GUILD_ID = Internal.createUniqueKey(Guilds.GUILDS, "guilds_guild_id", new TableField[] { Guilds.GUILDS.GUILD_ID }, true);
         public static final UniqueKey<GuildsRecord> GUILDS_LICENSE_ID = Internal.createUniqueKey(Guilds.GUILDS, "guilds_license_id", new TableField[] { Guilds.GUILDS.LICENSE_ID }, true);
+        public static final UniqueKey<InternalBotDataRecord> INTERNAL_BOT_DATA_CLIENT_ID = Internal.createUniqueKey(InternalBotData.INTERNAL_BOT_DATA, "internal_bot_data_client_id", new TableField[] { InternalBotData.INTERNAL_BOT_DATA.CLIENT_ID }, true);
+        public static final UniqueKey<InternalBotShardsRecord> INTERNAL_BOT_SHARDS_SHARD_ID = Internal.createUniqueKey(InternalBotShards.INTERNAL_BOT_SHARDS, "internal_bot_shards_shard_id", new TableField[] { InternalBotShards.INTERNAL_BOT_SHARDS.SHARD_ID }, true);
         public static final UniqueKey<LicenseTypesRecord> LICENSE_TYPES_LICENSE_TYPE_ID = Internal.createUniqueKey(LicenseTypes.LICENSE_TYPES, "license_types_license_type_id", new TableField[] { LicenseTypes.LICENSE_TYPES.LICENSE_TYPE_ID }, true);
         public static final UniqueKey<LicensesRecord> LICENSES_LICENSE_ID = Internal.createUniqueKey(Licenses.LICENSES, "licenses_license_id", new TableField[] { Licenses.LICENSES.LICENSE_ID }, true);
         public static final UniqueKey<LicensesRecord> LICENSES_LICENSE_KEY = Internal.createUniqueKey(Licenses.LICENSES, "licenses_license_key", new TableField[] { Licenses.LICENSES.LICENSE_KEY }, true);
@@ -92,6 +97,7 @@ public class Keys {
     private static class ForeignKeys0 {
         public static final ForeignKey<ChannelsRecord, GuildsRecord> CHANNELS__CHANNELS_GUILD_ID_FKEY = Internal.createForeignKey(Keys.GUILDS_GUILD_ID, Channels.CHANNELS, "channels_guild_id_fkey", new TableField[] { Channels.CHANNELS.GUILD_ID }, true);
         public static final ForeignKey<GuildsRecord, LicensesRecord> GUILDS__GUILDS_LICENSE_ID_FKEY = Internal.createForeignKey(Keys.LICENSES_LICENSE_ID, Guilds.GUILDS, "guilds_license_id_fkey", new TableField[] { Guilds.GUILDS.LICENSE_ID }, true);
+        public static final ForeignKey<InternalBotShardsRecord, InternalBotDataRecord> INTERNAL_BOT_SHARDS__INTERNAL_BOT_SHARDS_CLIENT_ID_FKEY = Internal.createForeignKey(Keys.INTERNAL_BOT_DATA_CLIENT_ID, InternalBotShards.INTERNAL_BOT_SHARDS, "internal_bot_shards_client_id_fkey", new TableField[] { InternalBotShards.INTERNAL_BOT_SHARDS.CLIENT_ID }, true);
         public static final ForeignKey<LicensesRecord, LicenseTypesRecord> LICENSES__LICENSES_LICENSE_TYPE_FKEY = Internal.createForeignKey(Keys.LICENSE_TYPES_LICENSE_TYPE_ID, Licenses.LICENSES, "licenses_license_type_fkey", new TableField[] { Licenses.LICENSES.LICENSE_TYPE }, true);
         public static final ForeignKey<MembersRecord, GuildsRecord> MEMBERS__MEMBERS_GUILD_ID_FKEY = Internal.createForeignKey(Keys.GUILDS_GUILD_ID, Members.MEMBERS, "members_guild_id_fkey", new TableField[] { Members.MEMBERS.GUILD_ID }, true);
         public static final ForeignKey<MembersRecord, UsersRecord> MEMBERS__MEMBERS_USER_ID_FKEY = Internal.createForeignKey(Keys.USERS_USER_ID, Members.MEMBERS, "members_user_id_fkey", new TableField[] { Members.MEMBERS.USER_ID }, true);

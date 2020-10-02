@@ -4,24 +4,14 @@
 package de.netbeacon.xenia.joop;
 
 
-import de.netbeacon.xenia.joop.tables.Channels;
-import de.netbeacon.xenia.joop.tables.Guilds;
-import de.netbeacon.xenia.joop.tables.LicenseTypes;
-import de.netbeacon.xenia.joop.tables.Licenses;
-import de.netbeacon.xenia.joop.tables.Members;
-import de.netbeacon.xenia.joop.tables.MembersRoles;
-import de.netbeacon.xenia.joop.tables.Permission;
-import de.netbeacon.xenia.joop.tables.Roles;
-import de.netbeacon.xenia.joop.tables.RolesPermission;
-import de.netbeacon.xenia.joop.tables.Users;
-
-import java.util.Arrays;
-import java.util.List;
-
+import de.netbeacon.xenia.joop.tables.*;
 import org.jooq.Catalog;
 import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -30,7 +20,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1718931697;
+    private static final long serialVersionUID = 632160281;
 
     /**
      * The reference instance of <code>public</code>
@@ -46,6 +36,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.guilds</code>.
      */
     public final Guilds GUILDS = Guilds.GUILDS;
+
+    /**
+     * The table <code>public.internal_bot_data</code>.
+     */
+    public final InternalBotData INTERNAL_BOT_DATA = InternalBotData.INTERNAL_BOT_DATA;
+
+    /**
+     * The table <code>public.internal_bot_shards</code>.
+     */
+    public final InternalBotShards INTERNAL_BOT_SHARDS = InternalBotShards.INTERNAL_BOT_SHARDS;
 
     /**
      * The table <code>public.license_types</code>.
@@ -113,6 +113,8 @@ public class Public extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             Channels.CHANNELS,
             Guilds.GUILDS,
+            InternalBotData.INTERNAL_BOT_DATA,
+            InternalBotShards.INTERNAL_BOT_SHARDS,
             LicenseTypes.LICENSE_TYPES,
             Licenses.LICENSES,
             Members.MEMBERS,

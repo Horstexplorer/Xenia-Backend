@@ -4,16 +4,7 @@
 package de.netbeacon.xenia.joop;
 
 
-import de.netbeacon.xenia.joop.tables.Channels;
-import de.netbeacon.xenia.joop.tables.Guilds;
-import de.netbeacon.xenia.joop.tables.LicenseTypes;
-import de.netbeacon.xenia.joop.tables.Licenses;
-import de.netbeacon.xenia.joop.tables.Members;
-import de.netbeacon.xenia.joop.tables.MembersRoles;
-import de.netbeacon.xenia.joop.tables.Permission;
-import de.netbeacon.xenia.joop.tables.Roles;
-import de.netbeacon.xenia.joop.tables.RolesPermission;
-import de.netbeacon.xenia.joop.tables.Users;
+import de.netbeacon.xenia.joop.tables.*;
 
 
 /**
@@ -31,6 +22,16 @@ public class Tables {
      * The table <code>public.guilds</code>.
      */
     public static final Guilds GUILDS = Guilds.GUILDS;
+
+    /**
+     * The table <code>public.internal_bot_data</code>.
+     */
+    public static final InternalBotData INTERNAL_BOT_DATA = InternalBotData.INTERNAL_BOT_DATA;
+
+    /**
+     * The table <code>public.internal_bot_shards</code>.
+     */
+    public static final InternalBotShards INTERNAL_BOT_SHARDS = InternalBotShards.INTERNAL_BOT_SHARDS;
 
     /**
      * The table <code>public.license_types</code>.
