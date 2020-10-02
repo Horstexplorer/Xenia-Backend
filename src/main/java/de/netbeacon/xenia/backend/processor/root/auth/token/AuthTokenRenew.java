@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package de.netbeacon.xenia.backend.processor.root.auth;
+package de.netbeacon.xenia.backend.processor.root.auth.token;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
+import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.root.auth.token.AuthToken;
-import de.netbeacon.xenia.backend.processor.root.auth.token.AuthTokenRenew;
+import io.javalin.http.Context;
 
-public class AuthRoot extends RequestProcessor {
+public class AuthTokenRenew extends RequestProcessor {
 
-    public AuthRoot(SQLConnectionPool sqlConnectionPool) {
-        super("auth", sqlConnectionPool,
-                new AuthToken(sqlConnectionPool),
-                new AuthTokenRenew(sqlConnectionPool)
-        );
+    public AuthTokenRenew(SQLConnectionPool sqlConnectionPool) {
+        super("renew", sqlConnectionPool);
     }
 
+    @Override
+    public void get(Client client, Context ctx) {
+        ctx.status(200);
+    }
 }

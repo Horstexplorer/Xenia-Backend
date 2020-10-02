@@ -69,6 +69,7 @@ public class Core {
             SecurityManager securityManager = new SecurityManager(clientManager, new File("./xenia-backend/config/security")).loadFromFile();
             // prepare security settings
             SecuritySettings tokenRequestSecSet = new SecuritySettings(SecuritySettings.AuthType.Basic, SecuritySettings.ClientType.Any);
+            SecuritySettings tokenRenewSecSet = new SecuritySettings(SecuritySettings.AuthType.Token, SecuritySettings.ClientType.Any);
             SecuritySettings botSetupSecSet = new SecuritySettings(SecuritySettings.AuthType.Token, SecuritySettings.ClientType.Bot);
             SecuritySettings dataSettingsSecSet = new SecuritySettings(SecuritySettings.AuthType.Token, SecuritySettings.ClientType.Any);
             SecuritySettings managementSecSet = new SecuritySettings(SecuritySettings.AuthType.Token, SecuritySettings.ClientType.Any);
@@ -84,6 +85,11 @@ public class Core {
                     .routes(()->{
                         path("auth", ()->{
                             path("token", ()->{
+                                path("renew", ()->{
+                                    get(ctx -> {
+                                        processor.next("auth").next("renew").get(securityManager.authorizeConnection(tokenRenewSecSet, ctx), ctx); // renew token by using it
+                                    });
+                                });
                                 get(ctx -> {
                                     processor.next("auth").next("token").get(securityManager.authorizeConnection(tokenRequestSecSet, ctx), ctx); // get token with password
                                 });
