@@ -101,7 +101,7 @@ public class ManagementLicenses extends RequestProcessor {
                     .put("licenseDuration", licensesRecord.getLicenseDurationDays())
                     .put("licenseKey", licensesRecord.getLicenseKey());
             // return
-            ctx.status(200);
+            ctx.status(202);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){

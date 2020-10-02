@@ -75,7 +75,7 @@ public class Core {
             // add to shutdown hook
             shutdownHook.addShutdownAble(securityManager);
             // prepare processor
-            RequestProcessor processor = new Root(connectionPool);
+            RequestProcessor processor = new Root(clientManager, connectionPool);
             // prepare javalin
             Javalin javalin = Javalin
                     .create(cnf -> {

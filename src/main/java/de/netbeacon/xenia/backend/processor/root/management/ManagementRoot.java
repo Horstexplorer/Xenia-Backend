@@ -17,15 +17,16 @@
 package de.netbeacon.xenia.backend.processor.root.management;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
+import de.netbeacon.xenia.backend.clients.ClientManager;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.root.management.clients.ManagementClients;
 import de.netbeacon.xenia.backend.processor.root.management.licenses.ManagementLicenses;
 
 public class ManagementRoot extends RequestProcessor {
 
-    public ManagementRoot(SQLConnectionPool sqlConnectionPool) {
+    public ManagementRoot(ClientManager clientManager, SQLConnectionPool sqlConnectionPool) {
         super("management", sqlConnectionPool,
-                new ManagementClients(sqlConnectionPool),
+                new ManagementClients(clientManager, sqlConnectionPool),
                 new ManagementLicenses(sqlConnectionPool)
         );
     }

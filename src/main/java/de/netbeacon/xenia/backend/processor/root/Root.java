@@ -17,20 +17,23 @@
 package de.netbeacon.xenia.backend.processor.root;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
+import de.netbeacon.xenia.backend.clients.ClientManager;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.root.auth.AuthRoot;
 import de.netbeacon.xenia.backend.processor.root.data.DataRoot;
 import de.netbeacon.xenia.backend.processor.root.info.InfoRoot;
+import de.netbeacon.xenia.backend.processor.root.management.ManagementRoot;
 import de.netbeacon.xenia.backend.processor.root.setup.SetupRoot;
 
 public class Root extends RequestProcessor {
 
-    public Root(SQLConnectionPool sqlConnectionPool) {
+    public Root(ClientManager clientManager, SQLConnectionPool sqlConnectionPool) {
         super("", sqlConnectionPool,
                 new AuthRoot(sqlConnectionPool),
                 new SetupRoot(sqlConnectionPool),
                 new InfoRoot(sqlConnectionPool),
-                new DataRoot(sqlConnectionPool)
+                new DataRoot(sqlConnectionPool),
+                new ManagementRoot(clientManager, sqlConnectionPool)
         );
     }
 }
