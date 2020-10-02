@@ -67,6 +67,9 @@ public class DataGuild extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataGuild#GET ", e);
             throw new BadRequestResponse();
@@ -100,6 +103,9 @@ public class DataGuild extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataGuild#PUT ", e);
             throw new BadRequestResponse();
@@ -129,6 +135,9 @@ public class DataGuild extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataGuild#POST ", e);
             throw new BadRequestResponse();
@@ -146,6 +155,9 @@ public class DataGuild extends RequestProcessor {
             ctx.status(200);
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataGuild#DELETE ", e);
             throw new BadRequestResponse();

@@ -102,6 +102,9 @@ public class DataGuildRole extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataGuildRole#GET ", e);
             throw new BadRequestResponse();
@@ -161,6 +164,9 @@ public class DataGuildRole extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataGuildRole#PUT ", e);
             throw new BadRequestResponse();
@@ -208,6 +214,9 @@ public class DataGuildRole extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataGuildRole#POST ", e);
             throw new BadRequestResponse();
@@ -226,6 +235,9 @@ public class DataGuildRole extends RequestProcessor {
             ctx.status(200);
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataGuildRole#DELETE ", e);
             throw new BadRequestResponse();

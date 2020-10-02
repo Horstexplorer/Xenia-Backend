@@ -90,6 +90,9 @@ public class DataGuildLicense extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataGuildLicense#GET ", e);
             throw new BadRequestResponse();
@@ -141,6 +144,9 @@ public class DataGuildLicense extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataGuildLicense#PUT ", e);
             throw new BadRequestResponse();

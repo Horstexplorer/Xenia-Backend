@@ -89,6 +89,9 @@ public class DataGuildMember extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataGuildMember#DELETE ", e);
             throw new BadRequestResponse();
@@ -135,6 +138,9 @@ public class DataGuildMember extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataGuildMember#PUT ", e);
             throw new BadRequestResponse();
@@ -171,6 +177,9 @@ public class DataGuildMember extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataGuildMember#POST ", e);
             throw new BadRequestResponse();
@@ -189,6 +198,9 @@ public class DataGuildMember extends RequestProcessor {
             ctx.status(200);
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataGuildMember#DELETE ", e);
             throw new BadRequestResponse();

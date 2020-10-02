@@ -60,6 +60,9 @@ public class DataUser extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataUser#GET ", e);
             throw new BadRequestResponse();
@@ -95,6 +98,9 @@ public class DataUser extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataUser#PUT ", e);
             throw new BadRequestResponse();
@@ -125,6 +131,9 @@ public class DataUser extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataUser#POST ", e);
             throw new BadRequestResponse();
@@ -142,6 +151,9 @@ public class DataUser extends RequestProcessor {
             ctx.status(200);
         }catch (HttpResponseException e){
             throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataUser#DELETE ", e);
             throw new BadRequestResponse();
