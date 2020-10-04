@@ -21,7 +21,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InternalBotData extends TableImpl<InternalBotDataRecord> {
 
-    private static final long serialVersionUID = -793186029;
+    private static final long serialVersionUID = 1099043321;
 
     /**
      * The reference instance of <code>public.internal_bot_data</code>
@@ -44,17 +44,17 @@ public class InternalBotData extends TableImpl<InternalBotDataRecord> {
     /**
      * The column <code>public.internal_bot_data.client_name</code>.
      */
-    public final TableField<InternalBotDataRecord, String> CLIENT_NAME = createField(DSL.name("client_name"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
+    public final TableField<InternalBotDataRecord, String> CLIENT_NAME = createField(DSL.name("client_name"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.field("'no_name_specified'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.internal_bot_data.client_info</code>.
      */
-    public final TableField<InternalBotDataRecord, String> CLIENT_INFO = createField(DSL.name("client_info"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
+    public final TableField<InternalBotDataRecord, String> CLIENT_INFO = createField(DSL.name("client_info"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(org.jooq.impl.DSL.field("'no_description_specified'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.internal_bot_data.discord_token</code>.
      */
-    public final TableField<InternalBotDataRecord, String> DISCORD_TOKEN = createField(DSL.name("discord_token"), org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false), this, "");
+    public final TableField<InternalBotDataRecord, String> DISCORD_TOKEN = createField(DSL.name("discord_token"), org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(org.jooq.impl.DSL.field("'no_token_specified'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * Create a <code>public.internal_bot_data</code> table reference
