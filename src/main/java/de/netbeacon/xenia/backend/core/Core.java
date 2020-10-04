@@ -24,12 +24,14 @@ import de.netbeacon.utils.sql.auth.SQLAuth;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPoolSettings;
 import de.netbeacon.xenia.backend.clients.ClientManager;
+import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.Root;
 import de.netbeacon.xenia.backend.security.SecurityManager;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
 import io.javalin.Javalin;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +66,12 @@ public class Core {
             shutdownHook.addShutdownAble(connectionPool);
             // prepare clients
             ClientManager clientManager = new ClientManager(new File("./xenia-backend/config/clients")).loadFromFile();
+            if(clientManager.size() == 0){
+                // add admin account
+                String password = RandomStringUtils.randomAlphanumeric(64);
+                Client admin = clientManager.createClient(SecuritySettings.ClientType.System, "System", password);
+                logger.warn("No Client Found. Added System Client\nUserId: "+admin.getClientId()+" Password: "+password);
+            }
             // add to shutdown hook
             shutdownHook.addShutdownAble(clientManager);
             // prepare security manager

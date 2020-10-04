@@ -21,7 +21,6 @@ import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
 import org.json.JSONObject;
 
-
 import java.io.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,7 +50,9 @@ public class ClientManager implements IShutdown {
         clientMap.remove(userId);
     }
 
-
+    public int size(){
+        return clientMap.size();
+    }
 
     public ClientManager loadFromFile() throws IOException {
         try(BufferedReader bufferedReader = new BufferedReader(new FileReader(file))){
