@@ -71,7 +71,7 @@ public class ClientManager implements IShutdown {
     public ClientManager writeToFile() throws IOException {
         try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))){
             for(Map.Entry<Long, Client> entry : clientMap.entrySet()){
-                bufferedWriter.write(entry.getValue().toString());
+                bufferedWriter.write(entry.getValue().asJSON().toString());
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
             }
