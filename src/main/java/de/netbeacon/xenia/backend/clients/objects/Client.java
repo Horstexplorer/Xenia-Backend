@@ -37,18 +37,18 @@ public class Client implements IJSONSerializable {
 
     public Client(){
         Random random = new Random();
-        this.clientId = random.nextLong();
+        this.clientId = Math.abs(random.nextLong());
         while(usedIds.contains(this.clientId)){
-            this.clientId = random.nextLong();
+            this.clientId = Math.abs(random.nextLong());
         }
         usedIds.add(this.clientId);
     }
 
     public Client(SecuritySettings.ClientType type, String clientName, String password){
         Random random = new Random();
-        this.clientId = random.nextLong();
+        this.clientId = Math.abs(random.nextLong());
         while(usedIds.contains(this.clientId)){
-            this.clientId = random.nextLong();
+            this.clientId = Math.abs(random.nextLong());
         }
         usedIds.add(this.clientId);
         this.clientType = type;
