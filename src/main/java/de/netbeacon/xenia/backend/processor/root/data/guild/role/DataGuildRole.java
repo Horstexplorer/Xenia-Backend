@@ -27,6 +27,7 @@ import de.netbeacon.xenia.joop.tables.records.RolesRecord;
 import io.javalin.http.*;
 import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.Result;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -182,9 +183,10 @@ public class DataGuildRole extends RequestProcessor {
     public void post(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
-            long roleId = Long.parseLong(ctx.pathParam("roleId"));
+            // long roleId = Long.parseLong(ctx.pathParam("roleId")); role id is handled by the db
             // insert role
-            sqlContext.insertInto(Tables.ROLES, Tables.ROLES.GUILD_ID, Tables.ROLES.ROLE_ID).values(guildId, roleId).execute();
+            Result<Record1<Long>> record1Result = sqlContext.insertInto(Tables.ROLES, Tables.ROLES.GUILD_ID).values(guildId).returningResult(Tables.ROLES.ROLE_ID).fetch();
+            long roleId = record1Result.get(0).value1();
             // insert permissions
             Result<PermissionRecord> permissionRecords = sqlContext.selectFrom(Tables.PERMISSION).fetch();
             InsertValuesStep2<RolesPermissionRecord, Long, Integer> ivs = sqlContext.insertInto(Tables.ROLES_PERMISSION).columns(Tables.ROLES_PERMISSION.ROLE_ID, Tables.ROLES_PERMISSION.PERMISSION_ID);
