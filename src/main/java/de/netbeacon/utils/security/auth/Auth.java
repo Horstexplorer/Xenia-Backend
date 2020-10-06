@@ -88,7 +88,7 @@ public class Auth implements IJSONSerializable {
         ByteBuffer byteBuffer = ByteBuffer.allocate(Long.BYTES*2);
         byteBuffer.putLong(uuid.getMostSignificantBits()).putLong(uuid.getLeastSignificantBits());
         String token = Base64.getEncoder().encodeToString(byteBuffer.array());
-        this.tokenHash = BCrypt.hashpw(token, BCrypt.gensalt(2));
+        this.tokenHash = BCrypt.hashpw(token, BCrypt.gensalt(4));
         this.lastTokenUse = System.currentTimeMillis();
         return token;
     }
