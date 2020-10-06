@@ -67,7 +67,7 @@ public class DataGuildLicense extends RequestProcessor {
                 Record record2 = recordResult2.get(0);
                 jsonObject
                         .put("licenseName", record2.get(Tables.LICENSE_TYPES.LICENSE_NAME))
-                        .put("license", record2.get(Tables.LICENSE_TYPES.LICENSE_DESCRIPTION))
+                        .put("licenseDescription", record2.get(Tables.LICENSE_TYPES.LICENSE_DESCRIPTION))
                         .put("activationTimestamp", -1)
                         .put("durationDays", -1)
                         .put("perks", new JSONObject()
@@ -77,7 +77,7 @@ public class DataGuildLicense extends RequestProcessor {
             }else{
                 jsonObject
                         .put("licenseName", record.get(Tables.LICENSE_TYPES.LICENSE_NAME))
-                        .put("license", record.get(Tables.LICENSE_TYPES.LICENSE_DESCRIPTION))
+                        .put("licenseDescription", record.get(Tables.LICENSE_TYPES.LICENSE_DESCRIPTION))
                         .put("activationTimestamp", record.get(Tables.LICENSES.LICENSE_ACTIVATION_TIMESTAMP).toEpochSecond(ZoneOffset.UTC))
                         .put("durationDays", record.get(Tables.LICENSES.LICENSE_DURATION_DAYS))
                         .put("perks", new JSONObject()
@@ -132,7 +132,7 @@ public class DataGuildLicense extends RequestProcessor {
             Record record = recordResults.get(0);
             JSONObject jsonObject = new JSONObject()
                     .put("licenseName", record.get(Tables.LICENSE_TYPES.LICENSE_NAME))
-                    .put("license", record.get(Tables.LICENSE_TYPES.LICENSE_DESCRIPTION))
+                    .put("licenseDescription", record.get(Tables.LICENSE_TYPES.LICENSE_DESCRIPTION))
                     .put("activationTimestamp", record.get(Tables.LICENSES.LICENSE_ACTIVATION_TIMESTAMP).toEpochSecond(ZoneOffset.UTC))
                     .put("durationDays", record.get(Tables.LICENSES.LICENSE_DURATION_DAYS))
                     .put("perks", new JSONObject()
