@@ -147,9 +147,7 @@ public class DataGuildChannel extends RequestProcessor {
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long channelId = Long.parseLong(ctx.pathParam("channelId"));
             // insert
-            sqlContext.insertInto(Tables.CHANNELS, Tables.CHANNELS.CHANNEL_ID, Tables.CHANNELS.GUILD_ID).values(channelId, guildId).execute();
-            // fetch
-            Result<ChannelsRecord> channelsRecords = sqlContext.selectFrom(Tables.CHANNELS).where(Tables.CHANNELS.CHANNEL_ID.eq(channelId).and(Tables.CHANNELS.GUILD_ID.eq(guildId))).fetch();
+            Result<ChannelsRecord> channelsRecords = sqlContext.insertInto(Tables.CHANNELS, Tables.CHANNELS.CHANNEL_ID, Tables.CHANNELS.GUILD_ID).values(channelId, guildId).returning().fetch();
             if(channelsRecords.isEmpty()){
                 throw new InternalServerErrorResponse();
             }

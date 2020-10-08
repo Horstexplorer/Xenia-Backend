@@ -24,10 +24,7 @@ import de.netbeacon.xenia.joop.Tables;
 import de.netbeacon.xenia.joop.tables.records.MembersRecord;
 import de.netbeacon.xenia.joop.tables.records.MembersRolesRecord;
 import de.netbeacon.xenia.joop.tables.records.RolesRecord;
-import io.javalin.http.BadRequestResponse;
-import io.javalin.http.Context;
-import io.javalin.http.HttpResponseException;
-import io.javalin.http.NotFoundResponse;
+import io.javalin.http.*;
 import org.jooq.InsertValuesStep3;
 import org.jooq.Result;
 import org.json.JSONArray;
@@ -158,12 +155,10 @@ public class DataGuildMember extends RequestProcessor {
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long userId = Long.parseLong(ctx.pathParam("userId"));
             // insert
-            sqlContext.insertInto(Tables.MEMBERS, Tables.MEMBERS.USER_ID, Tables.MEMBERS.GUILD_ID).values(userId, guildId);
-            // fetch
-            Result<MembersRecord> membersRecords = sqlContext.selectFrom(Tables.MEMBERS).where(Tables.MEMBERS.USER_ID.eq(userId).and(Tables.MEMBERS.GUILD_ID.eq(guildId))).fetch();
+            Result<MembersRecord> membersRecords = sqlContext.insertInto(Tables.MEMBERS, Tables.MEMBERS.USER_ID, Tables.MEMBERS.GUILD_ID).values(userId, guildId).returning().fetch();
             Result<MembersRolesRecord> membersRolesRecords = sqlContext.selectFrom(Tables.MEMBERS_ROLES).where(Tables.MEMBERS_ROLES.USER_ID.eq(userId).and(Tables.MEMBERS_ROLES.GUILD_ID.eq(guildId))).fetch();
             if(membersRecords.isEmpty()){
-                throw new NotFoundResponse();
+                throw new InternalServerErrorResponse();
             }
             MembersRecord membersRecord = membersRecords.get(0);
             // json

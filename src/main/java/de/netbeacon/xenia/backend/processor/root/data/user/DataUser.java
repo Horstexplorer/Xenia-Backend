@@ -117,9 +117,7 @@ public class DataUser extends RequestProcessor {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             long userId = Long.parseLong(ctx.pathParam("userId"));
             // insert
-            sqlContext.insertInto(Tables.USERS, Tables.USERS.USER_ID).values(userId).execute();
-            // fetch
-            Result<UsersRecord> usersRecordResult = sqlContext.selectFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(userId)).fetch();
+            Result<UsersRecord> usersRecordResult = sqlContext.insertInto(Tables.USERS, Tables.USERS.USER_ID).values(userId).returning().fetch();
             if(usersRecordResult.isEmpty()){
                 throw new InternalServerErrorResponse();
             }
