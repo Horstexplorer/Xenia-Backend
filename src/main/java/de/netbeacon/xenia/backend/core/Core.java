@@ -204,6 +204,9 @@ public class Core {
                                     get(ctx -> {
                                         processor.next("data").next("guild").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // get full guild data
                                     });
+                                    put(ctx -> {
+                                        processor.next("data").next("guild").put(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // update guild data
+                                    });
                                     post(ctx -> {
                                         processor.next("data").next("guild").post(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // create guild data
                                     });
