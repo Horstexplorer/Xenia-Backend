@@ -118,16 +118,16 @@ public class Core {
                             path("user", ()->{
                                 path(":userId", ()->{
                                     get(ctx -> {
-                                        processor.next("data").next("guild").next("user").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // get user data
+                                        processor.next("data").next("user").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // get user data
                                     });
                                     put(ctx -> {
-                                        processor.next("data").next("guild").next("user").put(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // update user data
+                                        processor.next("data").next("user").put(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // update user data
                                     });
                                     post(ctx -> {
-                                        processor.next("data").next("guild").next("user").post(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // create new
+                                        processor.next("data").next("user").post(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // create new
                                     });
                                     delete(ctx -> {
-                                        processor.next("data").next("guild").next("user").delete(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // delete user
+                                        processor.next("data").next("user").delete(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // delete user
                                     });
                                 });
                             });
