@@ -24,15 +24,9 @@ import de.netbeacon.xenia.backend.processor.root.data.guild.channel.DataGuildCha
 import de.netbeacon.xenia.backend.processor.root.data.guild.license.DataGuildLicense;
 import de.netbeacon.xenia.backend.processor.root.data.guild.member.DataGuildMember;
 import de.netbeacon.xenia.backend.processor.root.data.guild.role.DataGuildRole;
-import de.netbeacon.xenia.joop.Tables;
-import de.netbeacon.xenia.joop.tables.records.GuildsRecord;
-import io.javalin.http.*;
-import org.jooq.Result;
-import org.json.JSONObject;
+import io.javalin.http.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.time.ZoneOffset;
 
 public class DataGuild extends RequestProcessor {
 
@@ -49,131 +43,21 @@ public class DataGuild extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-            long guildId = Long.parseLong(ctx.pathParam("guildId"));
-            // fetch
-            Result<GuildsRecord> guildsRecords = sqlContext.selectFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetch();
-            if(guildsRecords.isEmpty()){
-                throw new NotFoundResponse();
-            }
-            GuildsRecord guildsRecord = guildsRecords.get(0);
-            // build json
-            JSONObject jsonObject = new JSONObject()
-                    .put("guildId", guildsRecord.getGuildId())
-                    .put("creationTimestamp", guildsRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
-                    .put("preferredLanguage", guildsRecord.getPreferredLanguage());
-            // respond
-            ctx.status(200);
-            ctx.header("Content-Type", "application/json");
-            ctx.result(jsonObject.toString());
-        }catch (HttpResponseException e){
-            throw e;
-        }catch (NullPointerException e){
-            // dont log
-            throw new BadRequestResponse();
-        }catch (Exception e){
-            logger.warn("An Error Occurred Processing DataGuild#GET ", e);
-            throw new BadRequestResponse();
-        }
+        super.get(client, ctx);
     }
 
     @Override
     public void put(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-            long guildId = Long.parseLong(ctx.pathParam("guildId"));
-            // fetch
-            Result<GuildsRecord> guildsRecords = sqlContext.selectFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetch();
-            if(guildsRecords.isEmpty()){
-                throw new InternalServerErrorResponse();
-            }
-            GuildsRecord guildsRecord = guildsRecords.get(0);
-            // get new data
-            JSONObject newData = new JSONObject(ctx.body());
-            // update data
-            guildsRecord.setPreferredLanguage(newData.getString("preferredLanguage"));
-            // update db
-            sqlContext.executeUpdate(guildsRecord);
-            // build json
-            JSONObject jsonObject = new JSONObject()
-                    .put("guildId", guildsRecord.getGuildId())
-                    .put("creationTimestamp", guildsRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
-                    .put("preferredLanguage", guildsRecord.getPreferredLanguage());
-            // respond
-            ctx.status(200);
-            ctx.header("Content-Type", "application/json");
-            ctx.result(jsonObject.toString());
-            // send ws notification
-            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD").put("action", "UPDATE").put("guildId", guildId);
-            getWebsocketProcessor().broadcast(broadcastMessage, client);
-        }catch (HttpResponseException e){
-            throw e;
-        }catch (NullPointerException e){
-            // dont log
-            throw new BadRequestResponse();
-        }catch (Exception e){
-            logger.warn("An Error Occurred Processing DataGuild#PUT ", e);
-            throw new BadRequestResponse();
-        }
+        super.put(client, ctx);
     }
 
     @Override
     public void post(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-            long guildId = Long.parseLong(ctx.pathParam("guildId"));
-            // insert
-            sqlContext.insertInto(Tables.GUILDS, Tables.GUILDS.GUILD_ID).values(guildId).execute();
-            // fetch
-            Result<GuildsRecord> guildsRecords = sqlContext.selectFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetch();
-            if(guildsRecords.isEmpty()){
-                throw new InternalServerErrorResponse();
-            }
-            GuildsRecord guildsRecord = guildsRecords.get(0);
-            // build json
-            JSONObject jsonObject = new JSONObject()
-                    .put("guildId", guildsRecord.getGuildId())
-                    .put("creationTimestamp", guildsRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
-                    .put("preferredLanguage", guildsRecord.getPreferredLanguage());
-            // respond
-            ctx.status(202);
-            ctx.header("Content-Type", "application/json");
-            ctx.result(jsonObject.toString());
-            // send ws notification
-            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD").put("action", "CREATE").put("guildId", guildId);
-            getWebsocketProcessor().broadcast(broadcastMessage, client);
-        }catch (HttpResponseException e){
-            throw e;
-        }catch (NullPointerException e){
-            // dont log
-            throw new BadRequestResponse();
-        }catch (Exception e){
-            logger.warn("An Error Occurred Processing DataGuild#POST ", e);
-            throw new BadRequestResponse();
-        }
+        super.post(client, ctx);
     }
 
     @Override
     public void delete(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-            long guildId = Long.parseLong(ctx.pathParam("guildId"));
-            int mod = sqlContext.deleteFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).execute();
-            if(mod == 0){
-                throw new NotFoundResponse();
-            }
-            ctx.status(200);
-            // send ws notification
-            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD").put("action", "DELETE").put("guildId", guildId);
-            getWebsocketProcessor().broadcast(broadcastMessage, client);
-        }catch (HttpResponseException e){
-            throw e;
-        }catch (NullPointerException e){
-            // dont log
-            throw new BadRequestResponse();
-        }catch (Exception e){
-            logger.warn("An Error Occurred Processing DataGuild#DELETE ", e);
-            throw new BadRequestResponse();
-        }
+        super.delete(client, ctx);
     }
 }
