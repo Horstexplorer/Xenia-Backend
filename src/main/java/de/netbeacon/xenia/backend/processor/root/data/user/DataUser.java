@@ -43,7 +43,6 @@ public class DataUser extends RequestProcessor {
     public void get(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             long userId = Long.parseLong(ctx.pathParam("userId"));
-            // fetch
             Result<UsersRecord> usersRecordResult = sqlContext.selectFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(userId)).fetch();
             if(usersRecordResult.isEmpty()){
                 throw new NotFoundResponse();
@@ -60,6 +59,9 @@ public class DataUser extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataUser#GET ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -74,7 +76,6 @@ public class DataUser extends RequestProcessor {
     public void put(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             long userId = Long.parseLong(ctx.pathParam("userId"));
-            // fetch
             Result<UsersRecord> usersRecordResult = sqlContext.selectFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(userId)).fetch();
             if(usersRecordResult.isEmpty()){
                 throw new NotFoundResponse();
@@ -102,6 +103,9 @@ public class DataUser extends RequestProcessor {
             broadcastMessage.get().put("type", "USER").put("action", "UPDATE").put("userId", userId);
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataUser#PUT ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -116,7 +120,6 @@ public class DataUser extends RequestProcessor {
     public void post(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             long userId = Long.parseLong(ctx.pathParam("userId"));
-            // insert
             Result<UsersRecord> usersRecordResult = sqlContext.insertInto(Tables.USERS, Tables.USERS.USER_ID).values(userId).returning().fetch();
             if(usersRecordResult.isEmpty()){
                 throw new InternalServerErrorResponse();
@@ -137,6 +140,9 @@ public class DataUser extends RequestProcessor {
             broadcastMessage.get().put("type", "USER").put("action", "CREATE").put("userId", userId);
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataUser#POST ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -161,6 +167,9 @@ public class DataUser extends RequestProcessor {
             broadcastMessage.get().put("type", "USER").put("action", "DELETE").put("userId", userId);
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataUser#DELETE ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log

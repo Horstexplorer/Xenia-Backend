@@ -43,6 +43,7 @@ public class Keys {
     public static final UniqueKey<MembersRecord> MEMBERS_GUILD_ID_USER_ID = UniqueKeys0.MEMBERS_GUILD_ID_USER_ID;
     public static final UniqueKey<MembersRecord> MEMBERS_GUILD_ID_USER_ID_UNIQUE = UniqueKeys0.MEMBERS_GUILD_ID_USER_ID_UNIQUE;
     public static final UniqueKey<MembersRolesRecord> MEMBERS_ROLES_USER_ID_ROLE_ID = UniqueKeys0.MEMBERS_ROLES_USER_ID_ROLE_ID;
+    public static final UniqueKey<MessagesRecord> MESSAGES_MESSAGE_ID = UniqueKeys0.MESSAGES_MESSAGE_ID;
     public static final UniqueKey<PermissionRecord> PERMISSION_PERMISSION_ID = UniqueKeys0.PERMISSION_PERMISSION_ID;
     public static final UniqueKey<RolesRecord> ROLES_ROLE_ID = UniqueKeys0.ROLES_ROLE_ID;
     public static final UniqueKey<RolesRecord> ROLES_GUILD_ID_ROLE_NAME = UniqueKeys0.ROLES_GUILD_ID_ROLE_NAME;
@@ -62,6 +63,9 @@ public class Keys {
     public static final ForeignKey<MembersRolesRecord, GuildsRecord> MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_FKEY = ForeignKeys0.MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_FKEY;
     public static final ForeignKey<MembersRolesRecord, MembersRecord> MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_USER_ID_FKEY = ForeignKeys0.MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_USER_ID_FKEY;
     public static final ForeignKey<MembersRolesRecord, RolesRecord> MEMBERS_ROLES__MEMBERS_ROLES_ROLE_ID_FKEY = ForeignKeys0.MEMBERS_ROLES__MEMBERS_ROLES_ROLE_ID_FKEY;
+    public static final ForeignKey<MessagesRecord, GuildsRecord> MESSAGES__MESSAGES_GUILD_ID_FKEY = ForeignKeys0.MESSAGES__MESSAGES_GUILD_ID_FKEY;
+    public static final ForeignKey<MessagesRecord, ChannelsRecord> MESSAGES__MESSAGES_CHANNEL_ID_FKEY = ForeignKeys0.MESSAGES__MESSAGES_CHANNEL_ID_FKEY;
+    public static final ForeignKey<MessagesRecord, UsersRecord> MESSAGES__MESSAGES_USER_ID_FKEY = ForeignKeys0.MESSAGES__MESSAGES_USER_ID_FKEY;
     public static final ForeignKey<RolesPermissionRecord, RolesRecord> ROLES_PERMISSION__ROLE_PERMISSION_ROLE_ID_FKEY = ForeignKeys0.ROLES_PERMISSION__ROLE_PERMISSION_ROLE_ID_FKEY;
     public static final ForeignKey<RolesPermissionRecord, PermissionRecord> ROLES_PERMISSION__ROLE_PERMISSION_PERMISSION_ID_FKEY = ForeignKeys0.ROLES_PERMISSION__ROLE_PERMISSION_PERMISSION_ID_FKEY;
 
@@ -87,6 +91,7 @@ public class Keys {
         public static final UniqueKey<MembersRecord> MEMBERS_GUILD_ID_USER_ID = Internal.createUniqueKey(Members.MEMBERS, "members_guild_id_user_id", new TableField[] { Members.MEMBERS.GUILD_ID, Members.MEMBERS.USER_ID }, true);
         public static final UniqueKey<MembersRecord> MEMBERS_GUILD_ID_USER_ID_UNIQUE = Internal.createUniqueKey(Members.MEMBERS, "members_guild_id_user_id_unique", new TableField[] { Members.MEMBERS.GUILD_ID, Members.MEMBERS.USER_ID }, true);
         public static final UniqueKey<MembersRolesRecord> MEMBERS_ROLES_USER_ID_ROLE_ID = Internal.createUniqueKey(MembersRoles.MEMBERS_ROLES, "members_roles_user_id_role_id", new TableField[] { MembersRoles.MEMBERS_ROLES.USER_ID, MembersRoles.MEMBERS_ROLES.ROLE_ID }, true);
+        public static final UniqueKey<MessagesRecord> MESSAGES_MESSAGE_ID = Internal.createUniqueKey(Messages.MESSAGES, "messages_message_id", new TableField[] { Messages.MESSAGES.MESSAGE_ID }, true);
         public static final UniqueKey<PermissionRecord> PERMISSION_PERMISSION_ID = Internal.createUniqueKey(Permission.PERMISSION, "permission_permission_id", new TableField[] { Permission.PERMISSION.PERMISSION_ID }, true);
         public static final UniqueKey<RolesRecord> ROLES_ROLE_ID = Internal.createUniqueKey(Roles.ROLES, "roles_role_id", new TableField[] { Roles.ROLES.ROLE_ID }, true);
         public static final UniqueKey<RolesRecord> ROLES_GUILD_ID_ROLE_NAME = Internal.createUniqueKey(Roles.ROLES, "roles_guild_id_role_name", new TableField[] { Roles.ROLES.GUILD_ID, Roles.ROLES.ROLE_NAME }, true);
@@ -104,6 +109,9 @@ public class Keys {
         public static final ForeignKey<MembersRolesRecord, GuildsRecord> MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_FKEY = Internal.createForeignKey(Keys.GUILDS_GUILD_ID, MembersRoles.MEMBERS_ROLES, "members_roles_guild_id_fkey", new TableField[] { MembersRoles.MEMBERS_ROLES.GUILD_ID }, true);
         public static final ForeignKey<MembersRolesRecord, MembersRecord> MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_USER_ID_FKEY = Internal.createForeignKey(Keys.MEMBERS_GUILD_ID_USER_ID, MembersRoles.MEMBERS_ROLES, "members_roles_guild_id_user_id_fkey", new TableField[] { MembersRoles.MEMBERS_ROLES.GUILD_ID, MembersRoles.MEMBERS_ROLES.USER_ID }, true);
         public static final ForeignKey<MembersRolesRecord, RolesRecord> MEMBERS_ROLES__MEMBERS_ROLES_ROLE_ID_FKEY = Internal.createForeignKey(Keys.ROLES_ROLE_ID, MembersRoles.MEMBERS_ROLES, "members_roles_role_id_fkey", new TableField[] { MembersRoles.MEMBERS_ROLES.ROLE_ID }, true);
+        public static final ForeignKey<MessagesRecord, GuildsRecord> MESSAGES__MESSAGES_GUILD_ID_FKEY = Internal.createForeignKey(Keys.GUILDS_GUILD_ID, Messages.MESSAGES, "messages_guild_id_fkey", new TableField[] { Messages.MESSAGES.GUILD_ID }, true);
+        public static final ForeignKey<MessagesRecord, ChannelsRecord> MESSAGES__MESSAGES_CHANNEL_ID_FKEY = Internal.createForeignKey(Keys.CHANNELS_CHANNEL_ID, Messages.MESSAGES, "messages_channel_id_fkey", new TableField[] { Messages.MESSAGES.CHANNEL_ID }, true);
+        public static final ForeignKey<MessagesRecord, UsersRecord> MESSAGES__MESSAGES_USER_ID_FKEY = Internal.createForeignKey(Keys.USERS_USER_ID, Messages.MESSAGES, "messages_user_id_fkey", new TableField[] { Messages.MESSAGES.USER_ID }, true);
         public static final ForeignKey<RolesPermissionRecord, RolesRecord> ROLES_PERMISSION__ROLE_PERMISSION_ROLE_ID_FKEY = Internal.createForeignKey(Keys.ROLES_ROLE_ID, RolesPermission.ROLES_PERMISSION, "role_permission_role_id_fkey", new TableField[] { RolesPermission.ROLES_PERMISSION.ROLE_ID }, true);
         public static final ForeignKey<RolesPermissionRecord, PermissionRecord> ROLES_PERMISSION__ROLE_PERMISSION_PERMISSION_ID_FKEY = Internal.createForeignKey(Keys.PERMISSION_PERMISSION_ID, RolesPermission.ROLES_PERMISSION, "role_permission_permission_id_fkey", new TableField[] { RolesPermission.ROLES_PERMISSION.PERMISSION_ID }, true);
     }

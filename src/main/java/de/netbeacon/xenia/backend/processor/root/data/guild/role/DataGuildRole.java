@@ -20,6 +20,7 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.root.data.guild.role.permission.DataGuildRolePermission;
 import de.netbeacon.xenia.joop.Tables;
 import de.netbeacon.xenia.joop.tables.records.PermissionRecord;
 import de.netbeacon.xenia.joop.tables.records.RolesPermissionRecord;
@@ -27,22 +28,18 @@ import de.netbeacon.xenia.joop.tables.records.RolesRecord;
 import io.javalin.http.*;
 import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
-import org.jooq.Record1;
 import org.jooq.Result;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class DataGuildRole extends RequestProcessor {
 
     public final Logger logger = LoggerFactory.getLogger(DataGuildRole.class);
 
     public DataGuildRole(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("role", sqlConnectionPool, websocketProcessor);
+        super("role", sqlConnectionPool, websocketProcessor, new DataGuildRolePermission(sqlConnectionPool, websocketProcessor));
     }
 
     @Override
@@ -70,10 +67,10 @@ public class DataGuildRole extends RequestProcessor {
                         );
                     }
                     jsonArray.put(new JSONObject()
-                                    .put("guildId", rolesRecord.getGuildId())
-                                    .put("roleId", rolesRecord.getRoleId())
-                                    .put("roleName", rolesRecord.getRoleName())
-                                    .put("permissions", jsonArray));
+                            .put("guildId", rolesRecord.getGuildId())
+                            .put("roleId", rolesRecord.getRoleId())
+                            .put("roleName", rolesRecord.getRoleName())
+                            .put("permissions", jsonArray));
                 }
             }else{
                 long roleId = Long.parseLong(roleIdS);
@@ -103,6 +100,9 @@ public class DataGuildRole extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildRole#GET ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -118,7 +118,6 @@ public class DataGuildRole extends RequestProcessor {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long roleId = Long.parseLong(ctx.pathParam("roleId"));
-            // fetch
             Result<RolesRecord> rolesRecords = sqlContext.selectFrom(Tables.ROLES).where(Tables.ROLES.ROLE_ID.eq(roleId).and(Tables.ROLES.GUILD_ID.eq(guildId))).fetch();
             if(rolesRecords.isEmpty()){
                 throw new NotFoundResponse();
@@ -130,25 +129,10 @@ public class DataGuildRole extends RequestProcessor {
             rolesRecord.setRoleName(newData.getString("roleName"));
             // update with db
             sqlContext.executeUpdate(rolesRecord);
-            // set permissions
-            Result<RolesPermissionRecord> rolesPermissionRecords = sqlContext.selectFrom(Tables.ROLES_PERMISSION).where(Tables.ROLES_PERMISSION.ROLE_ID.eq(roleId)).fetch();
-            List<RolesPermissionRecord> updateRoles = new ArrayList<>();
-            JSONArray jsonArray = newData.getJSONArray("permissions");
-            for(RolesPermissionRecord rolesPermissionRecord : rolesPermissionRecords){
-                for(int i = 0; i < jsonArray.length(); i++){
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if((rolesPermissionRecord.getPermissionId() != jsonObject.getInt("permissionId")) || (rolesPermissionRecord.getPermissionGranted() == jsonObject.getBoolean("permissionGranted"))){
-                        break;
-                    }
-                    updateRoles.add(rolesPermissionRecord.setPermissionGranted(jsonObject.getBoolean("permissionGranted")));
-                }
-            }
-            sqlContext.batchUpdate(updateRoles).execute();
-            // fetch full data for permissions
-            Result<Record> rolesPermissions = sqlContext.select().from(Tables.ROLES_PERMISSION).leftJoin(Tables.PERMISSION).on(Tables.ROLES_PERMISSION.PERMISSION_ID.eq(Tables.PERMISSION.PERMISSION_ID)).where(Tables.ROLES_PERMISSION.ROLE_ID.eq(roleId)).fetch();
-            // json
-            for(Record record : rolesPermissions){
-                jsonArray.put(new JSONObject()
+            Result<Record> rolesPermissionsRecords = sqlContext.select().from(Tables.ROLES_PERMISSION).leftJoin(Tables.PERMISSION).on(Tables.ROLES_PERMISSION.PERMISSION_ID.eq(Tables.PERMISSION.PERMISSION_ID)).where(Tables.ROLES_PERMISSION.ROLE_ID.eq(rolesRecord.getRoleId())).fetch();
+            JSONArray rolePermissions = new JSONArray();
+            for(Record record : rolesPermissionsRecords){
+                rolePermissions.put(new JSONObject()
                         .put("permissionId", record.get(Tables.PERMISSION.PERMISSION_ID))
                         .put("permissionName", record.get(Tables.PERMISSION.PERMISSION_NAME))
                         .put("permissionDescription", record.get(Tables.PERMISSION.PERMISSION_DESCRIPTION))
@@ -159,16 +143,19 @@ public class DataGuildRole extends RequestProcessor {
                     .put("guildId", rolesRecord.getGuildId())
                     .put("roleId", rolesRecord.getRoleId())
                     .put("roleName", rolesRecord.getRoleName())
-                    .put("permissions", jsonArray);
+                    .put("permissions", rolePermissions);
             // respond
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
             WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD_ROLE").put("action", "UPDATE").put("guildId", guildId).put("roleId", roleId);
+            broadcastMessage.get().put("type", "GUILD_ROLE").put("action", "CREATE").put("guildId", guildId).put("roleId", roleId);
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildRole#PUT ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -183,27 +170,22 @@ public class DataGuildRole extends RequestProcessor {
     public void post(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
-            // long roleId = Long.parseLong(ctx.pathParam("roleId")); role id is handled by the db
-            // insert role
-            Result<Record1<Long>> record1Result = sqlContext.insertInto(Tables.ROLES, Tables.ROLES.GUILD_ID).values(guildId).returningResult(Tables.ROLES.ROLE_ID).fetch();
-            long roleId = record1Result.get(0).value1();
-            // insert permissions
-            Result<PermissionRecord> permissionRecords = sqlContext.selectFrom(Tables.PERMISSION).fetch();
-            InsertValuesStep2<RolesPermissionRecord, Long, Integer> ivs = sqlContext.insertInto(Tables.ROLES_PERMISSION).columns(Tables.ROLES_PERMISSION.ROLE_ID, Tables.ROLES_PERMISSION.PERMISSION_ID);
-            for(PermissionRecord permissionRecord : permissionRecords){
-                ivs.values(roleId, permissionRecord.getPermissionId());
-            }
-            ivs.execute();
-            // fetch
-            Result<RolesRecord> rolesRecords = sqlContext.selectFrom(Tables.ROLES).where(Tables.ROLES.ROLE_ID.eq(roleId).and(Tables.ROLES.GUILD_ID.eq(guildId))).fetch();
-            Result<Record> rolesPermissions = sqlContext.select().from(Tables.ROLES_PERMISSION).leftJoin(Tables.PERMISSION).on(Tables.ROLES_PERMISSION.PERMISSION_ID.eq(Tables.PERMISSION.PERMISSION_ID)).where(Tables.ROLES_PERMISSION.ROLE_ID.eq(roleId)).fetch();
+            // long roleId = Long.parseLong(ctx.pathParam("roleId")); - given by db
+            Result<RolesRecord> rolesRecords = sqlContext.insertInto(Tables.ROLES, Tables.ROLES.GUILD_ID).values(guildId).returning().fetch();
             if(rolesRecords.isEmpty()){
                 throw new InternalServerErrorResponse();
             }
             RolesRecord rolesRecord = rolesRecords.get(0);
-            JSONArray jsonArray = new JSONArray();
-            for(Record record : rolesPermissions){
-                jsonArray.put(new JSONObject()
+            Result<PermissionRecord> permissionRecords = sqlContext.selectFrom(Tables.PERMISSION).fetch();
+            InsertValuesStep2<RolesPermissionRecord, Long, Integer> ivs = sqlContext.insertInto(Tables.ROLES_PERMISSION).columns(Tables.ROLES_PERMISSION.ROLE_ID, Tables.ROLES_PERMISSION.PERMISSION_ID);
+            for(PermissionRecord permissionRecord : permissionRecords){
+                ivs.values(rolesRecord.getRoleId(), permissionRecord.getPermissionId());
+            }
+            ivs.execute();
+            Result<Record> rolesPermissionsRecords = sqlContext.select().from(Tables.ROLES_PERMISSION).leftJoin(Tables.PERMISSION).on(Tables.ROLES_PERMISSION.PERMISSION_ID.eq(Tables.PERMISSION.PERMISSION_ID)).where(Tables.ROLES_PERMISSION.ROLE_ID.eq(rolesRecord.getRoleId())).fetch();
+            JSONArray rolePermissions = new JSONArray();
+            for(Record record : rolesPermissionsRecords){
+                rolePermissions.put(new JSONObject()
                         .put("permissionId", record.get(Tables.PERMISSION.PERMISSION_ID))
                         .put("permissionName", record.get(Tables.PERMISSION.PERMISSION_NAME))
                         .put("permissionDescription", record.get(Tables.PERMISSION.PERMISSION_DESCRIPTION))
@@ -214,16 +196,19 @@ public class DataGuildRole extends RequestProcessor {
                     .put("guildId", rolesRecord.getGuildId())
                     .put("roleId", rolesRecord.getRoleId())
                     .put("roleName", rolesRecord.getRoleName())
-                    .put("permissions", jsonArray);
+                    .put("permissions", rolePermissions);
             // respond
             ctx.status(202);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
             WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD_ROLE").put("action", "CREATE").put("guildId", guildId).put("roleId", roleId);
+            broadcastMessage.get().put("type", "GUILD_ROLE").put("action", "CREATE").put("guildId", guildId).put("roleId", rolesRecord.getRoleId());
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildRole#POST ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -249,6 +234,9 @@ public class DataGuildRole extends RequestProcessor {
             broadcastMessage.get().put("type", "GUILD_ROLE").put("action", "DELETE").put("guildId", guildId).put("roleId", roleId);
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildRole#DELETE ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log

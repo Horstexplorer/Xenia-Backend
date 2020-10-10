@@ -51,7 +51,6 @@ public class DataGuild extends RequestProcessor {
     public void get(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
-            // fetch
             Result<GuildsRecord> guildsRecords = sqlContext.selectFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetch();
             if(guildsRecords.isEmpty()){
                 throw new NotFoundResponse();
@@ -67,6 +66,9 @@ public class DataGuild extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuild#GET ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -81,7 +83,6 @@ public class DataGuild extends RequestProcessor {
     public void put(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
-            // fetch
             Result<GuildsRecord> guildsRecords = sqlContext.selectFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetch();
             if(guildsRecords.isEmpty()){
                 throw new InternalServerErrorResponse();
@@ -107,6 +108,9 @@ public class DataGuild extends RequestProcessor {
             broadcastMessage.get().put("type", "GUILD").put("action", "UPDATE").put("guildId", guildId);
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuild#PUT ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -121,10 +125,7 @@ public class DataGuild extends RequestProcessor {
     public void post(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
-            // insert
-            sqlContext.insertInto(Tables.GUILDS, Tables.GUILDS.GUILD_ID).values(guildId).execute();
-            // fetch
-            Result<GuildsRecord> guildsRecords = sqlContext.selectFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetch();
+            Result<GuildsRecord> guildsRecords = sqlContext.insertInto(Tables.GUILDS, Tables.GUILDS.GUILD_ID).values(guildId).returning().fetch();
             if(guildsRecords.isEmpty()){
                 throw new InternalServerErrorResponse();
             }
@@ -143,6 +144,9 @@ public class DataGuild extends RequestProcessor {
             broadcastMessage.get().put("type", "GUILD").put("action", "CREATE").put("guildId", guildId);
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuild#POST ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -167,6 +171,9 @@ public class DataGuild extends RequestProcessor {
             broadcastMessage.get().put("type", "GUILD").put("action", "DELETE").put("guildId", guildId);
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuild#DELETE ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log

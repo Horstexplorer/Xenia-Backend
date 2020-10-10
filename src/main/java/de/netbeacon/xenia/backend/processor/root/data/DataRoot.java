@@ -20,6 +20,7 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.data.guild.DataGuild;
+import de.netbeacon.xenia.backend.processor.root.data.message.DataMessage;
 import de.netbeacon.xenia.backend.processor.root.data.user.DataUser;
 
 public class DataRoot extends RequestProcessor {
@@ -27,7 +28,8 @@ public class DataRoot extends RequestProcessor {
     public DataRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
         super("data", sqlConnectionPool, websocketProcessor,
                 new DataGuild(sqlConnectionPool, websocketProcessor),
-                new DataUser(sqlConnectionPool, websocketProcessor)
+                new DataUser(sqlConnectionPool, websocketProcessor),
+                new DataMessage(sqlConnectionPool, websocketProcessor)
         );
     }
 

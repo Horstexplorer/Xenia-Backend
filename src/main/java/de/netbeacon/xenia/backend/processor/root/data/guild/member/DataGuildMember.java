@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -58,10 +59,16 @@ public class DataGuildMember extends RequestProcessor {
                 JSONArray jsonArray = new JSONArray();
                 jsonObject.put("members", jsonArray);
                 for(MembersRecord membersRecord : membersRecords){
-                    jsonArray.put(new JSONObject()
+                    Result<MembersRolesRecord> membersRolesRecords = sqlContext.selectFrom(Tables.MEMBERS_ROLES).where(Tables.MEMBERS_ROLES.USER_ID.eq(membersRecord.getUserId()).and(Tables.MEMBERS_ROLES.GUILD_ID.eq(guildId))).fetch();
+                    JSONArray roles = new JSONArray();
+                    for(MembersRolesRecord membersRolesRecord : membersRolesRecords){
+                        roles.put(membersRolesRecord.getRoleId());
+                    }
+                    jsonObject
                             .put("guildId", membersRecord.getGuildId())
                             .put("userId", membersRecord.getUserId())
-                            .put("creationTimestamp", membersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC)));
+                            .put("creationTimestamp", membersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                            .put("roles", roles);
                 }
             }else{
                 long userId = Long.parseLong(userIds);
@@ -71,27 +78,30 @@ public class DataGuildMember extends RequestProcessor {
                     throw new NotFoundResponse();
                 }
                 MembersRecord membersRecord = membersRecords.get(0);
-                JSONArray jsonArray = new JSONArray();
+                JSONArray roles = new JSONArray();
                 for(MembersRolesRecord membersRolesRecord : membersRolesRecords){
-                    jsonArray.put(membersRolesRecord.getRoleId());
+                    roles.put(membersRolesRecord.getRoleId());
                 }
                 jsonObject
                         .put("guildId", membersRecord.getGuildId())
                         .put("userId", membersRecord.getUserId())
                         .put("creationTimestamp", membersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
-                        .put("roles", membersRolesRecords);
+                        .put("roles", roles);
             }
             // respond
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildMember#GET ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
             throw new BadRequestResponse();
         }catch (Exception e){
-            logger.warn("An Error Occurred Processing DataGuildMember#DELETE ", e);
+            logger.warn("An Error Occurred Processing DataGuildMember#GET ", e);
             throw new BadRequestResponse();
         }
     }
@@ -110,12 +120,15 @@ public class DataGuildMember extends RequestProcessor {
             // get new data
             JSONObject newData = new JSONObject(ctx.body());
             // update data
-                // nothing to update for now
+            // nothing to update for now
             // update db
             sqlContext.executeUpdate(membersRecord);
             // update roles
             sqlContext.deleteFrom(Tables.MEMBERS_ROLES).where(Tables.MEMBERS_ROLES.USER_ID.eq(userId).and(Tables.MEMBERS_ROLES.GUILD_ID.eq(guildId)));
-            List<Long> newRoles = (List<Long>)(List<?>) newData.getJSONArray("roles");
+            List<Long> newRoles = new ArrayList<>();
+            for(int i = 0; i < newData.getJSONArray("roles").length(); i++){
+                newRoles.add(newData.getJSONArray("roles").getLong(i));
+            }
             Result<RolesRecord> rolesRecords = sqlContext.selectFrom(Tables.ROLES).where(Tables.ROLES.ROLE_ID.in(newRoles).and(Tables.ROLES.GUILD_ID.eq(guildId))).fetch();
             InsertValuesStep3<MembersRolesRecord, Long, Long, Long> ivs = sqlContext.insertInto(Tables.MEMBERS_ROLES).columns(Tables.MEMBERS_ROLES.GUILD_ID, Tables.MEMBERS_ROLES.USER_ID, Tables.MEMBERS_ROLES.ROLE_ID);
             JSONArray jsonArray = new JSONArray();
@@ -139,6 +152,9 @@ public class DataGuildMember extends RequestProcessor {
             broadcastMessage.get().put("type", "GUILD_MEMBER").put("action", "UPDATE").put("guildId", guildId).put("userId", userId);
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildMember#PUT ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -180,6 +196,9 @@ public class DataGuildMember extends RequestProcessor {
             broadcastMessage.get().put("type", "GUILD_MEMBER").put("action", "CREATE").put("guildId", guildId).put("userId", userId);
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildMember#POST ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -205,6 +224,9 @@ public class DataGuildMember extends RequestProcessor {
             broadcastMessage.get().put("type", "GUILD_MEMBER").put("action", "DELETE").put("guildId", guildId).put("userId", userId);
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildMember#DELETE ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log

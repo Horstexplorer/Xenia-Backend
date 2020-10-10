@@ -20,19 +20,13 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.joop.Tables;
-import de.netbeacon.xenia.joop.tables.records.GuildsRecord;
-import de.netbeacon.xenia.joop.tables.records.LicenseTypesRecord;
-import de.netbeacon.xenia.joop.tables.records.LicensesRecord;
-import io.javalin.http.*;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.json.JSONObject;
+import io.javalin.http.BadRequestResponse;
+import io.javalin.http.Context;
+import io.javalin.http.HttpResponseException;
+import io.javalin.http.InternalServerErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.concurrent.locks.ReentrantLock;
 
 
@@ -49,47 +43,11 @@ public class DataGuildLicense extends RequestProcessor {
     @Override
     public void get(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-            long guildId = Long.parseLong(ctx.pathParam("guildId"));
-            // fetch data
-            Result<Record> recordResults = sqlContext.select().from(Tables.GUILDS).leftJoin(Tables.LICENSES).on(Tables.GUILDS.LICENSE_ID.eq(Tables.LICENSES.LICENSE_ID)).leftJoin(Tables.LICENSE_TYPES).on(Tables.LICENSES.LICENSE_TYPE.eq(Tables.LICENSE_TYPES.LICENSE_TYPE_ID)).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetch();
-            if(recordResults.isEmpty()){
-                throw new NotFoundResponse();
-            }
-            Record record = recordResults.get(0);
-            // json
-            JSONObject jsonObject = new JSONObject();
-            // check for when no license has been found - return default stats then
-            if(record.get(Tables.GUILDS.LICENSE_ID) == null){
-                Result<LicenseTypesRecord> recordResult2 = sqlContext.selectFrom(Tables.LICENSE_TYPES).where(Tables.LICENSE_TYPES.LICENSE_TYPE_ID.eq(0)).fetch(); // should be the default
-                if(recordResult2.isEmpty()){
-                    throw new InternalServerErrorResponse();
-                }
-                Record record2 = recordResult2.get(0);
-                jsonObject
-                        .put("licenseName", record2.get(Tables.LICENSE_TYPES.LICENSE_NAME))
-                        .put("licenseDescription", record2.get(Tables.LICENSE_TYPES.LICENSE_DESCRIPTION))
-                        .put("activationTimestamp", -1)
-                        .put("durationDays", -1)
-                        .put("perks", new JSONObject()
-                                .put("channelLoggingMC", record2.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_MC))
-                                .put("channelLoggingPCB", record2.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_PCB))
-                        );
-            }else{
-                jsonObject
-                        .put("licenseName", record.get(Tables.LICENSE_TYPES.LICENSE_NAME))
-                        .put("licenseDescription", record.get(Tables.LICENSE_TYPES.LICENSE_DESCRIPTION))
-                        .put("activationTimestamp", record.get(Tables.LICENSES.LICENSE_ACTIVATION_TIMESTAMP).toEpochSecond(ZoneOffset.UTC))
-                        .put("durationDays", record.get(Tables.LICENSES.LICENSE_DURATION_DAYS))
-                        .put("perks", new JSONObject()
-                                .put("channelLoggingMC", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_MC))
-                                .put("channelLoggingPCB", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_PCB))
-                        );
-            }
-            // respond
-            ctx.status(200);
-            ctx.header("Content-Type", "application/json");
-            ctx.result(jsonObject.toString());
+
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildLicense#GET ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -102,52 +60,12 @@ public class DataGuildLicense extends RequestProcessor {
 
     @Override
     public void put(Client client, Context ctx) {
-        reentrantLock.lock();
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-            long guildId = Long.parseLong(ctx.pathParam("guildId"));
-            String licenseKey = ctx.queryParam("licenseKey");
-            if(licenseKey == null){
-                throw new BadRequestResponse();
-            }
-            // fetch
-            Result<LicensesRecord> licensesResult = sqlContext.selectFrom(Tables.LICENSES).where(Tables.LICENSES.LICENSE_KEY.eq(licenseKey).and(Tables.LICENSES.LICENSE_CLAIMED.eq(false))).fetch();
-            Result<GuildsRecord> guildsRecords = sqlContext.selectFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetch();
-            if(licensesResult.isEmpty() || guildsRecords.isEmpty()){
-                throw new NotFoundResponse();
-            }
-            LicensesRecord licensesRecord = licensesResult.get(0);
-            GuildsRecord guildsRecord = guildsRecords.get(0);
-            // claim
-            licensesRecord.setLicenseActivationTimestamp(LocalDateTime.now());
-            licensesRecord.setLicenseClaimed(true);
-            sqlContext.executeUpdate(licensesRecord);
-            // link to guild
-            guildsRecord.setLicenseId(licensesRecord.getLicenseId());
-            sqlContext.executeUpdate(guildsRecord);
-            // fetch new stats
-            Result<Record> recordResults = sqlContext.select().from(Tables.GUILDS).leftJoin(Tables.LICENSES).on(Tables.GUILDS.LICENSE_ID.eq(Tables.LICENSES.LICENSE_ID)).leftJoin(Tables.LICENSE_TYPES).on(Tables.LICENSES.LICENSE_TYPE.eq(Tables.LICENSE_TYPES.LICENSE_TYPE_ID)).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetch();
-            if(recordResults.isEmpty()){
-                throw new NotFoundResponse();
-            }
-            Record record = recordResults.get(0);
-            JSONObject jsonObject = new JSONObject()
-                    .put("licenseName", record.get(Tables.LICENSE_TYPES.LICENSE_NAME))
-                    .put("licenseDescription", record.get(Tables.LICENSE_TYPES.LICENSE_DESCRIPTION))
-                    .put("activationTimestamp", record.get(Tables.LICENSES.LICENSE_ACTIVATION_TIMESTAMP).toEpochSecond(ZoneOffset.UTC))
-                    .put("durationDays", record.get(Tables.LICENSES.LICENSE_DURATION_DAYS))
-                    .put("perks", new JSONObject()
-                            .put("channelLoggingMC", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_MC))
-                            .put("channelLoggingPCB", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_PCB))
-                    );
-            // respond
-            ctx.status(200);
-            ctx.header("Content-Type", "application/json");
-            ctx.result(jsonObject.toString());
-            // send ws notification
-            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD_LICENSE").put("action", "UPDATE").put("guildId", guildId);
-            getWebsocketProcessor().broadcast(broadcastMessage, client);
+
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildLicense#PUT ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -155,8 +73,6 @@ public class DataGuildLicense extends RequestProcessor {
         }catch (Exception e){
             logger.warn("An Error Occurred Processing DataGuildLicense#PUT ", e);
             throw new BadRequestResponse();
-        }finally {
-            reentrantLock.unlock();
         }
     }
 }

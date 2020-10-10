@@ -54,6 +54,11 @@ public class Tables {
     public static final MembersRoles MEMBERS_ROLES = MembersRoles.MEMBERS_ROLES;
 
     /**
+     * The table <code>public.messages</code>.
+     */
+    public static final Messages MESSAGES = Messages.MESSAGES;
+
+    /**
      * The table <code>public.permission</code>.
      */
     public static final Permission PERMISSION = Permission.PERMISSION;

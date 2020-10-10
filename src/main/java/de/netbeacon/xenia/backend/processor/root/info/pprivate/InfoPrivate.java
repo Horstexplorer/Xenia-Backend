@@ -16,6 +16,7 @@
 
 package de.netbeacon.xenia.backend.processor.root.info.pprivate;
 
+import de.netbeacon.utils.appinfo.AppInfo;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
@@ -24,6 +25,7 @@ import de.netbeacon.xenia.joop.Tables;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.HttpResponseException;
+import io.javalin.http.InternalServerErrorResponse;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +52,7 @@ public class InfoPrivate extends RequestProcessor {
             int forbidden = sqlContext.selectCount().from(Tables.CHANNELS).where(Tables.CHANNELS.ACCESS_RESTRICTION.eq(true)).execute();
             // build json
             JSONObject jsonObject = new JSONObject()
+                    .put("version", AppInfo.get("buildVersion")+"_"+ AppInfo.get("buildNumber"))
                     .put("guilds", guilds)
                     .put("users", users)
                     .put("members", members)
@@ -61,6 +64,9 @@ public class InfoPrivate extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing InfoPrivate#GET ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.netbeacon.xenia.backend.processor.root.data.guild.channel;
+package de.netbeacon.xenia.backend.processor.root.data.message;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
@@ -24,31 +24,32 @@ import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.HttpResponseException;
 import io.javalin.http.InternalServerErrorResponse;
+import kotlin.NotImplementedError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DataGuildChannel extends RequestProcessor {
+public class DataMessage extends RequestProcessor {
 
-    private final Logger logger = LoggerFactory.getLogger(DataGuildChannel.class);
+    private final Logger logger = LoggerFactory.getLogger(DataMessage.class);
 
-    public DataGuildChannel(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("channel", sqlConnectionPool, websocketProcessor);
+    public DataMessage(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("message", sqlConnectionPool, websocketProcessor);
     }
 
     @Override
     public void get(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            throw new NotImplementedError();
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
-                logger.error("An Error Occurred Processing DataGuildChannel#GET ", e);
+                logger.error("An Error Occurred Processing DataMessage#GET ", e);
             }
             throw e;
         }catch (NullPointerException e){
             // dont log
             throw new BadRequestResponse();
         }catch (Exception e){
-            logger.warn("An Error Occurred Processing DataGuildChannel#GET ", e);
+            logger.warn("An Error Occurred Processing DataMessage#GET ", e);
             throw new BadRequestResponse();
         }
     }
@@ -56,17 +57,17 @@ public class DataGuildChannel extends RequestProcessor {
     @Override
     public void put(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            throw new NotImplementedError();
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
-                logger.error("An Error Occurred Processing DataGuildChannel#PUT ", e);
+                logger.error("An Error Occurred Processing DataMessage#PUT ", e);
             }
             throw e;
         }catch (NullPointerException e){
             // dont log
             throw new BadRequestResponse();
         }catch (Exception e){
-            logger.warn("An Error Occurred Processing DataGuildChannel#PUT ", e);
+            logger.warn("An Error Occurred Processing DataMessage#PUT ", e);
             throw new BadRequestResponse();
         }
     }
@@ -74,17 +75,17 @@ public class DataGuildChannel extends RequestProcessor {
     @Override
     public void post(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            throw new NotImplementedError();
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
-                logger.error("An Error Occurred Processing DataGuildChannel#POST ", e);
+                logger.error("An Error Occurred Processing DataMessage#POST ", e);
             }
             throw e;
         }catch (NullPointerException e){
             // dont log
             throw new BadRequestResponse();
         }catch (Exception e){
-            logger.warn("An Error Occurred Processing DataGuildChannel#POST ", e);
+            logger.warn("An Error Occurred Processing DataMessage#POST ", e);
             throw new BadRequestResponse();
         }
     }
@@ -92,17 +93,17 @@ public class DataGuildChannel extends RequestProcessor {
     @Override
     public void delete(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            throw new NotImplementedError();
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
-                logger.error("An Error Occurred Processing DataGuildChannel#DELETE ", e);
+                logger.error("An Error Occurred Processing DataMESSAGE#DELETE ", e);
             }
             throw e;
         }catch (NullPointerException e){
             // dont log
             throw new BadRequestResponse();
         }catch (Exception e){
-            logger.warn("An Error Occurred Processing DataGuildChannel#DELETE ", e);
+            logger.warn("An Error Occurred Processing DataMessage#DELETE ", e);
             throw new BadRequestResponse();
         }
     }
