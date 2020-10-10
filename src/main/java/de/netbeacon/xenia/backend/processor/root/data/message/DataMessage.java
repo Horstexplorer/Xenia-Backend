@@ -24,6 +24,7 @@ import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.HttpResponseException;
 import io.javalin.http.InternalServerErrorResponse;
+import kotlin.NotImplementedError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,7 @@ public class DataMessage extends RequestProcessor {
     @Override
     public void get(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            throw new NotImplementedError();
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataMessage#GET ", e);
@@ -56,7 +57,7 @@ public class DataMessage extends RequestProcessor {
     @Override
     public void put(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            throw new NotImplementedError();
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataMessage#PUT ", e);
@@ -74,7 +75,7 @@ public class DataMessage extends RequestProcessor {
     @Override
     public void post(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            throw new NotImplementedError();
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataMessage#POST ", e);
@@ -92,7 +93,7 @@ public class DataMessage extends RequestProcessor {
     @Override
     public void delete(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            throw new NotImplementedError();
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataMESSAGE#DELETE ", e);
