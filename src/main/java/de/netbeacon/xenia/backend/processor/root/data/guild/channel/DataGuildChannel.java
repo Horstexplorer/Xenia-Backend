@@ -20,12 +20,16 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import io.javalin.http.BadRequestResponse;
-import io.javalin.http.Context;
-import io.javalin.http.HttpResponseException;
-import io.javalin.http.InternalServerErrorResponse;
+import de.netbeacon.xenia.joop.Tables;
+import de.netbeacon.xenia.joop.tables.records.ChannelsRecord;
+import io.javalin.http.*;
+import org.jooq.Result;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.ZoneOffset;
 
 public class DataGuildChannel extends RequestProcessor {
 
@@ -38,7 +42,46 @@ public class DataGuildChannel extends RequestProcessor {
     @Override
     public void get(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            long guildId = Long.parseLong(ctx.pathParam("guildId"));
+            String channelIds = ctx.pathParam("channelId");
+            JSONObject jsonObject = new JSONObject();
+            if(channelIds.isBlank()){
+                Result<ChannelsRecord> channelsRecords = sqlContext.selectFrom(Tables.CHANNELS).where(Tables.CHANNELS.GUILD_ID.eq(guildId)).fetch();
+                if(channelsRecords.isEmpty()){
+                    throw new NotFoundResponse();
+                }
+                JSONArray jsonArray = new JSONArray();
+                jsonObject.put("channels", jsonArray);
+                for(ChannelsRecord channelsRecord : channelsRecords){
+                    jsonArray.put(new JSONObject()
+                            .put("guildId", channelsRecord.getGuildId())
+                            .put("channelId", channelsRecord.getChannelId())
+                            .put("creationTimestamp", channelsRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                            .put("accessRestriction", channelsRecord.getAccessRestriction())
+                            .put("channelMode", channelsRecord.getChannelMode())
+                            .put("channelType", channelsRecord.getChannelType())
+                            .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive()));
+                }
+            }else{
+                long channelId = Long.parseLong(ctx.pathParam("channelId"));
+                Result<ChannelsRecord> channelsRecords = sqlContext.selectFrom(Tables.CHANNELS).where(Tables.CHANNELS.CHANNEL_ID.eq(channelId).and(Tables.CHANNELS.GUILD_ID.eq(guildId))).fetch();
+                if(channelsRecords.isEmpty()){
+                    throw new NotFoundResponse();
+                }
+                ChannelsRecord channelsRecord = channelsRecords.get(0);
+                jsonObject
+                        .put("guildId", channelsRecord.getGuildId())
+                        .put("channelId", channelsRecord.getChannelId())
+                        .put("creationTimestamp", channelsRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                        .put("accessRestriction", channelsRecord.getAccessRestriction())
+                        .put("channelMode", channelsRecord.getChannelMode())
+                        .put("channelType", channelsRecord.getChannelType())
+                        .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive());
+            }
+            // respond
+            ctx.status(200);
+            ctx.header("Content-Type", "application/json");
+            ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataGuildChannel#GET ", e);
@@ -56,7 +99,40 @@ public class DataGuildChannel extends RequestProcessor {
     @Override
     public void put(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            long guildId = Long.parseLong(ctx.pathParam("guildId"));
+            long channelId = Long.parseLong(ctx.pathParam("channelId"));
+            // fetch
+            Result<ChannelsRecord> channelsRecords = sqlContext.selectFrom(Tables.CHANNELS).where(Tables.CHANNELS.CHANNEL_ID.eq(channelId).and(Tables.CHANNELS.GUILD_ID.eq(guildId))).fetch();
+            if(channelsRecords.isEmpty()){
+                throw new NotFoundResponse();
+            }
+            ChannelsRecord channelsRecord = channelsRecords.get(0);
+            // get new data
+            JSONObject newData = new JSONObject(ctx.body());
+            // update data
+            channelsRecord.setAccessRestriction(newData.getBoolean("accessRestriction"));
+            channelsRecord.setChannelMode(newData.getString("channelMode"));
+            channelsRecord.setChannelType(newData.getString("channelType"));
+            channelsRecord.setTmpLoggingActive(newData.getBoolean("tmpLoggingActive"));
+            // update with db
+            sqlContext.executeUpdate(channelsRecord);
+            // json
+            JSONObject jsonObject = new JSONObject()
+                    .put("guildId", channelsRecord.getGuildId())
+                    .put("channelId", channelsRecord.getChannelId())
+                    .put("creationTimestamp", channelsRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                    .put("accessRestriction", channelsRecord.getAccessRestriction())
+                    .put("channelMode", channelsRecord.getChannelMode())
+                    .put("channelType", channelsRecord.getChannelType())
+                    .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive());
+            // result
+            ctx.status(200);
+            ctx.header("Content-Type", "application/json");
+            ctx.result(jsonObject.toString());
+            // send ws notification
+            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+            broadcastMessage.get().put("type", "GUILD_CHANNEL").put("action", "UPDATE").put("guildId", guildId).put("channelId", channelId);
+            getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataGuildChannel#PUT ", e);
@@ -74,7 +150,30 @@ public class DataGuildChannel extends RequestProcessor {
     @Override
     public void post(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            long guildId = Long.parseLong(ctx.pathParam("guildId"));
+            long channelId = Long.parseLong(ctx.pathParam("channelId"));
+            // insert
+            Result<ChannelsRecord> channelsRecords = sqlContext.insertInto(Tables.CHANNELS, Tables.CHANNELS.CHANNEL_ID, Tables.CHANNELS.GUILD_ID).values(channelId, guildId).returning().fetch();
+            if(channelsRecords.isEmpty()){
+                throw new InternalServerErrorResponse();
+            }
+            ChannelsRecord channelsRecord = channelsRecords.get(0);
+            JSONObject jsonObject = new JSONObject()
+                    .put("guildId", channelsRecord.getGuildId())
+                    .put("channelId", channelsRecord.getChannelId())
+                    .put("creationTimestamp", channelsRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                    .put("accessRestriction", channelsRecord.getAccessRestriction())
+                    .put("channelMode", channelsRecord.getChannelMode())
+                    .put("channelType", channelsRecord.getChannelType())
+                    .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive());
+            // result
+            ctx.status(202);
+            ctx.header("Content-Type", "application/json");
+            ctx.result(jsonObject.toString());
+            // send ws notification
+            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+            broadcastMessage.get().put("type", "GUILD_CHANNEL").put("action", "CREATE").put("guildId", guildId).put("channelId", channelId);
+            getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataGuildChannel#POST ", e);
@@ -92,7 +191,17 @@ public class DataGuildChannel extends RequestProcessor {
     @Override
     public void delete(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            long guildId = Long.parseLong(ctx.pathParam("guildId"));
+            long channelId = Long.parseLong(ctx.pathParam("channelId"));
+            int mod = sqlContext.deleteFrom(Tables.CHANNELS).where(Tables.CHANNELS.CHANNEL_ID.eq(channelId).and(Tables.CHANNELS.GUILD_ID.eq(guildId))).execute();
+            if(mod == 0){
+                throw new NotFoundResponse();
+            }
+            ctx.status(200);
+            // send ws notification
+            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+            broadcastMessage.get().put("type", "GUILD_CHANNEL").put("action", "DELETE").put("guildId", guildId).put("channelId", channelId);
+            getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataGuildChannel#DELETE ", e);
