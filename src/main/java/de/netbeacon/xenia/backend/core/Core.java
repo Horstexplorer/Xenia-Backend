@@ -243,6 +243,22 @@ public class Core {
                                     });
                                 });
                             });
+                            path("message", ()->{
+                                path("analyzer", ()->{
+                                    get(ctx -> {
+                                        processor.next("data").next("message").next("analyzer").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // get full guild data
+                                    });
+                                    put(ctx -> {
+                                        processor.next("data").next("message").next("analyzer").put(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // update guild data
+                                    });
+                                    post(ctx -> {
+                                        processor.next("data").next("message").next("analyzer").post(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // create guild data
+                                    });
+                                    delete(ctx -> {
+                                        processor.next("data").next("message").next("analyzer").delete(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // delete guild
+                                    });
+                                });
+                            });
                         });
                         path("management", ()->{
                             path("clients", ()->{
