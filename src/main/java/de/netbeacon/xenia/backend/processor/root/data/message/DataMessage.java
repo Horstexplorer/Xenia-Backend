@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.netbeacon.xenia.backend.processor.root.data.guild.license;
+package de.netbeacon.xenia.backend.processor.root.data.message;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
@@ -26,17 +26,12 @@ import io.javalin.http.HttpResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.locks.ReentrantLock;
+public class DataMessage extends RequestProcessor {
 
+    private final Logger logger = LoggerFactory.getLogger(DataMessage.class);
 
-public class DataGuildLicense extends RequestProcessor {
-
-    private final ReentrantLock reentrantLock = new ReentrantLock();
-
-    private final Logger logger = LoggerFactory.getLogger(DataGuildLicense.class);
-
-    public DataGuildLicense(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("license", sqlConnectionPool, websocketProcessor);
+    public DataMessage(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("message", sqlConnectionPool, websocketProcessor);
     }
 
     @Override
@@ -49,7 +44,7 @@ public class DataGuildLicense extends RequestProcessor {
             // dont log
             throw new BadRequestResponse();
         }catch (Exception e){
-            logger.warn("An Error Occurred Processing DataGuildLicense#GET ", e);
+            logger.warn("An Error Occurred Processing DataMessage#GET ", e);
             throw new BadRequestResponse();
         }
     }
@@ -64,7 +59,37 @@ public class DataGuildLicense extends RequestProcessor {
             // dont log
             throw new BadRequestResponse();
         }catch (Exception e){
-            logger.warn("An Error Occurred Processing DataGuildLicense#PUT ", e);
+            logger.warn("An Error Occurred Processing DataMessage#PUT ", e);
+            throw new BadRequestResponse();
+        }
+    }
+
+    @Override
+    public void post(Client client, Context ctx) {
+        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+
+        }catch (HttpResponseException e){
+            throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
+        }catch (Exception e){
+            logger.warn("An Error Occurred Processing DataMessage#POST ", e);
+            throw new BadRequestResponse();
+        }
+    }
+
+    @Override
+    public void delete(Client client, Context ctx) {
+        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+
+        }catch (HttpResponseException e){
+            throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
+        }catch (Exception e){
+            logger.warn("An Error Occurred Processing DataMessage#DELETE ", e);
             throw new BadRequestResponse();
         }
     }

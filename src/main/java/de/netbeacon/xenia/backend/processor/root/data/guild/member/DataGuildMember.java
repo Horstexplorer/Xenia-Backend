@@ -21,7 +21,9 @@ import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.data.guild.member.role.DataGuildMemberRole;
+import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
+import io.javalin.http.HttpResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,21 +38,61 @@ public class DataGuildMember extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        super.get(client, ctx);
+        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+
+        }catch (HttpResponseException e){
+            throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
+        }catch (Exception e){
+            logger.warn("An Error Occurred Processing DataGuildMember#GET ", e);
+            throw new BadRequestResponse();
+        }
     }
 
     @Override
     public void put(Client client, Context ctx) {
-        super.put(client, ctx);
+        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+
+        }catch (HttpResponseException e){
+            throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
+        }catch (Exception e){
+            logger.warn("An Error Occurred Processing DataGuildMember#PUT ", e);
+            throw new BadRequestResponse();
+        }
     }
 
     @Override
     public void post(Client client, Context ctx) {
-        super.post(client, ctx);
+        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+
+        }catch (HttpResponseException e){
+            throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
+        }catch (Exception e){
+            logger.warn("An Error Occurred Processing DataGuildMember#POST ", e);
+            throw new BadRequestResponse();
+        }
     }
 
     @Override
     public void delete(Client client, Context ctx) {
-        super.delete(client, ctx);
+        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+
+        }catch (HttpResponseException e){
+            throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
+        }catch (Exception e){
+            logger.warn("An Error Occurred Processing DataGuildMember#DELETE ", e);
+            throw new BadRequestResponse();
+        }
     }
 }

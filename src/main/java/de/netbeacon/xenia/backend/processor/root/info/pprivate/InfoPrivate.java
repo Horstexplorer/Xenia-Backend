@@ -20,7 +20,9 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
+import io.javalin.http.HttpResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +36,17 @@ public class InfoPrivate extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        super.get(client, ctx);
+        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+
+        }catch (HttpResponseException e){
+            throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
+        }catch (Exception e){
+            logger.warn("An Error Occurred Processing InfoPrivate#GET ", e);
+            throw new BadRequestResponse();
+        }
     }
 
 }
