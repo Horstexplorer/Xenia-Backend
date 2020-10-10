@@ -20,11 +20,15 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import io.javalin.http.BadRequestResponse;
-import io.javalin.http.Context;
-import io.javalin.http.HttpResponseException;
+import de.netbeacon.xenia.joop.Tables;
+import de.netbeacon.xenia.joop.tables.records.UsersRecord;
+import io.javalin.http.*;
+import org.jooq.Result;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.ZoneOffset;
 
 
 public class DataUser extends RequestProcessor {
@@ -38,8 +42,26 @@ public class DataUser extends RequestProcessor {
     @Override
     public void get(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            long userId = Long.parseLong(ctx.pathParam("userId"));
+            Result<UsersRecord> usersRecordResult = sqlContext.selectFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(userId)).fetch();
+            if(usersRecordResult.isEmpty()){
+                throw new NotFoundResponse();
+            }
+            UsersRecord usersRecord = usersRecordResult.get(0);
+            // fluffy json
+            JSONObject jsonObject = new JSONObject()
+                    .put("userId", usersRecord.getUserId())
+                    .put("creationTimestamp", usersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                    .put("internalRole", usersRecord.getInternalRole())
+                    .put("preferredLanguage", usersRecord.getPreferredLanguage());
+            // respond
+            ctx.status(200);
+            ctx.header("Content-Type", "application/json");
+            ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataUser#GET ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -53,8 +75,37 @@ public class DataUser extends RequestProcessor {
     @Override
     public void put(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            long userId = Long.parseLong(ctx.pathParam("userId"));
+            Result<UsersRecord> usersRecordResult = sqlContext.selectFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(userId)).fetch();
+            if(usersRecordResult.isEmpty()){
+                throw new NotFoundResponse();
+            }
+            UsersRecord usersRecord = usersRecordResult.get(0);
+            // get new data
+            JSONObject newData = new JSONObject(ctx.body());
+            // update values
+            usersRecord.setInternalRole(newData.getString("internalRole"));
+            usersRecord.setPreferredLanguage(newData.getString("preferredLanguage"));
+            // update db
+            sqlContext.executeUpdate(usersRecord);
+            // fluffy json
+            JSONObject jsonObject = new JSONObject()
+                    .put("userId", usersRecord.getUserId())
+                    .put("creationTimestamp", usersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                    .put("internalRole", usersRecord.getInternalRole())
+                    .put("preferredLanguage", usersRecord.getPreferredLanguage());
+            // respond
+            ctx.status(200);
+            ctx.header("Content-Type", "application/json");
+            ctx.result(jsonObject.toString());
+            // send ws notification
+            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+            broadcastMessage.get().put("type", "USER").put("action", "UPDATE").put("userId", userId);
+            getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataUser#PUT ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -68,8 +119,30 @@ public class DataUser extends RequestProcessor {
     @Override
     public void post(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            long userId = Long.parseLong(ctx.pathParam("userId"));
+            Result<UsersRecord> usersRecordResult = sqlContext.insertInto(Tables.USERS, Tables.USERS.USER_ID).values(userId).returning().fetch();
+            if(usersRecordResult.isEmpty()){
+                throw new InternalServerErrorResponse();
+            }
+            UsersRecord usersRecord = usersRecordResult.get(0);
+            // fluffy json
+            JSONObject jsonObject = new JSONObject()
+                    .put("userId", usersRecord.getUserId())
+                    .put("creationTimestamp", usersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                    .put("internalRole", usersRecord.getInternalRole())
+                    .put("preferredLanguage", usersRecord.getPreferredLanguage());
+            // respond
+            ctx.status(202);
+            ctx.header("Content-Type", "application/json");
+            ctx.result(jsonObject.toString());
+            // send ws notification
+            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+            broadcastMessage.get().put("type", "USER").put("action", "CREATE").put("userId", userId);
+            getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataUser#POST ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -83,8 +156,20 @@ public class DataUser extends RequestProcessor {
     @Override
     public void delete(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-
+            long userId = Long.parseLong(ctx.pathParam("userId"));
+            int mod = sqlContext.deleteFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(userId)).execute();
+            if(mod == 0){
+                throw new NotFoundResponse();
+            }
+            ctx.status(200);
+            // send ws notification
+            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+            broadcastMessage.get().put("type", "USER").put("action", "DELETE").put("userId", userId);
+            getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataUser#DELETE ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log

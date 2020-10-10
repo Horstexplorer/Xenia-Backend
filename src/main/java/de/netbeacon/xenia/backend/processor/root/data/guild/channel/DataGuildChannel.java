@@ -23,6 +23,7 @@ import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.HttpResponseException;
+import io.javalin.http.InternalServerErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,9 @@ public class DataGuildChannel extends RequestProcessor {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
 
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildChannel#GET ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -54,6 +58,9 @@ public class DataGuildChannel extends RequestProcessor {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
 
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildChannel#PUT ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -69,6 +76,9 @@ public class DataGuildChannel extends RequestProcessor {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
 
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildChannel#POST ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
@@ -84,6 +94,9 @@ public class DataGuildChannel extends RequestProcessor {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
 
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildChannel#DELETE ", e);
+            }
             throw e;
         }catch (NullPointerException e){
             // dont log
