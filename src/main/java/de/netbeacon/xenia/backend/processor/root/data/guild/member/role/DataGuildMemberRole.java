@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package de.netbeacon.xenia.backend.processor.root.data.guild.role;
+package de.netbeacon.xenia.backend.processor.root.data.guild.member.role;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.backend.processor.root.data.guild.role.permission.DataGuildRolePermission;
 import io.javalin.http.Context;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class DataGuildRole extends RequestProcessor {
+public class DataGuildMemberRole extends RequestProcessor {
 
-    public final Logger logger = LoggerFactory.getLogger(DataGuildRole.class);
-
-    public DataGuildRole(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("role", sqlConnectionPool, websocketProcessor, new DataGuildRolePermission(sqlConnectionPool, websocketProcessor));
+    public DataGuildMemberRole(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("role", sqlConnectionPool, websocketProcessor);
     }
 
     @Override

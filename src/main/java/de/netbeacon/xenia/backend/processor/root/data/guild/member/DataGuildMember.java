@@ -20,6 +20,7 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.root.data.guild.member.role.DataGuildMemberRole;
 import io.javalin.http.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public class DataGuildMember extends RequestProcessor {
     private final Logger logger = LoggerFactory.getLogger(DataGuildMember.class);
 
     public DataGuildMember(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("member", sqlConnectionPool, websocketProcessor);
+        super("member", sqlConnectionPool, websocketProcessor, new DataGuildMemberRole(sqlConnectionPool, websocketProcessor));
     }
 
     @Override
