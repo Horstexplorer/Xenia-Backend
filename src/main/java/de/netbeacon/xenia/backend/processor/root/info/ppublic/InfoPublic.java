@@ -16,6 +16,7 @@
 
 package de.netbeacon.xenia.backend.processor.root.info.ppublic;
 
+import de.netbeacon.utils.appinfo.AppInfo;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
@@ -48,6 +49,7 @@ public class InfoPublic extends RequestProcessor {
             int members = sqlContext.fetchCount(Tables.MEMBERS);
             // build json
             JSONObject jsonObject = new JSONObject()
+                    .put("version", AppInfo.get("buildVersion")+"_"+ AppInfo.get("buildNumber"))
                     .put("guilds", guilds)
                     .put("users", users)
                     .put("members", members);

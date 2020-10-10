@@ -16,6 +16,7 @@
 
 package de.netbeacon.xenia.backend.processor.root.info.pprivate;
 
+import de.netbeacon.utils.appinfo.AppInfo;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.clients.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
@@ -51,6 +52,7 @@ public class InfoPrivate extends RequestProcessor {
             int forbidden = sqlContext.selectCount().from(Tables.CHANNELS).where(Tables.CHANNELS.ACCESS_RESTRICTION.eq(true)).execute();
             // build json
             JSONObject jsonObject = new JSONObject()
+                    .put("version", AppInfo.get("buildVersion")+"_"+ AppInfo.get("buildNumber"))
                     .put("guilds", guilds)
                     .put("users", users)
                     .put("members", members)
