@@ -49,9 +49,8 @@ public class DataGuildMember extends RequestProcessor {
     public void get(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
-            String userIds = ctx.pathParam("userId");
             JSONObject jsonObject = new JSONObject();
-            if(userIds.isBlank()){
+            if(!ctx.pathParamMap().containsKey("userId")){
                 Result<MembersRecord> membersRecords = sqlContext.selectFrom(Tables.MEMBERS).where(Tables.MEMBERS.GUILD_ID.eq(guildId)).fetch();
                 if(membersRecords.isEmpty()){
                     throw new NotFoundResponse();
@@ -71,7 +70,7 @@ public class DataGuildMember extends RequestProcessor {
                             .put("roles", roles);
                 }
             }else{
-                long userId = Long.parseLong(userIds);
+                long userId = Long.parseLong(ctx.pathParam("userId"));
                 Result<MembersRecord> membersRecords = sqlContext.selectFrom(Tables.MEMBERS).where(Tables.MEMBERS.USER_ID.eq(userId).and(Tables.MEMBERS.GUILD_ID.eq(guildId))).fetch();
                 Result<MembersRolesRecord> membersRolesRecords = sqlContext.selectFrom(Tables.MEMBERS_ROLES).where(Tables.MEMBERS_ROLES.USER_ID.eq(userId).and(Tables.MEMBERS_ROLES.GUILD_ID.eq(guildId))).fetch();
                 if(membersRecords.isEmpty()){

@@ -46,9 +46,8 @@ public class DataGuildRole extends RequestProcessor {
     public void get(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
-            String roleIdS = ctx.pathParam("roleId");
             JSONObject jsonObject = new JSONObject();
-            if(roleIdS.isBlank()){
+            if(!ctx.pathParamMap().containsKey("roleId")){
                 Result<RolesRecord> rolesRecords = sqlContext.selectFrom(Tables.ROLES).where(Tables.ROLES.GUILD_ID.eq(guildId)).fetch();
                 if(rolesRecords.isEmpty()){
                     throw new NotFoundResponse();
@@ -73,7 +72,7 @@ public class DataGuildRole extends RequestProcessor {
                             .put("permissions", jsonArray));
                 }
             }else{
-                long roleId = Long.parseLong(roleIdS);
+                long roleId = Long.parseLong(ctx.pathParam("roleId"));
                 Result<RolesRecord> rolesRecords = sqlContext.selectFrom(Tables.ROLES).where(Tables.ROLES.ROLE_ID.eq(roleId).and(Tables.ROLES.GUILD_ID.eq(guildId))).fetch();
                 Result<Record> rolesPermissions = sqlContext.select().from(Tables.ROLES_PERMISSION).leftJoin(Tables.PERMISSION).on(Tables.ROLES_PERMISSION.PERMISSION_ID.eq(Tables.PERMISSION.PERMISSION_ID)).where(Tables.ROLES_PERMISSION.ROLE_ID.eq(roleId)).fetch();
                 if(rolesRecords.isEmpty()){

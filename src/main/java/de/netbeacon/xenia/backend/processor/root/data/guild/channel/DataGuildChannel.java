@@ -43,9 +43,8 @@ public class DataGuildChannel extends RequestProcessor {
     public void get(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
-            String channelIds = ctx.pathParam("channelId");
             JSONObject jsonObject = new JSONObject();
-            if(channelIds.isBlank()){
+            if(!ctx.pathParamMap().containsKey("channelId")){
                 Result<ChannelsRecord> channelsRecords = sqlContext.selectFrom(Tables.CHANNELS).where(Tables.CHANNELS.GUILD_ID.eq(guildId)).fetch();
                 if(channelsRecords.isEmpty()){
                     throw new NotFoundResponse();
