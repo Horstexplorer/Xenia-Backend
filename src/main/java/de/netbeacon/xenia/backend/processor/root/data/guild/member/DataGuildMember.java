@@ -52,9 +52,6 @@ public class DataGuildMember extends RequestProcessor {
             JSONObject jsonObject = new JSONObject();
             if(!ctx.pathParamMap().containsKey("userId")){
                 Result<MembersRecord> membersRecords = sqlContext.selectFrom(Tables.MEMBERS).where(Tables.MEMBERS.GUILD_ID.eq(guildId)).fetch();
-                if(membersRecords.isEmpty()){
-                    throw new NotFoundResponse();
-                }
                 JSONArray jsonArray = new JSONArray();
                 jsonObject.put("members", jsonArray);
                 for(MembersRecord membersRecord : membersRecords){

@@ -46,9 +46,6 @@ public class DataGuildChannel extends RequestProcessor {
             JSONObject jsonObject = new JSONObject();
             if(!ctx.pathParamMap().containsKey("channelId")){
                 Result<ChannelsRecord> channelsRecords = sqlContext.selectFrom(Tables.CHANNELS).where(Tables.CHANNELS.GUILD_ID.eq(guildId)).fetch();
-                if(channelsRecords.isEmpty()){
-                    throw new NotFoundResponse();
-                }
                 JSONArray jsonArray = new JSONArray();
                 jsonObject.put("channels", jsonArray);
                 for(ChannelsRecord channelsRecord : channelsRecords){
