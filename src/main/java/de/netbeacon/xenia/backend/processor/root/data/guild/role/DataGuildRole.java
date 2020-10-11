@@ -49,9 +49,6 @@ public class DataGuildRole extends RequestProcessor {
             JSONObject jsonObject = new JSONObject();
             if(!ctx.pathParamMap().containsKey("roleId")){
                 Result<RolesRecord> rolesRecords = sqlContext.selectFrom(Tables.ROLES).where(Tables.ROLES.GUILD_ID.eq(guildId)).fetch();
-                if(rolesRecords.isEmpty()){
-                    throw new NotFoundResponse();
-                }
                 JSONArray jsonArray = new JSONArray();
                 jsonObject.put("roles", jsonArray);
                 for(RolesRecord rolesRecord : rolesRecords){
