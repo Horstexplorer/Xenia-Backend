@@ -21,7 +21,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InternalBotData extends TableImpl<InternalBotDataRecord> {
 
-    private static final long serialVersionUID = 1099043321;
+    private static final long serialVersionUID = 1274452171;
 
     /**
      * The reference instance of <code>public.internal_bot_data</code>
@@ -55,6 +55,11 @@ public class InternalBotData extends TableImpl<InternalBotDataRecord> {
      * The column <code>public.internal_bot_data.discord_token</code>.
      */
     public final TableField<InternalBotDataRecord, String> DISCORD_TOKEN = createField(DSL.name("discord_token"), org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(org.jooq.impl.DSL.field("'no_token_specified'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>public.internal_bot_data.message_crypt_hash</code>.
+     */
+    public final TableField<InternalBotDataRecord, String> MESSAGE_CRYPT_HASH = createField(DSL.name("message_crypt_hash"), org.jooq.impl.SQLDataType.CLOB.nullable(false).defaultValue(org.jooq.impl.DSL.field("''::text", org.jooq.impl.SQLDataType.CLOB)), this, "");
 
     /**
      * Create a <code>public.internal_bot_data</code> table reference
@@ -131,11 +136,11 @@ public class InternalBotData extends TableImpl<InternalBotDataRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, String, String, String> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Long, String, String, String, String> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }
