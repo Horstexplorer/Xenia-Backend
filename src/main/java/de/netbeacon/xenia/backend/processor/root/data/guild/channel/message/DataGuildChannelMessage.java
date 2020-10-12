@@ -49,7 +49,12 @@ public class DataGuildChannelMessage extends RequestProcessor {
             if(!ctx.pathParamMap().containsKey("messageId")){
                 JSONArray messages = new JSONArray();
                 jsonObject.put("messages", messages);
-                Result<MessagesRecord> messagesRecords = sqlContext.selectFrom(Tables.MESSAGES).where(Tables.MESSAGES.GUILD_ID.eq(guildId).and(Tables.MESSAGES.CHANNEL_ID.eq(channelId))).fetch();
+                Result<MessagesRecord> messagesRecords;
+                if(ctx.queryParam("limit") == null){
+                    messagesRecords = sqlContext.selectFrom(Tables.MESSAGES).where(Tables.MESSAGES.GUILD_ID.eq(guildId).and(Tables.MESSAGES.CHANNEL_ID.eq(channelId))).fetch();
+                }else{
+                    messagesRecords = sqlContext.selectFrom(Tables.MESSAGES).where(Tables.MESSAGES.GUILD_ID.eq(guildId).and(Tables.MESSAGES.CHANNEL_ID.eq(channelId))).orderBy(Tables.MESSAGES.CREATION_TIMESTAMP_DISCORD.desc()).limit(Integer.parseInt(ctx.queryParam("limit"))).fetch();
+                }
                 for(MessagesRecord messagesRecord : messagesRecords){
                     messages.put(new JSONObject()
                             .put("guildId", messagesRecord.getGuildId())
