@@ -55,6 +55,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<ChannelsRecord, GuildsRecord> CHANNELS__CHANNELS_GUILD_ID_FKEY = ForeignKeys0.CHANNELS__CHANNELS_GUILD_ID_FKEY;
+    public static final ForeignKey<ChannelsRecord, ChannelsRecord> CHANNELS__CHANNELS_TMP_LOGGING_CHANNEL_ID_FKEY = ForeignKeys0.CHANNELS__CHANNELS_TMP_LOGGING_CHANNEL_ID_FKEY;
     public static final ForeignKey<GuildsRecord, LicensesRecord> GUILDS__GUILDS_LICENSE_ID_FKEY = ForeignKeys0.GUILDS__GUILDS_LICENSE_ID_FKEY;
     public static final ForeignKey<InternalBotShardsRecord, InternalBotDataRecord> INTERNAL_BOT_SHARDS__INTERNAL_BOT_SHARDS_CLIENT_ID_FKEY = ForeignKeys0.INTERNAL_BOT_SHARDS__INTERNAL_BOT_SHARDS_CLIENT_ID_FKEY;
     public static final ForeignKey<LicensesRecord, LicenseTypesRecord> LICENSES__LICENSES_LICENSE_TYPE_FKEY = ForeignKeys0.LICENSES__LICENSES_LICENSE_TYPE_FKEY;
@@ -101,6 +102,7 @@ public class Keys {
 
     private static class ForeignKeys0 {
         public static final ForeignKey<ChannelsRecord, GuildsRecord> CHANNELS__CHANNELS_GUILD_ID_FKEY = Internal.createForeignKey(Keys.GUILDS_GUILD_ID, Channels.CHANNELS, "channels_guild_id_fkey", new TableField[] { Channels.CHANNELS.GUILD_ID }, true);
+        public static final ForeignKey<ChannelsRecord, ChannelsRecord> CHANNELS__CHANNELS_TMP_LOGGING_CHANNEL_ID_FKEY = Internal.createForeignKey(Keys.CHANNELS_CHANNEL_ID, Channels.CHANNELS, "channels_tmp_logging_channel_id_fkey", new TableField[] { Channels.CHANNELS.TMP_LOGGING_CHANNEL_ID }, true);
         public static final ForeignKey<GuildsRecord, LicensesRecord> GUILDS__GUILDS_LICENSE_ID_FKEY = Internal.createForeignKey(Keys.LICENSES_LICENSE_ID, Guilds.GUILDS, "guilds_license_id_fkey", new TableField[] { Guilds.GUILDS.LICENSE_ID }, true);
         public static final ForeignKey<InternalBotShardsRecord, InternalBotDataRecord> INTERNAL_BOT_SHARDS__INTERNAL_BOT_SHARDS_CLIENT_ID_FKEY = Internal.createForeignKey(Keys.INTERNAL_BOT_DATA_CLIENT_ID, InternalBotShards.INTERNAL_BOT_SHARDS, "internal_bot_shards_client_id_fkey", new TableField[] { InternalBotShards.INTERNAL_BOT_SHARDS.CLIENT_ID }, true);
         public static final ForeignKey<LicensesRecord, LicenseTypesRecord> LICENSES__LICENSES_LICENSE_TYPE_FKEY = Internal.createForeignKey(Keys.LICENSE_TYPES_LICENSE_TYPE_ID, Licenses.LICENSES, "licenses_license_type_fkey", new TableField[] { Licenses.LICENSES.LICENSE_TYPE }, true);

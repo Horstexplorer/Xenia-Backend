@@ -7,23 +7,13 @@ package de.netbeacon.xenia.joop.tables;
 import de.netbeacon.xenia.joop.Keys;
 import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.ChannelsRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row7;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -32,7 +22,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Channels extends TableImpl<ChannelsRecord> {
 
-    private static final long serialVersionUID = 1634015355;
+    private static final long serialVersionUID = 1341742233;
 
     /**
      * The reference instance of <code>public.channels</code>
@@ -81,6 +71,11 @@ public class Channels extends TableImpl<ChannelsRecord> {
      * The column <code>public.channels.tmp_logging_active</code>.
      */
     public final TableField<ChannelsRecord, Boolean> TMP_LOGGING_ACTIVE = createField(DSL.name("tmp_logging_active"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.channels.tmp_logging_channel_id</code>.
+     */
+    public final TableField<ChannelsRecord, Long> TMP_LOGGING_CHANNEL_ID = createField(DSL.name("tmp_logging_channel_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>public.channels</code> table reference
@@ -132,11 +127,15 @@ public class Channels extends TableImpl<ChannelsRecord> {
 
     @Override
     public List<ForeignKey<ChannelsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ChannelsRecord, ?>>asList(Keys.CHANNELS__CHANNELS_GUILD_ID_FKEY);
+        return Arrays.<ForeignKey<ChannelsRecord, ?>>asList(Keys.CHANNELS__CHANNELS_GUILD_ID_FKEY, Keys.CHANNELS__CHANNELS_TMP_LOGGING_CHANNEL_ID_FKEY);
     }
 
     public Guilds guilds() {
         return new Guilds(this, Keys.CHANNELS__CHANNELS_GUILD_ID_FKEY);
+    }
+
+    public Channels channels() {
+        return new Channels(this, Keys.CHANNELS__CHANNELS_TMP_LOGGING_CHANNEL_ID_FKEY);
     }
 
     @Override
@@ -166,11 +165,11 @@ public class Channels extends TableImpl<ChannelsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, Long, LocalDateTime, Boolean, String, String, Boolean> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Long, Long, LocalDateTime, Boolean, String, String, Boolean, Long> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }
