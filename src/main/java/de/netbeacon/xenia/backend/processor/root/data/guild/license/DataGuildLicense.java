@@ -71,8 +71,8 @@ public class DataGuildLicense extends RequestProcessor {
                         .put("activationTimestamp", -1)
                         .put("durationDays", -1)
                         .put("perks", new JSONObject()
-                                .put("channelLoggingMC", record2.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_MC))
-                                .put("channelLoggingPCB", record2.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_PCB))
+                                .put("channelLogging", record2.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_C))
+                                .put("guildRoles", record2.get(Tables.LICENSE_TYPES.PERK_GUILD_ROLES_C))
                         );
             }else{
                 jsonObject
@@ -81,8 +81,8 @@ public class DataGuildLicense extends RequestProcessor {
                         .put("activationTimestamp", record.get(Tables.LICENSES.LICENSE_ACTIVATION_TIMESTAMP).toEpochSecond(ZoneOffset.UTC))
                         .put("durationDays", record.get(Tables.LICENSES.LICENSE_DURATION_DAYS))
                         .put("perks", new JSONObject()
-                                .put("channelLoggingMC", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_MC))
-                                .put("channelLoggingPCB", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_PCB))
+                                .put("channelLogging", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_C))
+                                .put("guildRoles", record.get(Tables.LICENSE_TYPES.PERK_GUILD_ROLES_C))
                         );
             }
             // respond
@@ -138,8 +138,8 @@ public class DataGuildLicense extends RequestProcessor {
                     .put("activationTimestamp", record.get(Tables.LICENSES.LICENSE_ACTIVATION_TIMESTAMP).toEpochSecond(ZoneOffset.UTC))
                     .put("durationDays", record.get(Tables.LICENSES.LICENSE_DURATION_DAYS))
                     .put("perks", new JSONObject()
-                            .put("channelLoggingMC", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_MC))
-                            .put("channelLoggingPCB", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_PCB))
+                            .put("channelLogging", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_C))
+                            .put("guildRoles", record.get(Tables.LICENSE_TYPES.PERK_GUILD_ROLES_C))
                     );
             // respond
             ctx.status(200);
