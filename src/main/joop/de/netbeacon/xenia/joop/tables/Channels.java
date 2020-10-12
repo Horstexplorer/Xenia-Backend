@@ -22,7 +22,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Channels extends TableImpl<ChannelsRecord> {
 
-    private static final long serialVersionUID = 1341742233;
+    private static final long serialVersionUID = 1523650439;
 
     /**
      * The reference instance of <code>public.channels</code>
@@ -75,7 +75,7 @@ public class Channels extends TableImpl<ChannelsRecord> {
     /**
      * The column <code>public.channels.tmp_logging_channel_id</code>.
      */
-    public final TableField<ChannelsRecord, Long> TMP_LOGGING_CHANNEL_ID = createField(DSL.name("tmp_logging_channel_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ChannelsRecord, Long> TMP_LOGGING_CHANNEL_ID = createField(DSL.name("tmp_logging_channel_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("'-1'::bigint", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.channels</code> table reference
@@ -127,15 +127,11 @@ public class Channels extends TableImpl<ChannelsRecord> {
 
     @Override
     public List<ForeignKey<ChannelsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ChannelsRecord, ?>>asList(Keys.CHANNELS__CHANNELS_GUILD_ID_FKEY, Keys.CHANNELS__CHANNELS_TMP_LOGGING_CHANNEL_ID_FKEY);
+        return Arrays.<ForeignKey<ChannelsRecord, ?>>asList(Keys.CHANNELS__CHANNELS_GUILD_ID_FKEY);
     }
 
     public Guilds guilds() {
         return new Guilds(this, Keys.CHANNELS__CHANNELS_GUILD_ID_FKEY);
-    }
-
-    public Channels channels() {
-        return new Channels(this, Keys.CHANNELS__CHANNELS_TMP_LOGGING_CHANNEL_ID_FKEY);
     }
 
     @Override
