@@ -7,22 +7,12 @@ package de.netbeacon.xenia.joop.tables;
 import de.netbeacon.xenia.joop.Keys;
 import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.LicenseTypesRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row5;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -31,7 +21,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LicenseTypes extends TableImpl<LicenseTypesRecord> {
 
-    private static final long serialVersionUID = 1274166538;
+    private static final long serialVersionUID = -1237032437;
 
     /**
      * The reference instance of <code>public.license_types</code>
@@ -62,14 +52,14 @@ public class LicenseTypes extends TableImpl<LicenseTypesRecord> {
     public final TableField<LicenseTypesRecord, String> LICENSE_DESCRIPTION = createField(DSL.name("license_description"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(org.jooq.impl.DSL.field("'No Description Set'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>public.license_types.perk_channel_logging_pcb</code>.
+     * The column <code>public.license_types.perk_channel_logging_c</code>.
      */
-    public final TableField<LicenseTypesRecord, Boolean> PERK_CHANNEL_LOGGING_PCB = createField(DSL.name("perk_channel_logging_pcb"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
+    public final TableField<LicenseTypesRecord, Integer> PERK_CHANNEL_LOGGING_C = createField(DSL.name("perk_channel_logging_c"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>public.license_types.perk_channel_logging_mc</code>.
+     * The column <code>public.license_types.perk_guild_roles_c</code>.
      */
-    public final TableField<LicenseTypesRecord, Integer> PERK_CHANNEL_LOGGING_MC = createField(DSL.name("perk_channel_logging_mc"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<LicenseTypesRecord, Integer> PERK_GUILD_ROLES_C = createField(DSL.name("perk_guild_roles_c"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * Create a <code>public.license_types</code> table reference
@@ -150,7 +140,7 @@ public class LicenseTypes extends TableImpl<LicenseTypesRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Integer, String, String, Boolean, Integer> fieldsRow() {
+    public Row5<Integer, String, String, Integer, Integer> fieldsRow() {
         return (Row5) super.fieldsRow();
     }
 }

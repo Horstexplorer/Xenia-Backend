@@ -67,6 +67,7 @@ public class SetupBot extends RequestProcessor {
                     .put("clientName", internalBotData.getClientName())
                     .put("clientDescription", internalBotData.getClientInfo())
                     .put("discordToken", internalBotData.getDiscordToken())
+                    .put("cryptHash", internalBotData.getMessageCryptHash())
                     .put("shards", new JSONObject()
                             .put("total", shardsTotal)
                             .put("use", shards));
