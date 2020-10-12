@@ -115,7 +115,7 @@ public class Core {
                             });
                         });
                         path("data", ()->{
-                            path("user", ()->{
+                            path("users", ()->{
                                 path(":userId", ()->{
                                     get(ctx -> {
                                         processor.next("data").next("user").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // get user data
@@ -131,10 +131,10 @@ public class Core {
                                     });
                                 });
                             });
-                            path("guild", ()->{
+                            path("guilds", ()->{
                                 path(":guildId", ()->{
                                     // member data
-                                    path("member", ()->{
+                                    path("members", ()->{
                                         path(":userId", ()->{
                                             get(ctx -> {
                                                 processor.next("data").next("guild").next("member").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // get member data
@@ -154,7 +154,7 @@ public class Core {
                                         });
                                     });
                                     // role
-                                    path("role", ()->{
+                                    path("roles", ()->{
                                         path(":roleId", ()->{
                                             path(":permissionId", ()->{
                                                 get(ctx -> {
@@ -188,9 +188,9 @@ public class Core {
                                         });
                                     });
                                     // channel
-                                    path("channel", ()->{
+                                    path("channels", ()->{
                                         path(":channelId", ()->{
-                                            path("message", ()->{
+                                            path("messages", ()->{
                                                 path(":messageId", ()->{
                                                     get(ctx -> {
                                                         processor.next("data").next("guild").next("channel").next("message").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // get full guild data
@@ -204,6 +204,9 @@ public class Core {
                                                     delete(ctx -> {
                                                         processor.next("data").next("guild").next("channel").next("message").delete(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // delete guild
                                                     });
+                                                });
+                                                get(ctx -> {
+                                                    processor.next("data").next("guild").next("channel").next("message").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // get full guild data
                                                 });
                                             });
                                             get(ctx -> {
