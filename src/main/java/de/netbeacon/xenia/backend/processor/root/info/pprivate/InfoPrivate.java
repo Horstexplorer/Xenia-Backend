@@ -49,6 +49,8 @@ public class InfoPrivate extends RequestProcessor {
             int members = sqlContext.fetchCount(Tables.MEMBERS);
             // get number of channels
             int channels = sqlContext.fetchCount(Tables.CHANNELS);
+            // get number of messages
+            int messages = sqlContext.fetchCount(Tables.MESSAGES);
             int forbidden = sqlContext.selectCount().from(Tables.CHANNELS).where(Tables.CHANNELS.ACCESS_RESTRICTION.eq(true)).execute();
             // build json
             JSONObject jsonObject = new JSONObject()
@@ -58,7 +60,8 @@ public class InfoPrivate extends RequestProcessor {
                     .put("members", members)
                     .put("channels", new JSONObject()
                             .put("total", channels)
-                            .put("forbidden", forbidden));
+                            .put("forbidden", forbidden))
+                    .put("messages", messages);
             // return
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
