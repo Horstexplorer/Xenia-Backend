@@ -226,6 +226,7 @@ public class Core {
                                             processor.next("data").next("guild").next("channel").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // get data of all channels
                                         });
                                     });
+                                    // license
                                     path("license", ()->{
                                             get(ctx -> {
                                                 processor.next("data").next("guild").next("license").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // get current license
@@ -234,6 +235,30 @@ public class Core {
                                                 processor.next("data").next("guild").next("license").put(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // update current license
                                             });
                                     });
+                                    // misc
+                                    path("misc", ()->{
+                                        // tags
+                                        path("tags", ()->{
+                                            path(":tagName", ()->{
+                                                get(ctx -> {
+                                                    processor.next("data").next("guild").next("misc").next("tags").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // get tag data
+                                                });
+                                                put(ctx -> {
+                                                    processor.next("data").next("guild").next("misc").next("tags").put(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // edit tag
+                                                });
+                                                post(ctx -> {
+                                                    processor.next("data").next("guild").next("misc").next("tags").post(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // create tag
+                                                });
+                                                delete(ctx -> {
+                                                    processor.next("data").next("guild").next("misc").next("tags").delete(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // delete tag
+                                                });
+                                            });
+                                            get(ctx -> {
+                                                processor.next("data").next("guild").next("misc").next("tags").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // get full tag data
+                                            });
+                                        });
+                                    });
+                                    // guild
                                     get(ctx -> {
                                         processor.next("data").next("guild").get(securityManager.authorizeConnection(dataSettingsSecSet, ctx), ctx); // get full guild data
                                     });

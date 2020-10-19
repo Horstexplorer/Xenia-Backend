@@ -74,6 +74,11 @@ public class Tables {
     public static final RolesPermission ROLES_PERMISSION = RolesPermission.ROLES_PERMISSION;
 
     /**
+     * The table <code>public.tags</code>.
+     */
+    public static final Tags TAGS = Tags.TAGS;
+
+    /**
      * The table <code>public.users</code>.
      */
     public static final Users USERS = Users.USERS;

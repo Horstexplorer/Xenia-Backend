@@ -48,6 +48,7 @@ public class Keys {
     public static final UniqueKey<RolesRecord> ROLES_ROLE_ID = UniqueKeys0.ROLES_ROLE_ID;
     public static final UniqueKey<RolesRecord> ROLES_GUILD_ID_ROLE_NAME = UniqueKeys0.ROLES_GUILD_ID_ROLE_NAME;
     public static final UniqueKey<RolesPermissionRecord> ROLE_PERMISSION_ROLE_ID_PERMISSION_ID = UniqueKeys0.ROLE_PERMISSION_ROLE_ID_PERMISSION_ID;
+    public static final UniqueKey<TagsRecord> TAGS_TAG_NAME_GUILD_ID = UniqueKeys0.TAGS_TAG_NAME_GUILD_ID;
     public static final UniqueKey<UsersRecord> USERS_USER_ID = UniqueKeys0.USERS_USER_ID;
 
     // -------------------------------------------------------------------------
@@ -68,6 +69,7 @@ public class Keys {
     public static final ForeignKey<MessagesRecord, UsersRecord> MESSAGES__MESSAGES_USER_ID_FKEY = ForeignKeys0.MESSAGES__MESSAGES_USER_ID_FKEY;
     public static final ForeignKey<RolesPermissionRecord, RolesRecord> ROLES_PERMISSION__ROLE_PERMISSION_ROLE_ID_FKEY = ForeignKeys0.ROLES_PERMISSION__ROLE_PERMISSION_ROLE_ID_FKEY;
     public static final ForeignKey<RolesPermissionRecord, PermissionRecord> ROLES_PERMISSION__ROLE_PERMISSION_PERMISSION_ID_FKEY = ForeignKeys0.ROLES_PERMISSION__ROLE_PERMISSION_PERMISSION_ID_FKEY;
+    public static final ForeignKey<TagsRecord, MembersRecord> TAGS__TAGS_GUILD_ID_USER_ID_FKEY = ForeignKeys0.TAGS__TAGS_GUILD_ID_USER_ID_FKEY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -96,6 +98,7 @@ public class Keys {
         public static final UniqueKey<RolesRecord> ROLES_ROLE_ID = Internal.createUniqueKey(Roles.ROLES, "roles_role_id", new TableField[] { Roles.ROLES.ROLE_ID }, true);
         public static final UniqueKey<RolesRecord> ROLES_GUILD_ID_ROLE_NAME = Internal.createUniqueKey(Roles.ROLES, "roles_guild_id_role_name", new TableField[] { Roles.ROLES.GUILD_ID, Roles.ROLES.ROLE_NAME }, true);
         public static final UniqueKey<RolesPermissionRecord> ROLE_PERMISSION_ROLE_ID_PERMISSION_ID = Internal.createUniqueKey(RolesPermission.ROLES_PERMISSION, "role_permission_role_id_permission_id", new TableField[] { RolesPermission.ROLES_PERMISSION.ROLE_ID, RolesPermission.ROLES_PERMISSION.PERMISSION_ID }, true);
+        public static final UniqueKey<TagsRecord> TAGS_TAG_NAME_GUILD_ID = Internal.createUniqueKey(Tags.TAGS, "tags_tag_name_guild_id", new TableField[] { Tags.TAGS.TAG_NAME, Tags.TAGS.GUILD_ID }, true);
         public static final UniqueKey<UsersRecord> USERS_USER_ID = Internal.createUniqueKey(Users.USERS, "users_user_id", new TableField[] { Users.USERS.USER_ID }, true);
     }
 
@@ -114,5 +117,6 @@ public class Keys {
         public static final ForeignKey<MessagesRecord, UsersRecord> MESSAGES__MESSAGES_USER_ID_FKEY = Internal.createForeignKey(Keys.USERS_USER_ID, Messages.MESSAGES, "messages_user_id_fkey", new TableField[] { Messages.MESSAGES.USER_ID }, true);
         public static final ForeignKey<RolesPermissionRecord, RolesRecord> ROLES_PERMISSION__ROLE_PERMISSION_ROLE_ID_FKEY = Internal.createForeignKey(Keys.ROLES_ROLE_ID, RolesPermission.ROLES_PERMISSION, "role_permission_role_id_fkey", new TableField[] { RolesPermission.ROLES_PERMISSION.ROLE_ID }, true);
         public static final ForeignKey<RolesPermissionRecord, PermissionRecord> ROLES_PERMISSION__ROLE_PERMISSION_PERMISSION_ID_FKEY = Internal.createForeignKey(Keys.PERMISSION_PERMISSION_ID, RolesPermission.ROLES_PERMISSION, "role_permission_permission_id_fkey", new TableField[] { RolesPermission.ROLES_PERMISSION.PERMISSION_ID }, true);
+        public static final ForeignKey<TagsRecord, MembersRecord> TAGS__TAGS_GUILD_ID_USER_ID_FKEY = Internal.createForeignKey(Keys.MEMBERS_GUILD_ID_USER_ID, Tags.TAGS, "tags_guild_id_user_id_fkey", new TableField[] { Tags.TAGS.GUILD_ID, Tags.TAGS.USER_ID }, true);
     }
 }
