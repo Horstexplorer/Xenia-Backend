@@ -22,7 +22,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Channels extends TableImpl<ChannelsRecord> {
 
-    private static final long serialVersionUID = 1523650439;
+    private static final long serialVersionUID = 1526744468;
 
     /**
      * The reference instance of <code>public.channels</code>
@@ -70,7 +70,7 @@ public class Channels extends TableImpl<ChannelsRecord> {
     /**
      * The column <code>public.channels.tmp_logging_active</code>.
      */
-    public final TableField<ChannelsRecord, Boolean> TMP_LOGGING_ACTIVE = createField(DSL.name("tmp_logging_active"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<ChannelsRecord, Boolean> TMP_LOGGING_ACTIVE = createField(DSL.name("tmp_logging_active"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.channels.tmp_logging_channel_id</code>.
