@@ -84,6 +84,11 @@ public class Tables {
     public static final Users USERS = Users.USERS;
 
     /**
+     * The table <code>public.users_auth</code>.
+     */
+    public static final UsersAuth USERS_AUTH = UsersAuth.USERS_AUTH;
+
+    /**
      * The table <code>public.users_oauth</code>.
      */
     public static final UsersOauth USERS_OAUTH = UsersOauth.USERS_OAUTH;
