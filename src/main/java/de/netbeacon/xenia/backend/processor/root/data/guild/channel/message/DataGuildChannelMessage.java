@@ -175,7 +175,7 @@ public class DataGuildChannelMessage extends RequestProcessor {
                     .put("messageSalt", messagesRecord.getMessageSalt())
                     .put("messageContent", messagesRecord.getMessageContent());
             // return
-            ctx.status(200);
+            ctx.status(202);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
