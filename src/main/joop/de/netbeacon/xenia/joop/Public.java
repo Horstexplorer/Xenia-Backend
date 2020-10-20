@@ -20,7 +20,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 672626421;
+    private static final long serialVersionUID = 1674026724;
 
     /**
      * The reference instance of <code>public</code>
@@ -98,6 +98,16 @@ public class Public extends SchemaImpl {
     public final Users USERS = Users.USERS;
 
     /**
+     * The table <code>public.users_oauth</code>.
+     */
+    public final UsersOauth USERS_OAUTH = UsersOauth.USERS_OAUTH;
+
+    /**
+     * The table <code>public.users_oauth_scopes</code>.
+     */
+    public final UsersOauthScopes USERS_OAUTH_SCOPES = UsersOauthScopes.USERS_OAUTH_SCOPES;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -115,7 +125,8 @@ public class Public extends SchemaImpl {
         return Arrays.<Sequence<?>>asList(
             Sequences.LICENSES_LICENSE_ID_SEQ,
             Sequences.PERMISSION_PERMISSION_ID_SEQ,
-            Sequences.ROLES_ROLE_ID_SEQ);
+            Sequences.ROLES_ROLE_ID_SEQ,
+            Sequences.USERS_OAUTH_ENTRY_ID_SEQ);
     }
 
     @Override
@@ -134,6 +145,8 @@ public class Public extends SchemaImpl {
             Roles.ROLES,
             RolesPermission.ROLES_PERMISSION,
             Tags.TAGS,
-            Users.USERS);
+            Users.USERS,
+            UsersOauth.USERS_OAUTH,
+            UsersOauthScopes.USERS_OAUTH_SCOPES);
     }
 }
