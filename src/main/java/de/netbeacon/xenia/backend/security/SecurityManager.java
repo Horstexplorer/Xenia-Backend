@@ -26,6 +26,7 @@ import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.HttpResponseException;
 import io.javalin.http.UnauthorizedResponse;
 import io.javalin.websocket.WsContext;
+import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -109,7 +110,7 @@ public class SecurityManager implements IShutdown {
         }
     }
 
-    public Client authorizeWsConnection(SecuritySettings securitySettings, WsContext ctx){
+    public Client authorizeWsConnection(SecuritySettings securitySettings, WsContext ctx) {
         // check if running behind proxy and we should use the sent ip
         String clientIP = ctx.header("X-Real-IP");
         if(clientIP == null || clientIP.isBlank()){
@@ -118,20 +119,20 @@ public class SecurityManager implements IShutdown {
         try{
             // check ip block
             if(blockedIPs.contains(clientIP)){
-                throw new ForbiddenResponse();
+                throw new ForbiddenResponse(); // not actually a valid status code
             }
             // check auth if specified
             Client client = null;
             AuthHeaderContent authHeaderContent = AuthHeaderContent.parseHeader(ctx.header("authorization"));
             if(authHeaderContent == null || !SecuritySettings.AuthType.TOKEN.equals(authHeaderContent.getType())){
-                throw new ForbiddenResponse();
+                throw new ForbiddenResponse(); // not actually a valid status code
             }
             long id = Long.parseLong(authHeaderContent.getCredentialsA());
             client = clientManager.getClient(ClientType.INTERNAL, id);
             // check client type
             if(securitySettings.getRequiredClientType() != ClientType.ANY && securitySettings.getRequiredAuthType() != SecuritySettings.AuthType.OPTIONAL && client != null){
                 if(!securitySettings.getRequiredClientType().containsType(client.getClientType())){
-                    throw new ForbiddenResponse();
+                    throw new ForbiddenResponse(); // not actually a valid status code
                 }
             }
             return client;
@@ -142,10 +143,21 @@ public class SecurityManager implements IShutdown {
                 rateLimiterMap.put(clientIP, rateLimiter);
             }
             if(!rateLimiterMap.get(clientIP).takeNice()){
-                throw new HttpResponseException(429, "Too Many Requests", new HashMap<>());
+                closeWS(ctx.session, 1006, "Too Many Requests", true);
             }
+            closeWS(ctx.session, 1000, e.getMessage(), false);
             throw e;
         }
+    }
+
+    private void closeWS(Session session, int code, String status, boolean now){
+        try{
+            session.close(code, status);
+            if(!now){
+                TimeUnit.MILLISECONDS.sleep(2500);
+            }
+            session.disconnect();
+        }catch (Exception ignore){}
     }
 
 
