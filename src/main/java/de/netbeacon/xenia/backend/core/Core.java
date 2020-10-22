@@ -81,6 +81,7 @@ public class Core {
             SecuritySettings regularDataAccessSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN_OR_DISCORD, ClientType.ANY);
             SecuritySettings tokenRequestSetting = new SecuritySettings(SecuritySettings.AuthType.BASIC, ClientType.INTERNAL);
             SecuritySettings tokenRenewSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.INTERNAL);
+            SecuritySettings discordAuthSetting = new SecuritySettings(SecuritySettings.AuthType.OPTIONAL, ClientType.ANY); // no auth required, accepts oauth data
             SecuritySettings botSetupSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.BOT);
             SecuritySettings managementSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.SYSTEM);
             SecuritySettings websocketSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.INTERNAL);
@@ -97,6 +98,12 @@ public class Core {
                     })
                     .routes(()->{
                         path("auth", ()->{
+                            path("discord", ()->{
+                                get(ctx -> {
+                                    Client client = securityManager.authorizeConnection(discordAuthSetting, ctx);
+                                    processor.next("auth").next("discord").preProcessor(client, ctx).get(client, ctx); // verify oauth and hand over local auth token
+                                });
+                            });
                             path("token", ()->{
                                 path("renew", ()->{
                                     get(ctx -> {
@@ -403,5 +410,4 @@ public class Core {
             System.exit(-1);
         }
     }
-
 }
