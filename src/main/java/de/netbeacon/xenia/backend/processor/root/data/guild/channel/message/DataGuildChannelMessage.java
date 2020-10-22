@@ -17,7 +17,7 @@
 package de.netbeacon.xenia.backend.processor.root.data.guild.channel.message;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
-import de.netbeacon.xenia.backend.clients.objects.Client;
+import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.joop.Tables;
@@ -38,6 +38,11 @@ public class DataGuildChannelMessage extends RequestProcessor {
 
     public DataGuildChannelMessage(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
         super("message", sqlConnectionPool, websocketProcessor);
+    }
+
+    @Override
+    public RequestProcessor preProcessor(Client client, Context context) {
+        return this;
     }
 
     @Override
@@ -134,6 +139,10 @@ public class DataGuildChannelMessage extends RequestProcessor {
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
+            // send ws notification
+            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+            broadcastMessage.get().put("type", "GUILD_MESSAGE").put("action", "UPDATE").put("guildId", guildId).put("channelId", channelId).put("messageId", messageId);
+            getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataGuildChannel#PUT ", e);
@@ -178,6 +187,10 @@ public class DataGuildChannelMessage extends RequestProcessor {
             ctx.status(202);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
+            // send ws notification
+            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+            broadcastMessage.get().put("type", "GUILD_MESSAGE").put("action", "CREATE").put("guildId", guildId).put("channelId", channelId).put("messageId", messageId);
+            getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataGuildChannel#POST ", e);

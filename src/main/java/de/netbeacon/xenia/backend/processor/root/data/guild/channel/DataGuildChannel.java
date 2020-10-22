@@ -17,7 +17,7 @@
 package de.netbeacon.xenia.backend.processor.root.data.guild.channel;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
-import de.netbeacon.xenia.backend.clients.objects.Client;
+import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.data.guild.channel.message.DataGuildChannelMessage;
@@ -38,6 +38,11 @@ public class DataGuildChannel extends RequestProcessor {
 
     public DataGuildChannel(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
         super("channel", sqlConnectionPool, websocketProcessor, new DataGuildChannelMessage(sqlConnectionPool, websocketProcessor));
+    }
+
+    @Override
+    public RequestProcessor preProcessor(Client client, Context context) {
+        return this;
     }
 
     @Override
@@ -74,7 +79,8 @@ public class DataGuildChannel extends RequestProcessor {
                         .put("accessRestriction", channelsRecord.getAccessRestriction())
                         .put("channelMode", channelsRecord.getChannelMode())
                         .put("channelType", channelsRecord.getChannelType())
-                        .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive());
+                        .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
+                        .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId());
             }
             // respond
             ctx.status(200);
@@ -122,7 +128,8 @@ public class DataGuildChannel extends RequestProcessor {
                     .put("accessRestriction", channelsRecord.getAccessRestriction())
                     .put("channelMode", channelsRecord.getChannelMode())
                     .put("channelType", channelsRecord.getChannelType())
-                    .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive());
+                    .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
+                    .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId());
             // result
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
@@ -163,7 +170,8 @@ public class DataGuildChannel extends RequestProcessor {
                     .put("accessRestriction", channelsRecord.getAccessRestriction())
                     .put("channelMode", channelsRecord.getChannelMode())
                     .put("channelType", channelsRecord.getChannelType())
-                    .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive());
+                    .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
+                    .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId());
             // result
             ctx.status(202);
             ctx.header("Content-Type", "application/json");

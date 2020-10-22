@@ -17,7 +17,7 @@
 package de.netbeacon.xenia.backend.processor;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
-import de.netbeacon.xenia.backend.clients.objects.Client;
+import de.netbeacon.xenia.backend.client.objects.Client;
 import io.javalin.http.Context;
 
 import java.util.Arrays;
@@ -57,6 +57,10 @@ public abstract class RequestProcessor {
 
     public RequestProcessor next(String identifier){
         return processorHashMap.get(identifier);
+    }
+
+    public RequestProcessor preProcessor(Client client, Context context) {
+        return this;
     }
 
     public void get(Client client, Context ctx){

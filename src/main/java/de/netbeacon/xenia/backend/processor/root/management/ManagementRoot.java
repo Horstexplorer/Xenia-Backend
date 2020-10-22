@@ -17,7 +17,7 @@
 package de.netbeacon.xenia.backend.processor.root.management;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
-import de.netbeacon.xenia.backend.clients.ClientManager;
+import de.netbeacon.xenia.backend.client.ClientManager;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.management.clients.ManagementClients;

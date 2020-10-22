@@ -18,9 +18,13 @@ package de.netbeacon.xenia.backend.security;
 
 import de.netbeacon.utils.ratelimiter.RateLimiter;
 import de.netbeacon.utils.shutdownhook.IShutdown;
-import de.netbeacon.xenia.backend.clients.ClientManager;
-import de.netbeacon.xenia.backend.clients.objects.Client;
-import io.javalin.http.*;
+import de.netbeacon.xenia.backend.client.ClientManager;
+import de.netbeacon.xenia.backend.client.objects.Client;
+import de.netbeacon.xenia.backend.client.objects.ClientType;
+import io.javalin.http.Context;
+import io.javalin.http.ForbiddenResponse;
+import io.javalin.http.HttpResponseException;
+import io.javalin.http.UnauthorizedResponse;
 import io.javalin.websocket.WsContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,10 +36,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 public class SecurityManager implements IShutdown {
 
@@ -66,55 +70,28 @@ public class SecurityManager implements IShutdown {
             }
             // check auth if specified
             Client client = null;
-            if(ctx.header("userid") != null && ctx.header("token") != null){
-                if(securitySettings.getRequiredAuthType() == SecuritySettings.AuthType.Basic){
-                    logger.warn("Client At "+clientIP+" Specified The Wrong Auth Method (Req: Basic; Has: Token) For Path "+ctx.path());
-                    throw new UnauthorizedResponse(); // wrong auth method
-                }
-                // get client id & token
-                long clientId;
-                try{ clientId = Long.parseLong(ctx.header("userid")); }
-                catch (Exception e){
-                    logger.warn("Client At "+clientIP+" Specified Bad ClientID For Path "+ctx.path());
-                    throw new BadRequestResponse();
-                }
-                String token = ctx.header("token");
-                // get client & verify token
-                client = clientManager.getClient(clientId);
-                if(client == null || !client.getClientAuth().verifyToken(token)){
-                    logger.warn("Client At "+clientIP+" Failed Auth For Path "+ctx.path());
+            AuthHeaderContent authHeaderContent = AuthHeaderContent.parseHeader(ctx.header("authorization"));
+            if(authHeaderContent == null){
+                if(!securitySettings.getRequiredAuthType().equals(SecuritySettings.AuthType.OPTIONAL)){
                     throw new UnauthorizedResponse();
                 }
-            }else if(ctx.basicAuthCredentialsExist()){
-                if(securitySettings.getRequiredAuthType() == SecuritySettings.AuthType.Token){
-                    logger.warn("Client At "+clientIP+" Specified The Wrong Auth Method (Req: Token; Has: Basic) For Path "+ctx.path());
-                    throw new UnauthorizedResponse(); // wrong auth method
-                }
-                // get clientId & pass
-                long clientId;
-                try{ clientId = Long.parseLong(ctx.basicAuthCredentials().getUsername()); }
-                catch (Exception e){
-                    logger.warn("Client At "+clientIP+" Specified Bad ClientID For Path "+ctx.path());
-                    throw new BadRequestResponse();
-                }
-                String password = ctx.basicAuthCredentials().getPassword();
-                // get client & verify passwd
-                client = clientManager.getClient(clientId);
-                if(client == null || !client.getClientAuth().verifyPassword(password)){
-                    logger.warn("Client At "+clientIP+" Failed Auth For Path "+ctx.path());
-                    throw new UnauthorizedResponse();
-                }
-            }else {
-                // no auth specified
-                if(securitySettings.getRequiredAuthType() != SecuritySettings.AuthType.Optional){
-                    logger.warn("Client At "+clientIP+" Specified No Auth Which Is Required For The Requested Path "+ctx.path());
+            }else{
+                if(!securitySettings.getRequiredAuthType().equals(authHeaderContent.getType()) && !(securitySettings.getRequiredAuthType().equals(SecuritySettings.AuthType.TOKEN_OR_DISCORD) && (authHeaderContent.getType().equals(SecuritySettings.AuthType.TOKEN) || authHeaderContent.getType().equals(SecuritySettings.AuthType.DISCORD)))){
                     throw new ForbiddenResponse();
+                }
+                long id = Long.parseLong(authHeaderContent.credentialsA);
+                if(authHeaderContent.getType().equals(SecuritySettings.AuthType.DISCORD)){
+                    client = clientManager.getClient(ClientType.DISCORD, id);
+                }else {
+                    client = clientManager.getClient(ClientType.INTERNAL, id);
+                }
+                if(client == null || !client.verifyAuth(authHeaderContent.getType(), authHeaderContent.getCredentialsB())){
+                    throw new UnauthorizedResponse();
                 }
             }
             // check client type
-            if(securitySettings.getRequiredClientType() != SecuritySettings.ClientType.Any && securitySettings.getRequiredAuthType() != SecuritySettings.AuthType.Optional && client != null){
-                if(client.getClientType() != securitySettings.getRequiredClientType()){
-                    logger.warn("Client At "+clientIP+" Logged In Successful But Does Not Match The Required Client Type (Req: "+securitySettings.getRequiredClientType()+"; Has: "+client.getClientType()+")");
+            if(!securitySettings.getRequiredClientType().equals(ClientType.ANY) && !securitySettings.getRequiredAuthType().equals(SecuritySettings.AuthType.OPTIONAL) && client != null){
+                if(!securitySettings.getRequiredClientType().containsType(client.getClientType())){
                     throw new ForbiddenResponse();
                 }
             }
@@ -126,7 +103,6 @@ public class SecurityManager implements IShutdown {
                 rateLimiterMap.put(clientIP, rateLimiter);
             }
             if(!rateLimiterMap.get(clientIP).takeNice()){
-                logger.warn("Client At "+clientIP+" Hit The RateLimit");
                 throw new HttpResponseException(429, "Too Many Requests", new HashMap<>());
             }
             throw e;
@@ -146,36 +122,15 @@ public class SecurityManager implements IShutdown {
             }
             // check auth if specified
             Client client = null;
-            if(ctx.header("userid") != null && ctx.header("token") != null){
-                if(securitySettings.getRequiredAuthType() == SecuritySettings.AuthType.Basic){
-                    logger.warn("Client At "+clientIP+" Specified The Wrong Auth Method (Req: Basic; Has: Token) For Path "+ctx.matchedPath());
-                    throw new UnauthorizedResponse(); // wrong auth method
-                }
-                // get client id & token
-                long clientId;
-                try{ clientId = Long.parseLong(ctx.header("userid")); }
-                catch (Exception e){
-                    logger.warn("Client At "+clientIP+" Specified Bad ClientID For Path "+ctx.matchedPath());
-                    throw new BadRequestResponse();
-                }
-                String token = ctx.header("token");
-                // get client & verify token
-                client = clientManager.getClient(clientId);
-                if(client == null || !client.getClientAuth().verifyToken(token)){
-                    logger.warn("Client At "+clientIP+" Failed Auth For Path "+ctx.matchedPath());
-                    throw new UnauthorizedResponse();
-                }
-            }else {
-                // no auth specified
-                if(securitySettings.getRequiredAuthType() != SecuritySettings.AuthType.Optional){
-                    logger.warn("Client At "+clientIP+" Specified No Auth Which Is Required For The Requested Path "+ctx.matchedPath());
-                    throw new ForbiddenResponse();
-                }
+            AuthHeaderContent authHeaderContent = AuthHeaderContent.parseHeader(ctx.header("authorization"));
+            if(authHeaderContent == null || !SecuritySettings.AuthType.TOKEN.equals(authHeaderContent.getType())){
+                throw new ForbiddenResponse();
             }
+            long id = Long.parseLong(authHeaderContent.getCredentialsA());
+            client = clientManager.getClient(ClientType.INTERNAL, id);
             // check client type
-            if(securitySettings.getRequiredClientType() != SecuritySettings.ClientType.Any && securitySettings.getRequiredAuthType() != SecuritySettings.AuthType.Optional && client != null){
-                if(client.getClientType() != securitySettings.getRequiredClientType()){
-                    logger.warn("Client At "+clientIP+" Logged In Successful But Does Not Match The Required Client Type (Req: "+securitySettings.getRequiredClientType()+"; Has: "+client.getClientType()+")");
+            if(securitySettings.getRequiredClientType() != ClientType.ANY && securitySettings.getRequiredAuthType() != SecuritySettings.AuthType.OPTIONAL && client != null){
+                if(!securitySettings.getRequiredClientType().containsType(client.getClientType())){
                     throw new ForbiddenResponse();
                 }
             }
@@ -187,7 +142,6 @@ public class SecurityManager implements IShutdown {
                 rateLimiterMap.put(clientIP, rateLimiter);
             }
             if(!rateLimiterMap.get(clientIP).takeNice()){
-                logger.warn("Client At "+clientIP+" Hit The RateLimit");
                 throw new HttpResponseException(429, "Too Many Requests", new HashMap<>());
             }
             throw e;
@@ -209,6 +163,53 @@ public class SecurityManager implements IShutdown {
         return this;
     }
 
+    private static class AuthHeaderContent{
+
+        private final SecuritySettings.AuthType type;
+        private final String credentialsA;
+        private final String credentialsB;
+        private final static Pattern SPLIT = Pattern.compile("\\s+");
+
+        private AuthHeaderContent(SecuritySettings.AuthType type, String credentialsA, String credentialsB){
+            this.type = type;
+            this.credentialsA = credentialsA;
+            this.credentialsB = credentialsB;
+        }
+
+        public SecuritySettings.AuthType getType() {
+            return type;
+        }
+
+        public String getCredentialsA() {
+            return credentialsA;
+        }
+
+        public String getCredentialsB() {
+            return credentialsB;
+        }
+
+        protected static AuthHeaderContent parseHeader(String content){
+            try{
+                List<String> parts = new ArrayList<>(Arrays.asList(SPLIT.split(content)));
+                switch (parts.get(0).toLowerCase()){
+                    case "basic":
+                        String decoded = new String(Base64.getDecoder().decode(parts.get(1)));
+                        return new AuthHeaderContent(SecuritySettings.AuthType.BASIC, decoded.substring(0, decoded.indexOf(":")), decoded.substring(decoded.indexOf(":")+1));
+                    case "token":
+                    case "discord":
+                        String token = parts.get(1);
+                        String a = new String(Base64.getDecoder().decode(token.substring(0,token.indexOf("."))));
+                        String b = token.substring(token.indexOf(".")+1);
+                        return new AuthHeaderContent(SecuritySettings.AuthType.valueOf(parts.get(0).toUpperCase()), a, b);
+                    default:
+                        return null;
+                }
+            }catch (Exception e){
+                return null;
+            }
+        }
+    }
+
     public SecurityManager writeToFile() throws IOException {
         try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))){
             JSONObject jsonObject = new JSONObject().put("blockedIPs", blockedIPs);
@@ -218,8 +219,6 @@ public class SecurityManager implements IShutdown {
         }
         return this;
     }
-
-
 
     @Override
     public void onShutdown() throws Exception {

@@ -16,7 +16,7 @@
 
 package de.netbeacon.xenia.backend.processor;
 
-import de.netbeacon.xenia.backend.clients.objects.Client;
+import de.netbeacon.xenia.backend.client.objects.Client;
 import io.javalin.websocket.WsContext;
 import org.json.JSONObject;
 
