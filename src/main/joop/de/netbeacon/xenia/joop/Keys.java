@@ -27,7 +27,6 @@ public class Keys {
     public static final Identity<LicensesRecord, Integer> IDENTITY_LICENSES = Identities0.IDENTITY_LICENSES;
     public static final Identity<PermissionRecord, Integer> IDENTITY_PERMISSION = Identities0.IDENTITY_PERMISSION;
     public static final Identity<RolesRecord, Long> IDENTITY_ROLES = Identities0.IDENTITY_ROLES;
-    public static final Identity<UsersOauthRecord, Integer> IDENTITY_USERS_OAUTH = Identities0.IDENTITY_USERS_OAUTH;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -51,9 +50,6 @@ public class Keys {
     public static final UniqueKey<RolesPermissionRecord> ROLE_PERMISSION_ROLE_ID_PERMISSION_ID = UniqueKeys0.ROLE_PERMISSION_ROLE_ID_PERMISSION_ID;
     public static final UniqueKey<TagsRecord> TAGS_TAG_NAME_GUILD_ID = UniqueKeys0.TAGS_TAG_NAME_GUILD_ID;
     public static final UniqueKey<UsersRecord> USERS_USER_ID = UniqueKeys0.USERS_USER_ID;
-    public static final UniqueKey<UsersAuthRecord> USERS_AUTH_USER_ID = UniqueKeys0.USERS_AUTH_USER_ID;
-    public static final UniqueKey<UsersOauthRecord> USERS_OAUTH_ENTRY_ID = UniqueKeys0.USERS_OAUTH_ENTRY_ID;
-    public static final UniqueKey<UsersOauthScopesRecord> USERS_OAUTH_SCOPES_ENTRY_ID = UniqueKeys0.USERS_OAUTH_SCOPES_ENTRY_ID;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -74,9 +70,6 @@ public class Keys {
     public static final ForeignKey<RolesPermissionRecord, RolesRecord> ROLES_PERMISSION__ROLE_PERMISSION_ROLE_ID_FKEY = ForeignKeys0.ROLES_PERMISSION__ROLE_PERMISSION_ROLE_ID_FKEY;
     public static final ForeignKey<RolesPermissionRecord, PermissionRecord> ROLES_PERMISSION__ROLE_PERMISSION_PERMISSION_ID_FKEY = ForeignKeys0.ROLES_PERMISSION__ROLE_PERMISSION_PERMISSION_ID_FKEY;
     public static final ForeignKey<TagsRecord, MembersRecord> TAGS__TAGS_GUILD_ID_USER_ID_FKEY = ForeignKeys0.TAGS__TAGS_GUILD_ID_USER_ID_FKEY;
-    public static final ForeignKey<UsersAuthRecord, UsersRecord> USERS_AUTH__USERS_AUTH_USER_ID_FKEY = ForeignKeys0.USERS_AUTH__USERS_AUTH_USER_ID_FKEY;
-    public static final ForeignKey<UsersOauthRecord, UsersRecord> USERS_OAUTH__USERS_OAUTH_USER_ID_FKEY = ForeignKeys0.USERS_OAUTH__USERS_OAUTH_USER_ID_FKEY;
-    public static final ForeignKey<UsersOauthScopesRecord, UsersOauthRecord> USERS_OAUTH_SCOPES__USERS_OAUTH_SCOPES_ENTRY_ID_FKEY = ForeignKeys0.USERS_OAUTH_SCOPES__USERS_OAUTH_SCOPES_ENTRY_ID_FKEY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -86,7 +79,6 @@ public class Keys {
         public static Identity<LicensesRecord, Integer> IDENTITY_LICENSES = Internal.createIdentity(Licenses.LICENSES, Licenses.LICENSES.LICENSE_ID);
         public static Identity<PermissionRecord, Integer> IDENTITY_PERMISSION = Internal.createIdentity(Permission.PERMISSION, Permission.PERMISSION.PERMISSION_ID);
         public static Identity<RolesRecord, Long> IDENTITY_ROLES = Internal.createIdentity(Roles.ROLES, Roles.ROLES.ROLE_ID);
-        public static Identity<UsersOauthRecord, Integer> IDENTITY_USERS_OAUTH = Internal.createIdentity(UsersOauth.USERS_OAUTH, UsersOauth.USERS_OAUTH.ENTRY_ID);
     }
 
     private static class UniqueKeys0 {
@@ -108,9 +100,6 @@ public class Keys {
         public static final UniqueKey<RolesPermissionRecord> ROLE_PERMISSION_ROLE_ID_PERMISSION_ID = Internal.createUniqueKey(RolesPermission.ROLES_PERMISSION, "role_permission_role_id_permission_id", new TableField[] { RolesPermission.ROLES_PERMISSION.ROLE_ID, RolesPermission.ROLES_PERMISSION.PERMISSION_ID }, true);
         public static final UniqueKey<TagsRecord> TAGS_TAG_NAME_GUILD_ID = Internal.createUniqueKey(Tags.TAGS, "tags_tag_name_guild_id", new TableField[] { Tags.TAGS.TAG_NAME, Tags.TAGS.GUILD_ID }, true);
         public static final UniqueKey<UsersRecord> USERS_USER_ID = Internal.createUniqueKey(Users.USERS, "users_user_id", new TableField[] { Users.USERS.USER_ID }, true);
-        public static final UniqueKey<UsersAuthRecord> USERS_AUTH_USER_ID = Internal.createUniqueKey(UsersAuth.USERS_AUTH, "users_auth_user_id", new TableField[] { UsersAuth.USERS_AUTH.USER_ID }, true);
-        public static final UniqueKey<UsersOauthRecord> USERS_OAUTH_ENTRY_ID = Internal.createUniqueKey(UsersOauth.USERS_OAUTH, "users_oauth_entry_id", new TableField[] { UsersOauth.USERS_OAUTH.ENTRY_ID }, true);
-        public static final UniqueKey<UsersOauthScopesRecord> USERS_OAUTH_SCOPES_ENTRY_ID = Internal.createUniqueKey(UsersOauthScopes.USERS_OAUTH_SCOPES, "users_oauth_scopes_entry_id", new TableField[] { UsersOauthScopes.USERS_OAUTH_SCOPES.ENTRY_ID }, true);
     }
 
     private static class ForeignKeys0 {
@@ -129,8 +118,5 @@ public class Keys {
         public static final ForeignKey<RolesPermissionRecord, RolesRecord> ROLES_PERMISSION__ROLE_PERMISSION_ROLE_ID_FKEY = Internal.createForeignKey(Keys.ROLES_ROLE_ID, RolesPermission.ROLES_PERMISSION, "role_permission_role_id_fkey", new TableField[] { RolesPermission.ROLES_PERMISSION.ROLE_ID }, true);
         public static final ForeignKey<RolesPermissionRecord, PermissionRecord> ROLES_PERMISSION__ROLE_PERMISSION_PERMISSION_ID_FKEY = Internal.createForeignKey(Keys.PERMISSION_PERMISSION_ID, RolesPermission.ROLES_PERMISSION, "role_permission_permission_id_fkey", new TableField[] { RolesPermission.ROLES_PERMISSION.PERMISSION_ID }, true);
         public static final ForeignKey<TagsRecord, MembersRecord> TAGS__TAGS_GUILD_ID_USER_ID_FKEY = Internal.createForeignKey(Keys.MEMBERS_GUILD_ID_USER_ID, Tags.TAGS, "tags_guild_id_user_id_fkey", new TableField[] { Tags.TAGS.GUILD_ID, Tags.TAGS.USER_ID }, true);
-        public static final ForeignKey<UsersAuthRecord, UsersRecord> USERS_AUTH__USERS_AUTH_USER_ID_FKEY = Internal.createForeignKey(Keys.USERS_USER_ID, UsersAuth.USERS_AUTH, "users_auth_user_id_fkey", new TableField[] { UsersAuth.USERS_AUTH.USER_ID }, true);
-        public static final ForeignKey<UsersOauthRecord, UsersRecord> USERS_OAUTH__USERS_OAUTH_USER_ID_FKEY = Internal.createForeignKey(Keys.USERS_USER_ID, UsersOauth.USERS_OAUTH, "users_oauth_user_id_fkey", new TableField[] { UsersOauth.USERS_OAUTH.USER_ID }, true);
-        public static final ForeignKey<UsersOauthScopesRecord, UsersOauthRecord> USERS_OAUTH_SCOPES__USERS_OAUTH_SCOPES_ENTRY_ID_FKEY = Internal.createForeignKey(Keys.USERS_OAUTH_ENTRY_ID, UsersOauthScopes.USERS_OAUTH_SCOPES, "users_oauth_scopes_entry_id_fkey", new TableField[] { UsersOauthScopes.USERS_OAUTH_SCOPES.ENTRY_ID }, true);
     }
 }

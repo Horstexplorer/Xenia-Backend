@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package de.netbeacon.xenia.backend.processor.root.auth;
+package de.netbeacon.xenia.backend.processor.root.auth.discord;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
+import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.backend.processor.root.auth.discord.AuthDiscord;
-import de.netbeacon.xenia.backend.processor.root.auth.token.AuthToken;
-import de.netbeacon.xenia.backend.processor.root.auth.token.AuthTokenRenew;
+import io.javalin.http.Context;
 
-public class AuthRoot extends RequestProcessor {
+public class AuthDiscord extends RequestProcessor {
 
-    public AuthRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("auth", sqlConnectionPool, websocketProcessor,
-                new AuthToken(sqlConnectionPool, websocketProcessor),
-                new AuthTokenRenew(sqlConnectionPool, websocketProcessor),
-                new AuthDiscord(sqlConnectionPool, websocketProcessor)
-        );
+    public AuthDiscord(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("discord", sqlConnectionPool, websocketProcessor);
     }
 
+    @Override
+    public RequestProcessor preProcessor(Client client, Context context) {
+        return this;
+    }
+
+    @Override
+    public void get(Client client, Context ctx) {
+        super.get(client, ctx);
+    }
 }
