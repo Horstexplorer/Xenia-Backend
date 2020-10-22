@@ -86,7 +86,7 @@ public class ManagementClients extends RequestProcessor {
                     .put("clientID", client1.getClientId())
                     .put("local", new JSONObject()
                             .put("clientName", client1.getClientName())
-                            .put("clientType", client1.getClientType()));
+                            .put("clientType", client1.getClientType().getName()));
             // return
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
@@ -152,7 +152,7 @@ public class ManagementClients extends RequestProcessor {
                     .put("clientID", client1.getClientId())
                     .put("local", new JSONObject()
                             .put("clientName", client1.getClientName())
-                            .put("clientType", client1.getClientType()));
+                            .put("clientType", client1.getClientType().getName()));
             // return
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
@@ -213,7 +213,7 @@ public class ManagementClients extends RequestProcessor {
                     .put("clientID", client1.getClientId())
                     .put("local", new JSONObject()
                             .put("clientName", client1.getClientName())
-                            .put("clientType", client1.getClientType()));
+                            .put("clientType", client1.getClientType().getName()));
             // return
             ctx.status(202);
             ctx.header("Content-Type", "application/json");
