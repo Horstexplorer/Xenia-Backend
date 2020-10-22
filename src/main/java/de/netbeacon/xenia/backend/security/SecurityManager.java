@@ -138,6 +138,7 @@ public class SecurityManager implements IShutdown {
                     throw new ForbiddenResponse();
                 }
             }
+            ctx.send("{\"type\":\"connected\"}"); // send something which can be parsed by the client to check if the auth succeeded
             return client;
         }catch (HttpResponseException e){
             if(!rateLimiterMap.containsKey(clientIP)){
