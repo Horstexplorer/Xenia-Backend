@@ -17,7 +17,8 @@
 package de.netbeacon.xenia.backend.processor.root.auth.token;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
-import de.netbeacon.xenia.backend.clients.objects.Client;
+import de.netbeacon.xenia.backend.client.objects.Client;
+import de.netbeacon.xenia.backend.client.objects.imp.LocalClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import io.javalin.http.BadRequestResponse;
@@ -26,6 +27,8 @@ import io.javalin.http.HttpResponseException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Base64;
 
 public class AuthToken extends RequestProcessor {
 
@@ -36,9 +39,14 @@ public class AuthToken extends RequestProcessor {
     }
 
     @Override
+    public RequestProcessor preProcessor(Client client, Context context) {
+        return this;
+    }
+
+    @Override
     public void get(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
-            String authToken = client.getClientAuth().getToken();
+            String authToken = Base64.getEncoder().encodeToString(String.valueOf(client.getClientId()).getBytes())+"."+((LocalClient) client).getAuth().getToken();
             // json
             JSONObject jsonObject = new JSONObject()
                     .put("token", authToken);

@@ -17,11 +17,12 @@
 package de.netbeacon.xenia.backend.processor.root.management.clients;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
-import de.netbeacon.xenia.backend.clients.ClientManager;
-import de.netbeacon.xenia.backend.clients.objects.Client;
+import de.netbeacon.xenia.backend.client.ClientManager;
+import de.netbeacon.xenia.backend.client.objects.Client;
+import de.netbeacon.xenia.backend.client.objects.ClientType;
+import de.netbeacon.xenia.backend.client.objects.imp.LocalClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.backend.security.SecuritySettings;
 import de.netbeacon.xenia.joop.Tables;
 import de.netbeacon.xenia.joop.tables.records.InternalBotDataRecord;
 import de.netbeacon.xenia.joop.tables.records.InternalBotShardsRecord;
@@ -40,9 +41,14 @@ public class ManagementClients extends RequestProcessor {
     private final Logger logger = LoggerFactory.getLogger(ManagementClients.class);
     private final ClientManager clientManager;
 
-    public ManagementClients(ClientManager clientManager,SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public ManagementClients(ClientManager clientManager, SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
         super("clients", sqlConnectionPool, websocketProcessor);
         this.clientManager = clientManager;
+    }
+
+    @Override
+    public RequestProcessor preProcessor(Client client, Context context) {
+        return this;
     }
 
     @Override
@@ -52,11 +58,11 @@ public class ManagementClients extends RequestProcessor {
             // json
             JSONObject jsonObject = new JSONObject();
             // get local data
-            Client client1 = clientManager.getClient(clientId);
+            LocalClient client1 = (LocalClient) clientManager.getClient(ClientType.INTERNAL, clientId);
             if(client1 == null){
                 throw new NotFoundResponse();
             }
-            if(client1.getClientType() == SecuritySettings.ClientType.Bot){
+            if(ClientType.BOT.containsType(client1.getClientType())){
                 // get db data
                 Result<InternalBotDataRecord> botDataRecords = sqlContext.selectFrom(Tables.INTERNAL_BOT_DATA).where(Tables.INTERNAL_BOT_DATA.CLIENT_ID.eq(clientId)).fetch();
                 if(botDataRecords.isEmpty()){
@@ -101,7 +107,7 @@ public class ManagementClients extends RequestProcessor {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             long clientId = Long.parseLong(ctx.queryParam("clientId"));
             // get local client
-            Client client1 = clientManager.getClient(clientId);
+            LocalClient client1 = (LocalClient) clientManager.getClient(ClientType.INTERNAL, clientId);
             if(client1 == null){
                 throw new NotFoundResponse();
             }
@@ -110,10 +116,10 @@ public class ManagementClients extends RequestProcessor {
             JSONObject newData = new JSONObject(ctx.body());
             // set client data
             if(newData.getJSONObject("local").has("password")){
-                client1.getClientAuth().setPassword(newData.getJSONObject("local").getString("password"));
+                client1.getAuth().setPassword(newData.getJSONObject("local").getString("password"));
             }
             // check db things
-            if(client1.getClientType() == SecuritySettings.ClientType.Bot){
+            if(ClientType.BOT.containsType(client1.getClientType())){
                 // get from db
                 Result<InternalBotDataRecord> internalBotDataRecords = sqlContext.selectFrom(Tables.INTERNAL_BOT_DATA).where(Tables.INTERNAL_BOT_DATA.CLIENT_ID.eq(clientId)).fetch();
                 if(internalBotDataRecords.isEmpty()){
@@ -167,14 +173,14 @@ public class ManagementClients extends RequestProcessor {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             String clientName = ctx.queryParam("clientName");
             String password = ctx.queryParam("clientPassword");
-            SecuritySettings.ClientType clientType = SecuritySettings.ClientType.valueOf(ctx.queryParam("clientType"));
-            if(clientName == null ||password == null || clientType == SecuritySettings.ClientType.Any || clientType == SecuritySettings.ClientType.Unknown){
+            ClientType clientType = ClientType.fromString(ctx.queryParam("clientType"));
+            if(clientName == null ||password == null || clientType == null || ClientType.ANY.equals(clientType)){
                 throw new BadRequestResponse();
             }
             // create local client
-            Client client1 = clientManager.createClient(clientType, clientName, password);
+            LocalClient client1 = (LocalClient) clientManager.createLocalClient(clientType, clientName, password);
             // create db if bot
-            if(client1.getClientType() == SecuritySettings.ClientType.Bot){
+            if(ClientType.BOT.containsType(client1.getClientType())){
                 int mod = sqlContext.insertInto(Tables.INTERNAL_BOT_DATA, Tables.INTERNAL_BOT_DATA.CLIENT_ID, Tables.INTERNAL_BOT_DATA.CLIENT_NAME).values(client1.getClientId(), client1.getClientName()).execute();
                 if(mod == 0){
                     logger.error("Could Not Create Bot Data On DB");
@@ -183,7 +189,7 @@ public class ManagementClients extends RequestProcessor {
             }
             // json
             JSONObject jsonObject = new JSONObject();
-            if(client1.getClientType() == SecuritySettings.ClientType.Bot){
+            if(ClientType.BOT.containsType(client1.getClientType())){
                 // get db data
                 Result<InternalBotDataRecord> botDataRecords = sqlContext.selectFrom(Tables.INTERNAL_BOT_DATA).where(Tables.INTERNAL_BOT_DATA.CLIENT_ID.eq(client1.getClientId())).fetch();
                 if(botDataRecords.isEmpty()){
@@ -228,14 +234,14 @@ public class ManagementClients extends RequestProcessor {
         try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
             long clientId = Long.parseLong(ctx.queryParam("clientId"));
             // get local client
-            Client client1 = clientManager.getClient(clientId);
+            Client client1 = clientManager.getClient(ClientType.INTERNAL, clientId);
             if(client1 == null){
                 throw new NotFoundResponse();
             }
-            if(client1.getClientType() == SecuritySettings.ClientType.Bot){
+            if(ClientType.BOT.containsType(client1.getClientType())){
                 sqlContext.deleteFrom(Tables.INTERNAL_BOT_DATA).where(Tables.INTERNAL_BOT_DATA.CLIENT_ID.eq(clientId)).execute();
             }
-            clientManager.deleteClient(clientId);
+            clientManager.deleteLocalClient(clientId);
             // result
             ctx.status(200);
         }catch (HttpResponseException e){

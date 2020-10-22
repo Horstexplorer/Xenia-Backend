@@ -17,7 +17,7 @@
 package de.netbeacon.xenia.backend.processor.root.setup.bot;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
-import de.netbeacon.xenia.backend.clients.objects.Client;
+import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.joop.Tables;
@@ -38,6 +38,11 @@ public class SetupBot extends RequestProcessor {
 
     public SetupBot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
         super("bot", sqlConnectionPool, websocketProcessor);
+    }
+
+    @Override
+    public RequestProcessor preProcessor(Client client, Context context) {
+        return this;
     }
 
     @Override

@@ -17,7 +17,7 @@
 package de.netbeacon.xenia.backend.processor.root.data.guild.role;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
-import de.netbeacon.xenia.backend.clients.objects.Client;
+import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.data.guild.role.permission.DataGuildRolePermission;
@@ -40,6 +40,11 @@ public class DataGuildRole extends RequestProcessor {
 
     public DataGuildRole(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
         super("role", sqlConnectionPool, websocketProcessor, new DataGuildRolePermission(sqlConnectionPool, websocketProcessor));
+    }
+
+    @Override
+    public RequestProcessor preProcessor(Client client, Context context) {
+        return this;
     }
 
     @Override

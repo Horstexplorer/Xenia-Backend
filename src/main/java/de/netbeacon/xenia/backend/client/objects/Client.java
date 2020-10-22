@@ -14,35 +14,27 @@
  * limitations under the License.
  */
 
-package de.netbeacon.xenia.backend.security;
+package de.netbeacon.xenia.backend.client.objects;
 
-import de.netbeacon.xenia.backend.client.objects.ClientType;
+import de.netbeacon.xenia.backend.security.SecuritySettings;
 
-public class SecuritySettings {
+public abstract class Client {
 
-    public enum AuthType {
-        OPTIONAL,
-        REQUIRED,
-        BASIC,
-        TOKEN,
-        DISCORD,
-        TOKEN_OR_DISCORD;
-    }
-
-
-    private final AuthType authType;
+    private final long clientId;
     private final ClientType clientType;
 
-    public SecuritySettings(AuthType authType, ClientType clientType){
-        this.authType = authType;
+    public Client(long clientId, ClientType clientType){
+        this.clientId = clientId;
         this.clientType = clientType;
     }
 
-    public AuthType getRequiredAuthType() {
-        return authType;
+    public long getClientId() {
+        return clientId;
     }
 
-    public ClientType getRequiredClientType() {
+    public ClientType getClientType() {
         return clientType;
     }
+
+    public abstract boolean verifyAuth(SecuritySettings.AuthType authType, String credentials);
 }
