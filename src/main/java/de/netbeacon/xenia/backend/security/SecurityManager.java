@@ -129,10 +129,13 @@ public class SecurityManager implements IShutdown {
             }
             long id = Long.parseLong(authHeaderContent.getCredentialsA());
             client = clientManager.getClient(ClientType.INTERNAL, id);
+            if(client == null || !client.verifyAuth(authHeaderContent.getType(), authHeaderContent.getCredentialsB())){
+                throw new UnauthorizedResponse();
+            }
             // check client type
-            if(securitySettings.getRequiredClientType() != ClientType.ANY && securitySettings.getRequiredAuthType() != SecuritySettings.AuthType.OPTIONAL && client != null){
+            if(!securitySettings.getRequiredClientType().equals(ClientType.ANY) && !securitySettings.getRequiredAuthType().equals(SecuritySettings.AuthType.OPTIONAL)){
                 if(!securitySettings.getRequiredClientType().containsType(client.getClientType())){
-                    throw new ForbiddenResponse(); // not actually a valid status code
+                    throw new ForbiddenResponse();
                 }
             }
             return client;
