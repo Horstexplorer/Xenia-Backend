@@ -30,6 +30,10 @@ public class WebsocketProcessor {
     public WebsocketProcessor(){}
 
     public void register(WsContext wsConnectContext, Client client){
+        if(client == null){
+            try{wsConnectContext.session.disconnect();}catch (Exception ignore){} // should not be needed
+            return;
+        }
         wsContextClientConcurrentHashMap.put(wsConnectContext, client);
     }
 
@@ -43,10 +47,14 @@ public class WebsocketProcessor {
 
     public void broadcast(BroadcastMessage broadcastMessage, Client except){
         for(Map.Entry<WsContext, Client> entry : wsContextClientConcurrentHashMap.entrySet()){
-            if(entry.getValue().equals(except)){
-                continue;
+            try{
+                if(entry.getValue().equals(except)){
+                    continue;
+                }
+                entry.getKey().send(broadcastMessage.asString());
+            }catch (Exception e){
+                try{entry.getKey().session.disconnect();}catch (Exception ignore){}
             }
-            entry.getKey().send(broadcastMessage.asString());
         }
     }
 

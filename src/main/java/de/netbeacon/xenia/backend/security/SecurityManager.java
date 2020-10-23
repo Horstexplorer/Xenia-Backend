@@ -150,7 +150,7 @@ public class SecurityManager implements IShutdown {
                 closeWS(ctx.session, 1000, "Too Many Requests", true);
             }
             closeWS(ctx.session, 1000, e.getMessage(), false);
-            throw e;
+            return null;
         }
     }
 
