@@ -16,18 +16,32 @@
 
 package de.netbeacon.xenia.backend.processor;
 
+import de.netbeacon.utils.shutdownhook.IShutdown;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import io.javalin.websocket.WsContext;
 import org.json.JSONObject;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class WebsocketProcessor {
+public class WebsocketProcessor implements IShutdown {
 
     private final ConcurrentHashMap<WsContext, Client> wsContextClientConcurrentHashMap = new ConcurrentHashMap<>();
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 
-    public WebsocketProcessor(){}
+    public WebsocketProcessor(){
+        // start heartbeat messages
+        scheduledExecutorService.scheduleAtFixedRate(()-> broadcast(getHeartBeatMessage()), 0, 5000, TimeUnit.MILLISECONDS);
+    }
+
+    private BroadcastMessage getHeartBeatMessage(){
+        WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
+        broadcastMessage.get().put("type", "HEARTBEAT").put("action", "HEARTBEAT").put("timestamp", System.currentTimeMillis());
+        return broadcastMessage;
+    }
 
     public void register(WsContext wsConnectContext, Client client){
         if(client == null){
@@ -56,6 +70,11 @@ public class WebsocketProcessor {
                 try{entry.getKey().session.disconnect();}catch (Exception ignore){}
             }
         }
+    }
+
+    @Override
+    public void onShutdown() throws Exception {
+        scheduledExecutorService.shutdown();
     }
 
     public static class BroadcastMessage{
