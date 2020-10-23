@@ -34,7 +34,7 @@ public class WebsocketProcessor implements IShutdown {
 
     public WebsocketProcessor(){
         // start heartbeat messages
-        scheduledExecutorService.scheduleAtFixedRate(()-> broadcast(getHeartBeatMessage()), 0, 5000, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(()-> broadcast(getHeartBeatMessage()), 0, 30000, TimeUnit.MILLISECONDS);
     }
 
     private BroadcastMessage getHeartBeatMessage(){
