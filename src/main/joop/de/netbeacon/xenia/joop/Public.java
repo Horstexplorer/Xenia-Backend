@@ -20,7 +20,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 672626421;
+    private static final long serialVersionUID = 137872880;
 
     /**
      * The reference instance of <code>public</code>
@@ -73,6 +73,11 @@ public class Public extends SchemaImpl {
     public final Messages MESSAGES = Messages.MESSAGES;
 
     /**
+     * The table <code>public.notification</code>.
+     */
+    public final Notification NOTIFICATION = Notification.NOTIFICATION;
+
+    /**
      * The table <code>public.permission</code>.
      */
     public final Permission PERMISSION = Permission.PERMISSION;
@@ -114,6 +119,7 @@ public class Public extends SchemaImpl {
     public final List<Sequence<?>> getSequences() {
         return Arrays.<Sequence<?>>asList(
             Sequences.LICENSES_LICENSE_ID_SEQ,
+            Sequences.NOTIFICATION_NOTIFICATION_ID_SEQ,
             Sequences.PERMISSION_PERMISSION_ID_SEQ,
             Sequences.ROLES_ROLE_ID_SEQ);
     }
@@ -130,6 +136,7 @@ public class Public extends SchemaImpl {
             Members.MEMBERS,
             MembersRoles.MEMBERS_ROLES,
             Messages.MESSAGES,
+            Notification.NOTIFICATION,
             Permission.PERMISSION,
             Roles.ROLES,
             RolesPermission.ROLES_PERMISSION,
