@@ -303,6 +303,31 @@ public class Core {
                                                 processor.next("data").next("guild").next("misc").next("tags").preProcessor(client, ctx).get(client, ctx); // get full tag data
                                             });
                                         });
+                                        // notifications
+                                        path("notifications", ()->{
+                                            path(":notificationId", ()->{
+                                                get(ctx -> {
+                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                    processor.next("data").next("guild").next("misc").next("notifications").preProcessor(client, ctx).get(client, ctx); // get notification data
+                                                });
+                                                put(ctx -> {
+                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                    processor.next("data").next("guild").next("misc").next("notifications").preProcessor(client, ctx).put(client, ctx); // edit notification
+                                                });
+                                                post(ctx -> {
+                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                    processor.next("data").next("guild").next("misc").next("notifications").preProcessor(client, ctx).post(client, ctx); // create notification
+                                                });
+                                                delete(ctx -> {
+                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                    processor.next("data").next("guild").next("misc").next("notifications").preProcessor(client, ctx).delete(client, ctx); // delete notification
+                                                });
+                                            });
+                                            get(ctx -> {
+                                                Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                processor.next("data").next("guild").next("misc").next("notifications").preProcessor(client, ctx).get(client, ctx); // get full notification data
+                                            });
+                                        });
                                     });
                                     // guild
                                     get(ctx -> {

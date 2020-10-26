@@ -59,6 +59,11 @@ public class Tables {
     public static final Messages MESSAGES = Messages.MESSAGES;
 
     /**
+     * The table <code>public.notification</code>.
+     */
+    public static final Notification NOTIFICATION = Notification.NOTIFICATION;
+
+    /**
      * The table <code>public.permission</code>.
      */
     public static final Permission PERMISSION = Permission.PERMISSION;

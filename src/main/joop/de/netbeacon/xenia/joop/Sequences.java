@@ -20,6 +20,11 @@ public class Sequences {
     public static final Sequence<Integer> LICENSES_LICENSE_ID_SEQ = Internal.createSequence("licenses_license_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.notification_notification_id_seq</code>
+     */
+    public static final Sequence<Integer> NOTIFICATION_NOTIFICATION_ID_SEQ = Internal.createSequence("notification_notification_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.permission_permission_id_seq</code>
      */
     public static final Sequence<Integer> PERMISSION_PERMISSION_ID_SEQ = Internal.createSequence("permission_permission_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.INTEGER.nullable(false), null, null, null, null, false, null);
