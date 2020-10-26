@@ -22,7 +22,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Notification extends TableImpl<NotificationRecord> {
 
-    private static final long serialVersionUID = -1951088628;
+    private static final long serialVersionUID = -1662067448;
 
     /**
      * The reference instance of <code>public.notification</code>
@@ -40,7 +40,7 @@ public class Notification extends TableImpl<NotificationRecord> {
     /**
      * The column <code>public.notification.notification_id</code>.
      */
-    public final TableField<NotificationRecord, Integer> NOTIFICATION_ID = createField(DSL.name("notification_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('notification_notification_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<NotificationRecord, Long> NOTIFICATION_ID = createField(DSL.name("notification_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('notification_notification_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * The column <code>public.notification.creation_timestamp</code>.
@@ -111,7 +111,7 @@ public class Notification extends TableImpl<NotificationRecord> {
     }
 
     @Override
-    public Identity<NotificationRecord, Integer> getIdentity() {
+    public Identity<NotificationRecord, Long> getIdentity() {
         return Keys.IDENTITY_NOTIFICATION;
     }
 
@@ -173,7 +173,7 @@ public class Notification extends TableImpl<NotificationRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, LocalDateTime, Long, Long, Long, LocalDateTime, String> fieldsRow() {
+    public Row7<Long, LocalDateTime, Long, Long, Long, LocalDateTime, String> fieldsRow() {
         return (Row7) super.fieldsRow();
     }
 }

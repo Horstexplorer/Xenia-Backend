@@ -25,7 +25,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final Identity<LicensesRecord, Integer> IDENTITY_LICENSES = Identities0.IDENTITY_LICENSES;
-    public static final Identity<NotificationRecord, Integer> IDENTITY_NOTIFICATION = Identities0.IDENTITY_NOTIFICATION;
+    public static final Identity<NotificationRecord, Long> IDENTITY_NOTIFICATION = Identities0.IDENTITY_NOTIFICATION;
     public static final Identity<PermissionRecord, Integer> IDENTITY_PERMISSION = Identities0.IDENTITY_PERMISSION;
     public static final Identity<RolesRecord, Long> IDENTITY_ROLES = Identities0.IDENTITY_ROLES;
 
@@ -82,7 +82,7 @@ public class Keys {
 
     private static class Identities0 {
         public static Identity<LicensesRecord, Integer> IDENTITY_LICENSES = Internal.createIdentity(Licenses.LICENSES, Licenses.LICENSES.LICENSE_ID);
-        public static Identity<NotificationRecord, Integer> IDENTITY_NOTIFICATION = Internal.createIdentity(Notification.NOTIFICATION, Notification.NOTIFICATION.NOTIFICATION_ID);
+        public static Identity<NotificationRecord, Long> IDENTITY_NOTIFICATION = Internal.createIdentity(Notification.NOTIFICATION, Notification.NOTIFICATION.NOTIFICATION_ID);
         public static Identity<PermissionRecord, Integer> IDENTITY_PERMISSION = Internal.createIdentity(Permission.PERMISSION, Permission.PERMISSION.PERMISSION_ID);
         public static Identity<RolesRecord, Long> IDENTITY_ROLES = Internal.createIdentity(Roles.ROLES, Roles.ROLES.ROLE_ID);
     }
