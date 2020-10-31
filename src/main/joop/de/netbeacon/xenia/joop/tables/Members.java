@@ -22,7 +22,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Members extends TableImpl<MembersRecord> {
 
-    private static final long serialVersionUID = 1165294393;
+    private static final long serialVersionUID = 538967062;
 
     /**
      * The reference instance of <code>public.members</code>
@@ -55,7 +55,7 @@ public class Members extends TableImpl<MembersRecord> {
     /**
      * The column <code>public.members.meta_nickname</code>.
      */
-    public final TableField<MembersRecord, String> META_NICKNAME = createField(DSL.name("meta_nickname"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.field("''::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<MembersRecord, String> META_NICKNAME = createField(DSL.name("meta_nickname"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.field("'unknown_nickname'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.members.meta_is_owner</code>.
