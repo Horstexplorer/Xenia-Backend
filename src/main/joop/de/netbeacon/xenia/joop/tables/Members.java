@@ -22,7 +22,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Members extends TableImpl<MembersRecord> {
 
-    private static final long serialVersionUID = 1151185890;
+    private static final long serialVersionUID = 1165294393;
 
     /**
      * The reference instance of <code>public.members</code>
@@ -51,6 +51,21 @@ public class Members extends TableImpl<MembersRecord> {
      * The column <code>public.members.creation_timestamp</code>.
      */
     public final TableField<MembersRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>public.members.meta_nickname</code>.
+     */
+    public final TableField<MembersRecord, String> META_NICKNAME = createField(DSL.name("meta_nickname"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.field("''::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>public.members.meta_is_owner</code>.
+     */
+    public final TableField<MembersRecord, Boolean> META_IS_OWNER = createField(DSL.name("meta_is_owner"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.members.meta_is_administrator</code>.
+     */
+    public final TableField<MembersRecord, Boolean> META_IS_ADMINISTRATOR = createField(DSL.name("meta_is_administrator"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.members</code> table reference
@@ -140,11 +155,11 @@ public class Members extends TableImpl<MembersRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Long, Long, LocalDateTime> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row6<Long, Long, LocalDateTime, String, Boolean, Boolean> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }
