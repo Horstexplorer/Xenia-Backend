@@ -69,7 +69,12 @@ public class DataGuildMember extends RequestProcessor {
                             .put("guildId", membersRecord.getGuildId())
                             .put("userId", membersRecord.getUserId())
                             .put("creationTimestamp", membersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
-                            .put("roles", roles);
+                            .put("roles", roles)
+                            .put("meta", new JSONObject()
+                                    .put("nickname", membersRecord.getMetaNickname())
+                                    .put("isAdministrator", membersRecord.getMetaIsAdministrator())
+                                    .put("isOwner", membersRecord.getMetaIsOwner())
+                            );
                 }
             }else{
                 long userId = Long.parseLong(ctx.pathParam("userId"));
@@ -87,7 +92,12 @@ public class DataGuildMember extends RequestProcessor {
                         .put("guildId", membersRecord.getGuildId())
                         .put("userId", membersRecord.getUserId())
                         .put("creationTimestamp", membersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
-                        .put("roles", roles);
+                        .put("roles", roles)
+                        .put("meta", new JSONObject()
+                                .put("nickname", membersRecord.getMetaNickname())
+                                .put("isAdministrator", membersRecord.getMetaIsAdministrator())
+                                .put("isOwner", membersRecord.getMetaIsOwner())
+                        );
             }
             // respond
             ctx.status(200);
@@ -143,7 +153,12 @@ public class DataGuildMember extends RequestProcessor {
                     .put("guildId", membersRecord.getGuildId())
                     .put("userId", membersRecord.getUserId())
                     .put("creationTimestamp", membersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
-                    .put("roles", jsonArray);
+                    .put("roles", jsonArray)
+                    .put("meta", new JSONObject()
+                            .put("nickname", membersRecord.getMetaNickname())
+                            .put("isAdministrator", membersRecord.getMetaIsAdministrator())
+                            .put("isOwner", membersRecord.getMetaIsOwner())
+                    );
             // respond
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
@@ -187,7 +202,12 @@ public class DataGuildMember extends RequestProcessor {
                     .put("guildId", membersRecord.getGuildId())
                     .put("userId", membersRecord.getUserId())
                     .put("creationTimestamp", membersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
-                    .put("roles", jsonArray);
+                    .put("roles", jsonArray)
+                    .put("meta", new JSONObject()
+                            .put("nickname", membersRecord.getMetaNickname())
+                            .put("isAdministrator", membersRecord.getMetaIsAdministrator())
+                            .put("isOwner", membersRecord.getMetaIsOwner())
+                    );
             // respond
             ctx.status(202);
             ctx.header("Content-Type", "application/json");

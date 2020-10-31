@@ -58,7 +58,10 @@ public class DataUser extends RequestProcessor {
                     .put("userId", usersRecord.getUserId())
                     .put("creationTimestamp", usersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
                     .put("internalRole", usersRecord.getInternalRole())
-                    .put("preferredLanguage", usersRecord.getPreferredLanguage());
+                    .put("preferredLanguage", usersRecord.getPreferredLanguage())
+                    .put("meta", new JSONObject()
+                            .put("username", usersRecord.getMetaUsername())
+                    );
             // respond
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
@@ -98,7 +101,10 @@ public class DataUser extends RequestProcessor {
                     .put("userId", usersRecord.getUserId())
                     .put("creationTimestamp", usersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
                     .put("internalRole", usersRecord.getInternalRole())
-                    .put("preferredLanguage", usersRecord.getPreferredLanguage());
+                    .put("preferredLanguage", usersRecord.getPreferredLanguage())
+                    .put("meta", new JSONObject()
+                            .put("username", usersRecord.getMetaUsername())
+                    );
             // respond
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
@@ -135,7 +141,10 @@ public class DataUser extends RequestProcessor {
                     .put("userId", usersRecord.getUserId())
                     .put("creationTimestamp", usersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
                     .put("internalRole", usersRecord.getInternalRole())
-                    .put("preferredLanguage", usersRecord.getPreferredLanguage());
+                    .put("preferredLanguage", usersRecord.getPreferredLanguage())
+                    .put("meta", new JSONObject()
+                            .put("username", usersRecord.getMetaUsername())
+                    );
             // respond
             ctx.status(202);
             ctx.header("Content-Type", "application/json");
