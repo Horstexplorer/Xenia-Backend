@@ -131,7 +131,10 @@ public class DataGuildMember extends RequestProcessor {
             // get new data
             JSONObject newData = new JSONObject(ctx.body());
             // update data
-            // nothing to update for now
+            JSONObject meta = newData.getJSONObject("meta");
+            membersRecord.setMetaNickname(meta.getString("nickname"));
+            membersRecord.setMetaIsAdministrator(meta.getBoolean("isAdministrator"));
+            membersRecord.setMetaIsOwner(meta.getBoolean("isOwner"));
             // update db
             sqlContext.executeUpdate(membersRecord);
             // update roles
