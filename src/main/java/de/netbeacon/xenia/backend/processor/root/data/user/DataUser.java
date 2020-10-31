@@ -94,6 +94,8 @@ public class DataUser extends RequestProcessor {
             // update values
             usersRecord.setInternalRole(newData.getString("internalRole"));
             usersRecord.setPreferredLanguage(newData.getString("preferredLanguage"));
+            JSONObject meta = newData.getJSONObject("meta");
+            usersRecord.setMetaUsername(meta.getString("username"));
             // update db
             sqlContext.executeUpdate(usersRecord);
             // fluffy json
