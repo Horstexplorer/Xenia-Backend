@@ -7,23 +7,13 @@ package de.netbeacon.xenia.joop.tables;
 import de.netbeacon.xenia.joop.Keys;
 import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.UsersRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row4;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -32,7 +22,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Users extends TableImpl<UsersRecord> {
 
-    private static final long serialVersionUID = -446264965;
+    private static final long serialVersionUID = -1118097727;
 
     /**
      * The reference instance of <code>public.users</code>
@@ -66,6 +56,11 @@ public class Users extends TableImpl<UsersRecord> {
      * The column <code>public.users.preferred_language</code>.
      */
     public final TableField<UsersRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), org.jooq.impl.SQLDataType.VARCHAR(16).nullable(false).defaultValue(org.jooq.impl.DSL.field("'undefined'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>public.users.meta_username</code>.
+     */
+    public final TableField<UsersRecord, String> META_USERNAME = createField(DSL.name("meta_username"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.field("'unknown_username'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * Create a <code>public.users</code> table reference
@@ -142,11 +137,11 @@ public class Users extends TableImpl<UsersRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, LocalDateTime, String, String> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Long, LocalDateTime, String, String, String> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }
