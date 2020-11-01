@@ -147,9 +147,9 @@ public class SecurityManager implements IShutdown {
                 rateLimiterMap.put(clientIP, rateLimiter);
             }
             if(!rateLimiterMap.get(clientIP).takeNice()){
-                closeWS(ctx.session, 1000, "Too Many Requests", true);
+                closeWS(ctx.session, 3429, "Too Many Requests", true);
             }
-            closeWS(ctx.session, 1000, e.getMessage(), false);
+            closeWS(ctx.session, 3000+e.getStatus(), e.getMessage(), false);
             return null;
         }
     }
