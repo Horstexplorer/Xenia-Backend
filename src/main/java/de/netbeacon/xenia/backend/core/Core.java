@@ -403,6 +403,7 @@ public class Core {
                                     websocketProcessor.register(wsCon, securityManager.authorizeWsConnection(websocketSetting, wsCon));
                                 });
                                 wsHandler.onClose(websocketProcessor::remove);
+                                wsHandler.onError(websocketProcessor::remove);
                             });
                         });
                         get("/", ctx -> {
