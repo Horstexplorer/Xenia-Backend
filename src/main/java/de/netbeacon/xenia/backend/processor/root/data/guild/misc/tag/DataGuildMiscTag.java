@@ -56,7 +56,7 @@ public class DataGuildMiscTag extends RequestProcessor {
                 for(TagsRecord tagsRecord : tagsRecords){
                     jsonArray.put(new JSONObject()
                             .put("tagName", tagsRecord.getTagName())
-                            .put("creationTimestamp", tagsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).getEpochSecond())
+                            .put("creationTimestamp", tagsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                             .put("guildId", tagsRecord.getGuildId())
                             .put("userId", tagsRecord.getUserId())
                             .put("tagContent", tagsRecord.getTagContent())
@@ -71,7 +71,7 @@ public class DataGuildMiscTag extends RequestProcessor {
                 TagsRecord tagsRecord = tagsRecords.get(0);
                 jsonObject
                         .put("tagName", tagsRecord.getTagName())
-                        .put("creationTimestamp", tagsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).getEpochSecond())
+                        .put("creationTimestamp", tagsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                         .put("guildId", tagsRecord.getGuildId())
                         .put("userId", tagsRecord.getUserId())
                         .put("tagContent", tagsRecord.getTagContent());
@@ -113,7 +113,7 @@ public class DataGuildMiscTag extends RequestProcessor {
 
             JSONObject jsonObject = new JSONObject()
                     .put("tagName", tagsRecord.getTagName())
-                    .put("creationTimestamp", tagsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).getEpochSecond())
+                    .put("creationTimestamp", tagsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("guildId", tagsRecord.getGuildId())
                     .put("userId", tagsRecord.getUserId())
                     .put("tagContent", tagsRecord.getTagContent());
@@ -154,7 +154,7 @@ public class DataGuildMiscTag extends RequestProcessor {
 
             JSONObject jsonObject = new JSONObject()
                     .put("tagName", tagsRecord.getTagName())
-                    .put("creationTimestamp", tagsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).getEpochSecond())
+                    .put("creationTimestamp", tagsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("guildId", tagsRecord.getGuildId())
                     .put("userId", tagsRecord.getUserId())
                     .put("tagContent", tagsRecord.getTagContent());

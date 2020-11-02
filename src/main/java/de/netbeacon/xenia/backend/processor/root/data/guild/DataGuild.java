@@ -61,7 +61,7 @@ public class DataGuild extends RequestProcessor {
             // build json
             JSONObject jsonObject = new JSONObject()
                     .put("guildId", guildsRecord.getGuildId())
-                    .put("creationTimestamp", guildsRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                    .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage());
             // respond
             ctx.status(200);
@@ -104,7 +104,7 @@ public class DataGuild extends RequestProcessor {
             // build json
             JSONObject jsonObject = new JSONObject()
                     .put("guildId", guildsRecord.getGuildId())
-                    .put("creationTimestamp", guildsRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                    .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage());
             // respond
             ctx.status(200);
@@ -140,7 +140,7 @@ public class DataGuild extends RequestProcessor {
             // build json
             JSONObject jsonObject = new JSONObject()
                     .put("guildId", guildsRecord.getGuildId())
-                    .put("creationTimestamp", guildsRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                    .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage());
             // respond
             ctx.status(202);

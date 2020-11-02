@@ -85,7 +85,7 @@ public class DataGuildLicense extends RequestProcessor {
                 jsonObject
                         .put("licenseName", record.get(Tables.LICENSE_TYPES.LICENSE_NAME))
                         .put("licenseDescription", record.get(Tables.LICENSE_TYPES.LICENSE_DESCRIPTION))
-                        .put("activationTimestamp", record.get(Tables.LICENSES.LICENSE_ACTIVATION_TIMESTAMP).toEpochSecond(ZoneOffset.UTC))
+                        .put("activationTimestamp", record.get(Tables.LICENSES.LICENSE_ACTIVATION_TIMESTAMP).toInstant(ZoneOffset.UTC).toEpochMilli())
                         .put("durationDays", record.get(Tables.LICENSES.LICENSE_DURATION_DAYS))
                         .put("perks", new JSONObject()
                                 .put("channelLogging", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_C))
@@ -144,7 +144,7 @@ public class DataGuildLicense extends RequestProcessor {
             JSONObject jsonObject = new JSONObject()
                     .put("licenseName", record.get(Tables.LICENSE_TYPES.LICENSE_NAME))
                     .put("licenseDescription", record.get(Tables.LICENSE_TYPES.LICENSE_DESCRIPTION))
-                    .put("activationTimestamp", record.get(Tables.LICENSES.LICENSE_ACTIVATION_TIMESTAMP).toEpochSecond(ZoneOffset.UTC))
+                    .put("activationTimestamp", record.get(Tables.LICENSES.LICENSE_ACTIVATION_TIMESTAMP).toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("durationDays", record.get(Tables.LICENSES.LICENSE_DURATION_DAYS))
                     .put("perks", new JSONObject()
                             .put("channelLogging", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_C))
