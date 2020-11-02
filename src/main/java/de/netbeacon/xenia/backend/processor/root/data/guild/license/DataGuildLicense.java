@@ -78,6 +78,8 @@ public class DataGuildLicense extends RequestProcessor {
                         .put("perks", new JSONObject()
                                 .put("channelLogging", record2.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_C))
                                 .put("guildRoles", record2.get(Tables.LICENSE_TYPES.PERK_GUILD_ROLES_C))
+                                .put("miscTags", record2.get(Tables.LICENSE_TYPES.PERK_MISC_TAGS_C))
+                                .put("miscNotifications", record2.get(Tables.LICENSE_TYPES.PERK_MISC_NOTIFICATIONS_C))
                         );
             }else{
                 jsonObject
@@ -88,6 +90,8 @@ public class DataGuildLicense extends RequestProcessor {
                         .put("perks", new JSONObject()
                                 .put("channelLogging", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_C))
                                 .put("guildRoles", record.get(Tables.LICENSE_TYPES.PERK_GUILD_ROLES_C))
+                                .put("miscTags", record.get(Tables.LICENSE_TYPES.PERK_MISC_TAGS_C))
+                                .put("miscNotifications", record.get(Tables.LICENSE_TYPES.PERK_MISC_NOTIFICATIONS_C))
                         );
             }
             // respond
@@ -145,6 +149,8 @@ public class DataGuildLicense extends RequestProcessor {
                     .put("perks", new JSONObject()
                             .put("channelLogging", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_LOGGING_C))
                             .put("guildRoles", record.get(Tables.LICENSE_TYPES.PERK_GUILD_ROLES_C))
+                            .put("miscTags", record.get(Tables.LICENSE_TYPES.PERK_MISC_TAGS_C))
+                            .put("miscNotifications", record.get(Tables.LICENSE_TYPES.PERK_MISC_NOTIFICATIONS_C))
                     );
             // respond
             ctx.status(200);
