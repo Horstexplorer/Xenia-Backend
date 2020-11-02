@@ -57,11 +57,11 @@ public class DataGuildMiscNotification extends RequestProcessor {
                 for(NotificationRecord notificationRecord : notificationRecords){
                     jsonArray.put(new JSONObject()
                             .put("notificationId", notificationRecord.getNotificationId())
-                            .put("creationTimestamp", notificationRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).getEpochSecond())
+                            .put("creationTimestamp", notificationRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                             .put("guildId", notificationRecord.getGuildId())
                             .put("channelId", notificationRecord.getChannelId())
                             .put("userId", notificationRecord.getUserId())
-                            .put("notificationTarget", notificationRecord.getNotificationTarget().toInstant(ZoneOffset.UTC).getEpochSecond())
+                            .put("notificationTarget", notificationRecord.getNotificationTarget().toInstant(ZoneOffset.UTC).toEpochMilli())
                             .put("notificationMessage", notificationRecord.getNotificationMessage())
                     );
                 }
@@ -74,11 +74,11 @@ public class DataGuildMiscNotification extends RequestProcessor {
                 NotificationRecord notificationRecord = notificationRecords.get(0);
                 jsonObject
                         .put("notificationId", notificationRecord.getNotificationId())
-                        .put("creationTimestamp", notificationRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).getEpochSecond())
+                        .put("creationTimestamp", notificationRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                         .put("guildId", notificationRecord.getGuildId())
                         .put("channelId", notificationRecord.getChannelId())
                         .put("userId", notificationRecord.getUserId())
-                        .put("notificationTarget", notificationRecord.getNotificationTarget().toInstant(ZoneOffset.UTC).getEpochSecond())
+                        .put("notificationTarget", notificationRecord.getNotificationTarget().toInstant(ZoneOffset.UTC).toEpochMilli())
                         .put("notificationMessage", notificationRecord.getNotificationMessage());
             }
             // respond
@@ -116,11 +116,11 @@ public class DataGuildMiscNotification extends RequestProcessor {
 
             JSONObject jsonObject = new JSONObject()
                     .put("notificationId", notificationRecord.getNotificationId())
-                    .put("creationTimestamp", notificationRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).getEpochSecond())
+                    .put("creationTimestamp", notificationRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("guildId", notificationRecord.getGuildId())
                     .put("channelId", notificationRecord.getChannelId())
                     .put("userId", notificationRecord.getUserId())
-                    .put("notificationTarget", notificationRecord.getNotificationTarget().toInstant(ZoneOffset.UTC).getEpochSecond())
+                    .put("notificationTarget", notificationRecord.getNotificationTarget().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("notificationMessage", notificationRecord.getNotificationMessage());
             // respond
             ctx.status(200);
@@ -155,11 +155,11 @@ public class DataGuildMiscNotification extends RequestProcessor {
             NotificationRecord notificationRecord = notificationRecords.get(0);
             JSONObject jsonObject = new JSONObject()
                     .put("notificationId", notificationRecord.getNotificationId())
-                    .put("creationTimestamp", notificationRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).getEpochSecond())
+                    .put("creationTimestamp", notificationRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("guildId", notificationRecord.getGuildId())
                     .put("channelId", notificationRecord.getChannelId())
                     .put("userId", notificationRecord.getUserId())
-                    .put("notificationTarget", notificationRecord.getNotificationTarget().toInstant(ZoneOffset.UTC).getEpochSecond())
+                    .put("notificationTarget", notificationRecord.getNotificationTarget().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("notificationMessage", notificationRecord.getNotificationMessage());
             // respond
             ctx.status(202);

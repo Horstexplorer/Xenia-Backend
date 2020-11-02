@@ -131,8 +131,8 @@ public class DataGuildChannelMessage extends RequestProcessor {
                     .put("channelId", messagesRecord.getChannelId())
                     .put("messageId", messagesRecord.getMessageId())
                     .put("userId", messagesRecord.getUserId())
-                    .put("creationTimestamp", messagesRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
-                    .put("creationTimestampDiscord", messagesRecord.getCreationTimestampDiscord().toEpochSecond(ZoneOffset.UTC))
+                    .put("creationTimestamp", messagesRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
+                    .put("creationTimestampDiscord", messagesRecord.getCreationTimestampDiscord().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("messageSalt", messagesRecord.getMessageSalt())
                     .put("messageContent", messagesRecord.getMessageContent());
             // return
@@ -179,8 +179,8 @@ public class DataGuildChannelMessage extends RequestProcessor {
                     .put("channelId", messagesRecord.getChannelId())
                     .put("messageId", messagesRecord.getMessageId())
                     .put("userId", messagesRecord.getUserId())
-                    .put("creationTimestamp", messagesRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
-                    .put("creationTimestampDiscord", messagesRecord.getCreationTimestampDiscord().toEpochSecond(ZoneOffset.UTC))
+                    .put("creationTimestamp", messagesRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
+                    .put("creationTimestampDiscord", messagesRecord.getCreationTimestampDiscord().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("messageSalt", messagesRecord.getMessageSalt())
                     .put("messageContent", messagesRecord.getMessageContent());
             // return

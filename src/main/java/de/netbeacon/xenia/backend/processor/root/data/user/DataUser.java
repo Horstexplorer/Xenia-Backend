@@ -56,7 +56,7 @@ public class DataUser extends RequestProcessor {
             // fluffy json
             JSONObject jsonObject = new JSONObject()
                     .put("userId", usersRecord.getUserId())
-                    .put("creationTimestamp", usersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                    .put("creationTimestamp", usersRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("internalRole", usersRecord.getInternalRole())
                     .put("preferredLanguage", usersRecord.getPreferredLanguage())
                     .put("meta", new JSONObject()
@@ -101,7 +101,7 @@ public class DataUser extends RequestProcessor {
             // fluffy json
             JSONObject jsonObject = new JSONObject()
                     .put("userId", usersRecord.getUserId())
-                    .put("creationTimestamp", usersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                    .put("creationTimestamp", usersRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("internalRole", usersRecord.getInternalRole())
                     .put("preferredLanguage", usersRecord.getPreferredLanguage())
                     .put("meta", new JSONObject()
@@ -141,7 +141,7 @@ public class DataUser extends RequestProcessor {
             // fluffy json
             JSONObject jsonObject = new JSONObject()
                     .put("userId", usersRecord.getUserId())
-                    .put("creationTimestamp", usersRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
+                    .put("creationTimestamp", usersRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("internalRole", usersRecord.getInternalRole())
                     .put("preferredLanguage", usersRecord.getPreferredLanguage())
                     .put("meta", new JSONObject()
