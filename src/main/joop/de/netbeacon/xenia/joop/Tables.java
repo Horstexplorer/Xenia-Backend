@@ -69,6 +69,21 @@ public class Tables {
     public static final Permission PERMISSION = Permission.PERMISSION;
 
     /**
+     * The table <code>public.polls</code>.
+     */
+    public static final Polls POLLS = Polls.POLLS;
+
+    /**
+     * The table <code>public.polls_entries</code>.
+     */
+    public static final PollsEntries POLLS_ENTRIES = PollsEntries.POLLS_ENTRIES;
+
+    /**
+     * The table <code>public.polls_options</code>.
+     */
+    public static final PollsOptions POLLS_OPTIONS = PollsOptions.POLLS_OPTIONS;
+
+    /**
      * The table <code>public.roles</code>.
      */
     public static final Roles ROLES = Roles.ROLES;
