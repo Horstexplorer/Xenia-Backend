@@ -20,6 +20,7 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.data.guild.misc.notification.DataGuildMiscNotification;
+import de.netbeacon.xenia.backend.processor.root.data.guild.misc.polls.DataGuildMiscPolls;
 import de.netbeacon.xenia.backend.processor.root.data.guild.misc.tag.DataGuildMiscTag;
 
 public class DataGuildMisc extends RequestProcessor {
@@ -27,7 +28,8 @@ public class DataGuildMisc extends RequestProcessor {
     public DataGuildMisc(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
         super("misc", sqlConnectionPool, websocketProcessor,
                 new DataGuildMiscTag(sqlConnectionPool, websocketProcessor),
-                new DataGuildMiscNotification(sqlConnectionPool, websocketProcessor)
+                new DataGuildMiscNotification(sqlConnectionPool, websocketProcessor),
+                new DataGuildMiscPolls(sqlConnectionPool, websocketProcessor)
         );
     }
 
