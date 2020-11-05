@@ -21,7 +21,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LicenseTypes extends TableImpl<LicenseTypesRecord> {
 
-    private static final long serialVersionUID = -2017418264;
+    private static final long serialVersionUID = -480578252;
 
     /**
      * The reference instance of <code>public.license_types</code>
@@ -70,6 +70,11 @@ public class LicenseTypes extends TableImpl<LicenseTypesRecord> {
      * The column <code>public.license_types.perk_misc_notifications_c</code>.
      */
     public final TableField<LicenseTypesRecord, Integer> PERK_MISC_NOTIFICATIONS_C = createField(DSL.name("perk_misc_notifications_c"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.license_types.perk_misc_polls_c</code>.
+     */
+    public final TableField<LicenseTypesRecord, Integer> PERK_MISC_POLLS_C = createField(DSL.name("perk_misc_polls_c"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * Create a <code>public.license_types</code> table reference
@@ -146,11 +151,11 @@ public class LicenseTypes extends TableImpl<LicenseTypesRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, String, String, Integer, Integer, Integer, Integer> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Integer, String, String, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }
