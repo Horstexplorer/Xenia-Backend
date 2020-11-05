@@ -27,6 +27,7 @@ public class Keys {
     public static final Identity<LicensesRecord, Integer> IDENTITY_LICENSES = Identities0.IDENTITY_LICENSES;
     public static final Identity<NotificationRecord, Long> IDENTITY_NOTIFICATION = Identities0.IDENTITY_NOTIFICATION;
     public static final Identity<PermissionRecord, Integer> IDENTITY_PERMISSION = Identities0.IDENTITY_PERMISSION;
+    public static final Identity<PollsRecord, Long> IDENTITY_POLLS = Identities0.IDENTITY_POLLS;
     public static final Identity<RolesRecord, Long> IDENTITY_ROLES = Identities0.IDENTITY_ROLES;
 
     // -------------------------------------------------------------------------
@@ -47,6 +48,9 @@ public class Keys {
     public static final UniqueKey<MessagesRecord> MESSAGES_MESSAGE_ID = UniqueKeys0.MESSAGES_MESSAGE_ID;
     public static final UniqueKey<NotificationRecord> NOTIFICATION_NOTIFICATION_ID = UniqueKeys0.NOTIFICATION_NOTIFICATION_ID;
     public static final UniqueKey<PermissionRecord> PERMISSION_PERMISSION_ID = UniqueKeys0.PERMISSION_PERMISSION_ID;
+    public static final UniqueKey<PollsRecord> POLLS_POLL_ID = UniqueKeys0.POLLS_POLL_ID;
+    public static final UniqueKey<PollsEntriesRecord> POLLS_ENTRIES_POLL_ID_USER_ID = UniqueKeys0.POLLS_ENTRIES_POLL_ID_USER_ID;
+    public static final UniqueKey<PollsOptionsRecord> POLLS_OPTIONS_POLL_ID_POLL_OPTION_ID = UniqueKeys0.POLLS_OPTIONS_POLL_ID_POLL_OPTION_ID;
     public static final UniqueKey<RolesRecord> ROLES_ROLE_ID = UniqueKeys0.ROLES_ROLE_ID;
     public static final UniqueKey<RolesRecord> ROLES_GUILD_ID_ROLE_NAME = UniqueKeys0.ROLES_GUILD_ID_ROLE_NAME;
     public static final UniqueKey<RolesPermissionRecord> ROLE_PERMISSION_ROLE_ID_PERMISSION_ID = UniqueKeys0.ROLE_PERMISSION_ROLE_ID_PERMISSION_ID;
@@ -72,6 +76,13 @@ public class Keys {
     public static final ForeignKey<NotificationRecord, GuildsRecord> NOTIFICATION__NOTIFICATION_GUILD_ID_FKEY = ForeignKeys0.NOTIFICATION__NOTIFICATION_GUILD_ID_FKEY;
     public static final ForeignKey<NotificationRecord, MembersRecord> NOTIFICATION__NOTIFICATION_GUILD_ID_USER_ID_FKEY = ForeignKeys0.NOTIFICATION__NOTIFICATION_GUILD_ID_USER_ID_FKEY;
     public static final ForeignKey<NotificationRecord, ChannelsRecord> NOTIFICATION__NOTIFICATION_CHANNEL_ID_FKEY = ForeignKeys0.NOTIFICATION__NOTIFICATION_CHANNEL_ID_FKEY;
+    public static final ForeignKey<PollsRecord, GuildsRecord> POLLS__POLLS_GUILD_ID_FKEY = ForeignKeys0.POLLS__POLLS_GUILD_ID_FKEY;
+    public static final ForeignKey<PollsRecord, MembersRecord> POLLS__POLLS_GUILD_ID_USER_ID_FKEY = ForeignKeys0.POLLS__POLLS_GUILD_ID_USER_ID_FKEY;
+    public static final ForeignKey<PollsRecord, ChannelsRecord> POLLS__POLLS_CHANNEL_ID_FKEY = ForeignKeys0.POLLS__POLLS_CHANNEL_ID_FKEY;
+    public static final ForeignKey<PollsRecord, UsersRecord> POLLS__POLLS_USER_ID_FKEY = ForeignKeys0.POLLS__POLLS_USER_ID_FKEY;
+    public static final ForeignKey<PollsEntriesRecord, PollsRecord> POLLS_ENTRIES__POLLS_ENTRIES_POLL_ID_FKEY = ForeignKeys0.POLLS_ENTRIES__POLLS_ENTRIES_POLL_ID_FKEY;
+    public static final ForeignKey<PollsEntriesRecord, PollsOptionsRecord> POLLS_ENTRIES__POLLS_ENTRIES_POLL_ID_POLL_OPTION_ID_FKEY = ForeignKeys0.POLLS_ENTRIES__POLLS_ENTRIES_POLL_ID_POLL_OPTION_ID_FKEY;
+    public static final ForeignKey<PollsOptionsRecord, PollsRecord> POLLS_OPTIONS__POLLS_OPTIONS_POLL_ID_FKEY = ForeignKeys0.POLLS_OPTIONS__POLLS_OPTIONS_POLL_ID_FKEY;
     public static final ForeignKey<RolesPermissionRecord, RolesRecord> ROLES_PERMISSION__ROLE_PERMISSION_ROLE_ID_FKEY = ForeignKeys0.ROLES_PERMISSION__ROLE_PERMISSION_ROLE_ID_FKEY;
     public static final ForeignKey<RolesPermissionRecord, PermissionRecord> ROLES_PERMISSION__ROLE_PERMISSION_PERMISSION_ID_FKEY = ForeignKeys0.ROLES_PERMISSION__ROLE_PERMISSION_PERMISSION_ID_FKEY;
     public static final ForeignKey<TagsRecord, MembersRecord> TAGS__TAGS_GUILD_ID_USER_ID_FKEY = ForeignKeys0.TAGS__TAGS_GUILD_ID_USER_ID_FKEY;
@@ -84,6 +95,7 @@ public class Keys {
         public static Identity<LicensesRecord, Integer> IDENTITY_LICENSES = Internal.createIdentity(Licenses.LICENSES, Licenses.LICENSES.LICENSE_ID);
         public static Identity<NotificationRecord, Long> IDENTITY_NOTIFICATION = Internal.createIdentity(Notification.NOTIFICATION, Notification.NOTIFICATION.NOTIFICATION_ID);
         public static Identity<PermissionRecord, Integer> IDENTITY_PERMISSION = Internal.createIdentity(Permission.PERMISSION, Permission.PERMISSION.PERMISSION_ID);
+        public static Identity<PollsRecord, Long> IDENTITY_POLLS = Internal.createIdentity(Polls.POLLS, Polls.POLLS.POLL_ID);
         public static Identity<RolesRecord, Long> IDENTITY_ROLES = Internal.createIdentity(Roles.ROLES, Roles.ROLES.ROLE_ID);
     }
 
@@ -102,6 +114,9 @@ public class Keys {
         public static final UniqueKey<MessagesRecord> MESSAGES_MESSAGE_ID = Internal.createUniqueKey(Messages.MESSAGES, "messages_message_id", new TableField[] { Messages.MESSAGES.MESSAGE_ID }, true);
         public static final UniqueKey<NotificationRecord> NOTIFICATION_NOTIFICATION_ID = Internal.createUniqueKey(Notification.NOTIFICATION, "notification_notification_id", new TableField[] { Notification.NOTIFICATION.NOTIFICATION_ID }, true);
         public static final UniqueKey<PermissionRecord> PERMISSION_PERMISSION_ID = Internal.createUniqueKey(Permission.PERMISSION, "permission_permission_id", new TableField[] { Permission.PERMISSION.PERMISSION_ID }, true);
+        public static final UniqueKey<PollsRecord> POLLS_POLL_ID = Internal.createUniqueKey(Polls.POLLS, "polls_poll_id", new TableField[] { Polls.POLLS.POLL_ID }, true);
+        public static final UniqueKey<PollsEntriesRecord> POLLS_ENTRIES_POLL_ID_USER_ID = Internal.createUniqueKey(PollsEntries.POLLS_ENTRIES, "polls_entries_poll_id_user_id", new TableField[] { PollsEntries.POLLS_ENTRIES.POLL_ID, PollsEntries.POLLS_ENTRIES.USER_ID }, true);
+        public static final UniqueKey<PollsOptionsRecord> POLLS_OPTIONS_POLL_ID_POLL_OPTION_ID = Internal.createUniqueKey(PollsOptions.POLLS_OPTIONS, "polls_options_poll_id_poll_option_id", new TableField[] { PollsOptions.POLLS_OPTIONS.POLL_ID, PollsOptions.POLLS_OPTIONS.POLL_OPTION_ID }, true);
         public static final UniqueKey<RolesRecord> ROLES_ROLE_ID = Internal.createUniqueKey(Roles.ROLES, "roles_role_id", new TableField[] { Roles.ROLES.ROLE_ID }, true);
         public static final UniqueKey<RolesRecord> ROLES_GUILD_ID_ROLE_NAME = Internal.createUniqueKey(Roles.ROLES, "roles_guild_id_role_name", new TableField[] { Roles.ROLES.GUILD_ID, Roles.ROLES.ROLE_NAME }, true);
         public static final UniqueKey<RolesPermissionRecord> ROLE_PERMISSION_ROLE_ID_PERMISSION_ID = Internal.createUniqueKey(RolesPermission.ROLES_PERMISSION, "role_permission_role_id_permission_id", new TableField[] { RolesPermission.ROLES_PERMISSION.ROLE_ID, RolesPermission.ROLES_PERMISSION.PERMISSION_ID }, true);
@@ -125,6 +140,13 @@ public class Keys {
         public static final ForeignKey<NotificationRecord, GuildsRecord> NOTIFICATION__NOTIFICATION_GUILD_ID_FKEY = Internal.createForeignKey(Keys.GUILDS_GUILD_ID, Notification.NOTIFICATION, "notification_guild_id_fkey", new TableField[] { Notification.NOTIFICATION.GUILD_ID }, true);
         public static final ForeignKey<NotificationRecord, MembersRecord> NOTIFICATION__NOTIFICATION_GUILD_ID_USER_ID_FKEY = Internal.createForeignKey(Keys.MEMBERS_GUILD_ID_USER_ID, Notification.NOTIFICATION, "notification_guild_id_user_id_fkey", new TableField[] { Notification.NOTIFICATION.GUILD_ID, Notification.NOTIFICATION.USER_ID }, true);
         public static final ForeignKey<NotificationRecord, ChannelsRecord> NOTIFICATION__NOTIFICATION_CHANNEL_ID_FKEY = Internal.createForeignKey(Keys.CHANNELS_CHANNEL_ID, Notification.NOTIFICATION, "notification_channel_id_fkey", new TableField[] { Notification.NOTIFICATION.CHANNEL_ID }, true);
+        public static final ForeignKey<PollsRecord, GuildsRecord> POLLS__POLLS_GUILD_ID_FKEY = Internal.createForeignKey(Keys.GUILDS_GUILD_ID, Polls.POLLS, "polls_guild_id_fkey", new TableField[] { Polls.POLLS.GUILD_ID }, true);
+        public static final ForeignKey<PollsRecord, MembersRecord> POLLS__POLLS_GUILD_ID_USER_ID_FKEY = Internal.createForeignKey(Keys.MEMBERS_GUILD_ID_USER_ID, Polls.POLLS, "polls_guild_id_user_id_fkey", new TableField[] { Polls.POLLS.GUILD_ID, Polls.POLLS.USER_ID }, true);
+        public static final ForeignKey<PollsRecord, ChannelsRecord> POLLS__POLLS_CHANNEL_ID_FKEY = Internal.createForeignKey(Keys.CHANNELS_CHANNEL_ID, Polls.POLLS, "polls_channel_id_fkey", new TableField[] { Polls.POLLS.CHANNEL_ID }, true);
+        public static final ForeignKey<PollsRecord, UsersRecord> POLLS__POLLS_USER_ID_FKEY = Internal.createForeignKey(Keys.USERS_USER_ID, Polls.POLLS, "polls_user_id_fkey", new TableField[] { Polls.POLLS.USER_ID }, true);
+        public static final ForeignKey<PollsEntriesRecord, PollsRecord> POLLS_ENTRIES__POLLS_ENTRIES_POLL_ID_FKEY = Internal.createForeignKey(Keys.POLLS_POLL_ID, PollsEntries.POLLS_ENTRIES, "polls_entries_poll_id_fkey", new TableField[] { PollsEntries.POLLS_ENTRIES.POLL_ID }, true);
+        public static final ForeignKey<PollsEntriesRecord, PollsOptionsRecord> POLLS_ENTRIES__POLLS_ENTRIES_POLL_ID_POLL_OPTION_ID_FKEY = Internal.createForeignKey(Keys.POLLS_OPTIONS_POLL_ID_POLL_OPTION_ID, PollsEntries.POLLS_ENTRIES, "polls_entries_poll_id_poll_option_id_fkey", new TableField[] { PollsEntries.POLLS_ENTRIES.POLL_ID, PollsEntries.POLLS_ENTRIES.POLL_OPTION_ID }, true);
+        public static final ForeignKey<PollsOptionsRecord, PollsRecord> POLLS_OPTIONS__POLLS_OPTIONS_POLL_ID_FKEY = Internal.createForeignKey(Keys.POLLS_POLL_ID, PollsOptions.POLLS_OPTIONS, "polls_options_poll_id_fkey", new TableField[] { PollsOptions.POLLS_OPTIONS.POLL_ID }, true);
         public static final ForeignKey<RolesPermissionRecord, RolesRecord> ROLES_PERMISSION__ROLE_PERMISSION_ROLE_ID_FKEY = Internal.createForeignKey(Keys.ROLES_ROLE_ID, RolesPermission.ROLES_PERMISSION, "role_permission_role_id_fkey", new TableField[] { RolesPermission.ROLES_PERMISSION.ROLE_ID }, true);
         public static final ForeignKey<RolesPermissionRecord, PermissionRecord> ROLES_PERMISSION__ROLE_PERMISSION_PERMISSION_ID_FKEY = Internal.createForeignKey(Keys.PERMISSION_PERMISSION_ID, RolesPermission.ROLES_PERMISSION, "role_permission_permission_id_fkey", new TableField[] { RolesPermission.ROLES_PERMISSION.PERMISSION_ID }, true);
         public static final ForeignKey<TagsRecord, MembersRecord> TAGS__TAGS_GUILD_ID_USER_ID_FKEY = Internal.createForeignKey(Keys.MEMBERS_GUILD_ID_USER_ID, Tags.TAGS, "tags_guild_id_user_id_fkey", new TableField[] { Tags.TAGS.GUILD_ID, Tags.TAGS.USER_ID }, true);
