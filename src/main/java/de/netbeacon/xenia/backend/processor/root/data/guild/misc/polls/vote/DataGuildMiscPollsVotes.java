@@ -57,7 +57,7 @@ public class DataGuildMiscPollsVotes extends RequestProcessor {
             ctx.status(202);
             // send ws notification
             WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD_MISC_TAG").put("action", "UPDATE").put("guildId", guildId).put("pollId", pollId);
+            broadcastMessage.get().put("type", "GUILD_MISC_POLL").put("action", "UPDATE").put("guildId", guildId).put("pollId", pollId);
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){

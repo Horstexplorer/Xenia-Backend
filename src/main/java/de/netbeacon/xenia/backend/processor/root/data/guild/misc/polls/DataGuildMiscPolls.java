@@ -180,7 +180,7 @@ public class DataGuildMiscPolls extends RequestProcessor {
             ctx.result(jsonObject.toString());
             // send ws notification
             WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD_MISC_TAG").put("action", "CREATE").put("guildId", guildId).put("pollId", pollsRecord.getPollId());
+            broadcastMessage.get().put("type", "GUILD_MISC_POLL").put("action", "CREATE").put("guildId", guildId).put("pollId", pollsRecord.getPollId());
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
