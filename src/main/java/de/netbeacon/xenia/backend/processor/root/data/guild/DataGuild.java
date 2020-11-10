@@ -51,7 +51,8 @@ public class DataGuild extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             Result<GuildsRecord> guildsRecords = sqlContext.selectFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetch();
             if(guildsRecords.isEmpty()){
@@ -88,7 +89,8 @@ public class DataGuild extends RequestProcessor {
 
     @Override
     public void put(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             Result<GuildsRecord> guildsRecords = sqlContext.selectFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetch();
             if(guildsRecords.isEmpty()){
@@ -130,7 +132,8 @@ public class DataGuild extends RequestProcessor {
 
     @Override
     public void post(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             Result<GuildsRecord> guildsRecords = sqlContext.insertInto(Tables.GUILDS, Tables.GUILDS.GUILD_ID).values(guildId).returning().fetch();
             if(guildsRecords.isEmpty()){
@@ -166,7 +169,8 @@ public class DataGuild extends RequestProcessor {
 
     @Override
     public void delete(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             int mod = sqlContext.deleteFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).execute();
             if(mod == 0){

@@ -53,7 +53,8 @@ public class ManagementClients extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long clientId = Long.parseLong(ctx.queryParam("clientId"));
             // json
             JSONObject jsonObject = new JSONObject();
@@ -104,7 +105,8 @@ public class ManagementClients extends RequestProcessor {
 
     @Override
     public void put(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long clientId = Long.parseLong(ctx.queryParam("clientId"));
             // get local client
             LocalClient client1 = (LocalClient) clientManager.getClient(ClientType.INTERNAL, clientId);
@@ -170,7 +172,8 @@ public class ManagementClients extends RequestProcessor {
 
     @Override
     public void post(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             String clientName = ctx.queryParam("clientName");
             String password = ctx.queryParam("clientPassword");
             ClientType clientType = ClientType.fromString(ctx.queryParam("clientType"));
@@ -231,7 +234,8 @@ public class ManagementClients extends RequestProcessor {
 
     @Override
     public void delete(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long clientId = Long.parseLong(ctx.queryParam("clientId"));
             // get local client
             Client client1 = clientManager.getClient(ClientType.INTERNAL, clientId);

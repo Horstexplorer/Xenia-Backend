@@ -46,7 +46,8 @@ public class DataUser extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long userId = Long.parseLong(ctx.pathParam("userId"));
             Result<UsersRecord> usersRecordResult = sqlContext.selectFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(userId)).fetch();
             if(usersRecordResult.isEmpty()){
@@ -82,7 +83,8 @@ public class DataUser extends RequestProcessor {
 
     @Override
     public void put(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long userId = Long.parseLong(ctx.pathParam("userId"));
             Result<UsersRecord> usersRecordResult = sqlContext.selectFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(userId)).fetch();
             if(usersRecordResult.isEmpty()){
@@ -131,7 +133,8 @@ public class DataUser extends RequestProcessor {
 
     @Override
     public void post(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long userId = Long.parseLong(ctx.pathParam("userId"));
             Result<UsersRecord> usersRecordResult = sqlContext.insertInto(Tables.USERS, Tables.USERS.USER_ID).values(userId).returning().fetch();
             if(usersRecordResult.isEmpty()){
@@ -171,7 +174,8 @@ public class DataUser extends RequestProcessor {
 
     @Override
     public void delete(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long userId = Long.parseLong(ctx.pathParam("userId"));
             int mod = sqlContext.deleteFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(userId)).execute();
             if(mod == 0){

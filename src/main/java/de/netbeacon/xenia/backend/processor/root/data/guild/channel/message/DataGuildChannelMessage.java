@@ -47,7 +47,8 @@ public class DataGuildChannelMessage extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long channelId = Long.parseLong(ctx.pathParam("channelId"));
             JSONObject jsonObject = new JSONObject();
@@ -109,7 +110,8 @@ public class DataGuildChannelMessage extends RequestProcessor {
 
     @Override
     public void put(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long channelId = Long.parseLong(ctx.pathParam("channelId"));
             long messageId = Long.parseLong(ctx.pathParam("messageId"));
@@ -159,7 +161,8 @@ public class DataGuildChannelMessage extends RequestProcessor {
 
     @Override
     public void post(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long channelId = Long.parseLong(ctx.pathParam("channelId"));
             long messageId = Long.parseLong(ctx.pathParam("messageId"));
@@ -207,7 +210,8 @@ public class DataGuildChannelMessage extends RequestProcessor {
 
     @Override
     public void delete(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long channelId = Long.parseLong(ctx.pathParam("channelId"));
             long messageId = Long.parseLong(ctx.pathParam("messageId"));

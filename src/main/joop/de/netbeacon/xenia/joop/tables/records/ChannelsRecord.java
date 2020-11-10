@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ChannelsRecord extends UpdatableRecordImpl<ChannelsRecord> implements Record8<Long, Long, LocalDateTime, Boolean, String, String, Boolean, Long> {
 
-    private static final long serialVersionUID = -1536049040;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.channels.channel_id</code>.
@@ -363,13 +363,13 @@ public class ChannelsRecord extends UpdatableRecordImpl<ChannelsRecord> implemen
     public ChannelsRecord(Long channelId, Long guildId, LocalDateTime creationTimestamp, Boolean accessRestriction, String channelType, String channelMode, Boolean tmpLoggingActive, Long tmpLoggingChannelId) {
         super(Channels.CHANNELS);
 
-        set(0, channelId);
-        set(1, guildId);
-        set(2, creationTimestamp);
-        set(3, accessRestriction);
-        set(4, channelType);
-        set(5, channelMode);
-        set(6, tmpLoggingActive);
-        set(7, tmpLoggingChannelId);
+        setChannelId(channelId);
+        setGuildId(guildId);
+        setCreationTimestamp(creationTimestamp);
+        setAccessRestriction(accessRestriction);
+        setChannelType(channelType);
+        setChannelMode(channelMode);
+        setTmpLoggingActive(tmpLoggingActive);
+        setTmpLoggingChannelId(tmpLoggingChannelId);
     }
 }

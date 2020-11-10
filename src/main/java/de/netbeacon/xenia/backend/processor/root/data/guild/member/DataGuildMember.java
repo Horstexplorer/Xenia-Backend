@@ -52,7 +52,8 @@ public class DataGuildMember extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             JSONObject jsonObject = new JSONObject();
             if(!ctx.pathParamMap().containsKey("userId")){
@@ -119,7 +120,8 @@ public class DataGuildMember extends RequestProcessor {
 
     @Override
     public void put(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long userId = Long.parseLong(ctx.pathParam("userId"));
             // fetch
@@ -186,7 +188,8 @@ public class DataGuildMember extends RequestProcessor {
 
     @Override
     public void post(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long userId = Long.parseLong(ctx.pathParam("userId"));
             // insert
@@ -235,7 +238,8 @@ public class DataGuildMember extends RequestProcessor {
 
     @Override
     public void delete(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long userId = Long.parseLong(ctx.pathParam("userId"));
             int mod = sqlContext.deleteFrom(Tables.MEMBERS).where(Tables.MEMBERS.USER_ID.eq(userId).and(Tables.MEMBERS.GUILD_ID.eq(guildId))).execute();

@@ -49,7 +49,8 @@ public class DataGuildRole extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             JSONObject jsonObject = new JSONObject();
             if(!ctx.pathParamMap().containsKey("roleId")){
@@ -116,7 +117,8 @@ public class DataGuildRole extends RequestProcessor {
 
     @Override
     public void put(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long roleId = Long.parseLong(ctx.pathParam("roleId"));
             Result<RolesRecord> rolesRecords = sqlContext.selectFrom(Tables.ROLES).where(Tables.ROLES.ROLE_ID.eq(roleId).and(Tables.ROLES.GUILD_ID.eq(guildId))).fetch();
@@ -169,7 +171,8 @@ public class DataGuildRole extends RequestProcessor {
 
     @Override
     public void post(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             // long roleId = Long.parseLong(ctx.pathParam("roleId")); - given by db
             Result<RolesRecord> rolesRecords = sqlContext.insertInto(Tables.ROLES, Tables.ROLES.GUILD_ID).values(guildId).returning().fetch();
@@ -222,7 +225,8 @@ public class DataGuildRole extends RequestProcessor {
 
     @Override
     public void delete(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long roleId = Long.parseLong(ctx.pathParam("roleId"));
             int mod = sqlContext.deleteFrom(Tables.ROLES).where(Tables.ROLES.ROLE_ID.eq(roleId).and(Tables.ROLES.GUILD_ID.eq(guildId))).execute();

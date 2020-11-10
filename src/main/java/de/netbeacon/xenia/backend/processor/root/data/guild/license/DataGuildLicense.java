@@ -50,7 +50,8 @@ public class DataGuildLicense extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             // fetch data
             Result<Record> recordResults = sqlContext.select().from(Tables.GUILDS).leftJoin(Tables.LICENSES).on(Tables.GUILDS.LICENSE_ID.eq(Tables.LICENSES.LICENSE_ID)).leftJoin(Tables.LICENSE_TYPES).on(Tables.LICENSES.LICENSE_TYPE.eq(Tables.LICENSE_TYPES.LICENSE_TYPE_ID)).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetch();
@@ -113,7 +114,8 @@ public class DataGuildLicense extends RequestProcessor {
 
     @Override
     public void put(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             String licenseKey = ctx.queryParam("licenseKey");
             if(licenseKey == null){

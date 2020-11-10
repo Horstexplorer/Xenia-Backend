@@ -47,7 +47,8 @@ public class DataGuildMiscNotification extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             JSONObject jsonObject = new JSONObject();
             if(!ctx.pathParamMap().containsKey("notificationId")){
@@ -98,7 +99,8 @@ public class DataGuildMiscNotification extends RequestProcessor {
 
     @Override
     public void put(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long notificationId = Long.parseLong(ctx.pathParam("notificationId"));
             Result<NotificationRecord> notificationRecords = sqlContext.selectFrom(Tables.NOTIFICATION).where(Tables.NOTIFICATION.GUILD_ID.eq(guildId).and(Tables.NOTIFICATION.NOTIFICATION_ID.eq(notificationId))).fetch();
@@ -143,7 +145,8 @@ public class DataGuildMiscNotification extends RequestProcessor {
 
     @Override
     public void post(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             // get new data
             JSONObject newData = new JSONObject(ctx.body());
@@ -182,7 +185,8 @@ public class DataGuildMiscNotification extends RequestProcessor {
 
     @Override
     public void delete(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long notificationId = Long.parseLong(ctx.pathParam("notificationId"));
             int mod = sqlContext.deleteFrom(Tables.NOTIFICATION).where(Tables.NOTIFICATION.GUILD_ID.eq(guildId).and(Tables.NOTIFICATION.NOTIFICATION_ID.eq(notificationId))).execute();

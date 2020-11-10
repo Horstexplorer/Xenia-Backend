@@ -43,7 +43,8 @@ public class DataGuildMiscPollsVotes extends RequestProcessor {
 
     @Override
     public void post(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long pollId = Long.parseLong(ctx.pathParam("pollId"));
             int optionId = Integer.parseInt(ctx.pathParam("optionId"));
@@ -57,7 +58,7 @@ public class DataGuildMiscPollsVotes extends RequestProcessor {
             ctx.status(202);
             // send ws notification
             WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD_MISC_TAG").put("action", "UPDATE").put("guildId", guildId).put("pollId", pollId);
+            broadcastMessage.get().put("type", "GUILD_MISC_POLL").put("action", "UPDATE").put("guildId", guildId).put("pollId", pollId);
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){

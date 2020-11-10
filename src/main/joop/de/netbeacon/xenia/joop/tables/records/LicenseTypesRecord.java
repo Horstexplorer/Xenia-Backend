@@ -18,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LicenseTypesRecord extends UpdatableRecordImpl<LicenseTypesRecord> implements Record8<Integer, String, String, Integer, Integer, Integer, Integer, Integer> {
 
-    private static final long serialVersionUID = -554054855;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.license_types.license_type_id</code>.
@@ -361,13 +361,13 @@ public class LicenseTypesRecord extends UpdatableRecordImpl<LicenseTypesRecord> 
     public LicenseTypesRecord(Integer licenseTypeId, String licenseName, String licenseDescription, Integer perkChannelLoggingC, Integer perkGuildRolesC, Integer perkMiscTagsC, Integer perkMiscNotificationsC, Integer perkMiscPollsC) {
         super(LicenseTypes.LICENSE_TYPES);
 
-        set(0, licenseTypeId);
-        set(1, licenseName);
-        set(2, licenseDescription);
-        set(3, perkChannelLoggingC);
-        set(4, perkGuildRolesC);
-        set(5, perkMiscTagsC);
-        set(6, perkMiscNotificationsC);
-        set(7, perkMiscPollsC);
+        setLicenseTypeId(licenseTypeId);
+        setLicenseName(licenseName);
+        setLicenseDescription(licenseDescription);
+        setPerkChannelLoggingC(perkChannelLoggingC);
+        setPerkGuildRolesC(perkGuildRolesC);
+        setPerkMiscTagsC(perkMiscTagsC);
+        setPerkMiscNotificationsC(perkMiscNotificationsC);
+        setPerkMiscPollsC(perkMiscPollsC);
     }
 }

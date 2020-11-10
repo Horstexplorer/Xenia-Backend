@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PollsRecord extends UpdatableRecordImpl<PollsRecord> implements Record8<Long, LocalDateTime, Long, Long, Long, LocalDateTime, Boolean, String> {
 
-    private static final long serialVersionUID = 703738477;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.polls.poll_id</code>.
@@ -363,13 +363,13 @@ public class PollsRecord extends UpdatableRecordImpl<PollsRecord> implements Rec
     public PollsRecord(Long pollId, LocalDateTime creationTimestamp, Long guildId, Long channelId, Long userId, LocalDateTime pollCloseTimestamp, Boolean pollIsActive, String pollDescription) {
         super(Polls.POLLS);
 
-        set(0, pollId);
-        set(1, creationTimestamp);
-        set(2, guildId);
-        set(3, channelId);
-        set(4, userId);
-        set(5, pollCloseTimestamp);
-        set(6, pollIsActive);
-        set(7, pollDescription);
+        setPollId(pollId);
+        setCreationTimestamp(creationTimestamp);
+        setGuildId(guildId);
+        setChannelId(channelId);
+        setUserId(userId);
+        setPollCloseTimestamp(pollCloseTimestamp);
+        setPollIsActive(pollIsActive);
+        setPollDescription(pollDescription);
     }
 }

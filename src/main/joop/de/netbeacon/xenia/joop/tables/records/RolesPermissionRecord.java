@@ -18,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RolesPermissionRecord extends UpdatableRecordImpl<RolesPermissionRecord> implements Record3<Long, Integer, Boolean> {
 
-    private static final long serialVersionUID = 1978943748;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.roles_permission.role_id</code>.
@@ -176,8 +176,8 @@ public class RolesPermissionRecord extends UpdatableRecordImpl<RolesPermissionRe
     public RolesPermissionRecord(Long roleId, Integer permissionId, Boolean permissionGranted) {
         super(RolesPermission.ROLES_PERMISSION);
 
-        set(0, roleId);
-        set(1, permissionId);
-        set(2, permissionGranted);
+        setRoleId(roleId);
+        setPermissionId(permissionId);
+        setPermissionGranted(permissionGranted);
     }
 }

@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MessagesRecord extends UpdatableRecordImpl<MessagesRecord> implements Record8<Long, Long, Long, Long, LocalDateTime, LocalDateTime, String, String> {
 
-    private static final long serialVersionUID = 1230463378;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.messages.message_id</code>.
@@ -363,13 +363,13 @@ public class MessagesRecord extends UpdatableRecordImpl<MessagesRecord> implemen
     public MessagesRecord(Long messageId, Long guildId, Long channelId, Long userId, LocalDateTime creationTimestamp, LocalDateTime creationTimestampDiscord, String messageSalt, String messageContent) {
         super(Messages.MESSAGES);
 
-        set(0, messageId);
-        set(1, guildId);
-        set(2, channelId);
-        set(3, userId);
-        set(4, creationTimestamp);
-        set(5, creationTimestampDiscord);
-        set(6, messageSalt);
-        set(7, messageContent);
+        setMessageId(messageId);
+        setGuildId(guildId);
+        setChannelId(channelId);
+        setUserId(userId);
+        setCreationTimestamp(creationTimestamp);
+        setCreationTimestampDiscord(creationTimestampDiscord);
+        setMessageSalt(messageSalt);
+        setMessageContent(messageContent);
     }
 }

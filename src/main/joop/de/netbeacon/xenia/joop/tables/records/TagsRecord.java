@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TagsRecord extends UpdatableRecordImpl<TagsRecord> implements Record5<String, LocalDateTime, Long, Long, String> {
 
-    private static final long serialVersionUID = 1335698735;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.tags.tag_name</code>.
@@ -252,10 +252,10 @@ public class TagsRecord extends UpdatableRecordImpl<TagsRecord> implements Recor
     public TagsRecord(String tagName, LocalDateTime creationTimestamp, Long guildId, Long userId, String tagContent) {
         super(Tags.TAGS);
 
-        set(0, tagName);
-        set(1, creationTimestamp);
-        set(2, guildId);
-        set(3, userId);
-        set(4, tagContent);
+        setTagName(tagName);
+        setCreationTimestamp(creationTimestamp);
+        setGuildId(guildId);
+        setUserId(userId);
+        setTagContent(tagContent);
     }
 }

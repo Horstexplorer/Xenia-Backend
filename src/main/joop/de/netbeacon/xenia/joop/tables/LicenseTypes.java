@@ -9,6 +9,7 @@ import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.LicenseTypesRecord;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 import java.util.Arrays;
@@ -21,7 +22,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LicenseTypes extends TableImpl<LicenseTypesRecord> {
 
-    private static final long serialVersionUID = -480578252;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.license_types</code>
@@ -39,48 +40,49 @@ public class LicenseTypes extends TableImpl<LicenseTypesRecord> {
     /**
      * The column <code>public.license_types.license_type_id</code>.
      */
-    public final TableField<LicenseTypesRecord, Integer> LICENSE_TYPE_ID = createField(DSL.name("license_type_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<LicenseTypesRecord, Integer> LICENSE_TYPE_ID = createField(DSL.name("license_type_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.license_types.license_name</code>.
      */
-    public final TableField<LicenseTypesRecord, String> LICENSE_NAME = createField(DSL.name("license_name"), org.jooq.impl.SQLDataType.CHAR(32).nullable(false), this, "");
+    public final TableField<LicenseTypesRecord, String> LICENSE_NAME = createField(DSL.name("license_name"), SQLDataType.CHAR(32).nullable(false), this, "");
 
     /**
      * The column <code>public.license_types.license_description</code>.
      */
-    public final TableField<LicenseTypesRecord, String> LICENSE_DESCRIPTION = createField(DSL.name("license_description"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(org.jooq.impl.DSL.field("'No Description Set'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<LicenseTypesRecord, String> LICENSE_DESCRIPTION = createField(DSL.name("license_description"), SQLDataType.VARCHAR(255).nullable(false).defaultValue(DSL.field("'No Description Set'::character varying", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.license_types.perk_channel_logging_c</code>.
      */
-    public final TableField<LicenseTypesRecord, Integer> PERK_CHANNEL_LOGGING_C = createField(DSL.name("perk_channel_logging_c"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<LicenseTypesRecord, Integer> PERK_CHANNEL_LOGGING_C = createField(DSL.name("perk_channel_logging_c"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.license_types.perk_guild_roles_c</code>.
      */
-    public final TableField<LicenseTypesRecord, Integer> PERK_GUILD_ROLES_C = createField(DSL.name("perk_guild_roles_c"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<LicenseTypesRecord, Integer> PERK_GUILD_ROLES_C = createField(DSL.name("perk_guild_roles_c"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.license_types.perk_misc_tags_c</code>.
      */
-    public final TableField<LicenseTypesRecord, Integer> PERK_MISC_TAGS_C = createField(DSL.name("perk_misc_tags_c"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<LicenseTypesRecord, Integer> PERK_MISC_TAGS_C = createField(DSL.name("perk_misc_tags_c"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.license_types.perk_misc_notifications_c</code>.
      */
-    public final TableField<LicenseTypesRecord, Integer> PERK_MISC_NOTIFICATIONS_C = createField(DSL.name("perk_misc_notifications_c"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<LicenseTypesRecord, Integer> PERK_MISC_NOTIFICATIONS_C = createField(DSL.name("perk_misc_notifications_c"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.license_types.perk_misc_polls_c</code>.
      */
-    public final TableField<LicenseTypesRecord, Integer> PERK_MISC_POLLS_C = createField(DSL.name("perk_misc_polls_c"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<LicenseTypesRecord, Integer> PERK_MISC_POLLS_C = createField(DSL.name("perk_misc_polls_c"), SQLDataType.INTEGER.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.license_types</code> table reference
-     */
-    public LicenseTypes() {
-        this(DSL.name("license_types"), null);
+    private LicenseTypes(Name alias, Table<LicenseTypesRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private LicenseTypes(Name alias, Table<LicenseTypesRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -97,12 +99,11 @@ public class LicenseTypes extends TableImpl<LicenseTypesRecord> {
         this(alias, LICENSE_TYPES);
     }
 
-    private LicenseTypes(Name alias, Table<LicenseTypesRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private LicenseTypes(Name alias, Table<LicenseTypesRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.license_types</code> table reference
+     */
+    public LicenseTypes() {
+        this(DSL.name("license_types"), null);
     }
 
     public <O extends Record> LicenseTypes(Table<O> child, ForeignKey<O, LicenseTypesRecord> key) {

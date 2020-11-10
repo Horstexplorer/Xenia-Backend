@@ -9,6 +9,7 @@ import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.InternalBotDataRecord;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 import java.util.Arrays;
@@ -21,7 +22,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InternalBotData extends TableImpl<InternalBotDataRecord> {
 
-    private static final long serialVersionUID = 1274452171;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.internal_bot_data</code>
@@ -39,33 +40,34 @@ public class InternalBotData extends TableImpl<InternalBotDataRecord> {
     /**
      * The column <code>public.internal_bot_data.client_id</code>.
      */
-    public final TableField<InternalBotDataRecord, Long> CLIENT_ID = createField(DSL.name("client_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<InternalBotDataRecord, Long> CLIENT_ID = createField(DSL.name("client_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.internal_bot_data.client_name</code>.
      */
-    public final TableField<InternalBotDataRecord, String> CLIENT_NAME = createField(DSL.name("client_name"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.field("'no_name_specified'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<InternalBotDataRecord, String> CLIENT_NAME = createField(DSL.name("client_name"), SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.field("'no_name_specified'::character varying", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.internal_bot_data.client_info</code>.
      */
-    public final TableField<InternalBotDataRecord, String> CLIENT_INFO = createField(DSL.name("client_info"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(org.jooq.impl.DSL.field("'no_description_specified'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<InternalBotDataRecord, String> CLIENT_INFO = createField(DSL.name("client_info"), SQLDataType.VARCHAR(255).nullable(false).defaultValue(DSL.field("'no_description_specified'::character varying", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.internal_bot_data.discord_token</code>.
      */
-    public final TableField<InternalBotDataRecord, String> DISCORD_TOKEN = createField(DSL.name("discord_token"), org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false).defaultValue(org.jooq.impl.DSL.field("'no_token_specified'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<InternalBotDataRecord, String> DISCORD_TOKEN = createField(DSL.name("discord_token"), SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.field("'no_token_specified'::character varying", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.internal_bot_data.message_crypt_hash</code>.
      */
-    public final TableField<InternalBotDataRecord, String> MESSAGE_CRYPT_HASH = createField(DSL.name("message_crypt_hash"), org.jooq.impl.SQLDataType.CLOB.nullable(false).defaultValue(org.jooq.impl.DSL.field("''::text", org.jooq.impl.SQLDataType.CLOB)), this, "");
+    public final TableField<InternalBotDataRecord, String> MESSAGE_CRYPT_HASH = createField(DSL.name("message_crypt_hash"), SQLDataType.CLOB.nullable(false).defaultValue(DSL.field("''::text", SQLDataType.CLOB)), this, "");
 
-    /**
-     * Create a <code>public.internal_bot_data</code> table reference
-     */
-    public InternalBotData() {
-        this(DSL.name("internal_bot_data"), null);
+    private InternalBotData(Name alias, Table<InternalBotDataRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private InternalBotData(Name alias, Table<InternalBotDataRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -82,12 +84,11 @@ public class InternalBotData extends TableImpl<InternalBotDataRecord> {
         this(alias, INTERNAL_BOT_DATA);
     }
 
-    private InternalBotData(Name alias, Table<InternalBotDataRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private InternalBotData(Name alias, Table<InternalBotDataRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.internal_bot_data</code> table reference
+     */
+    public InternalBotData() {
+        this(DSL.name("internal_bot_data"), null);
     }
 
     public <O extends Record> InternalBotData(Table<O> child, ForeignKey<O, InternalBotDataRecord> key) {

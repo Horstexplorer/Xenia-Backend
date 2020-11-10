@@ -18,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MembersRolesRecord extends UpdatableRecordImpl<MembersRolesRecord> implements Record3<Long, Long, Long> {
 
-    private static final long serialVersionUID = 350193168;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.members_roles.guild_id</code>.
@@ -176,8 +176,8 @@ public class MembersRolesRecord extends UpdatableRecordImpl<MembersRolesRecord> 
     public MembersRolesRecord(Long guildId, Long userId, Long roleId) {
         super(MembersRoles.MEMBERS_ROLES);
 
-        set(0, guildId);
-        set(1, userId);
-        set(2, roleId);
+        setGuildId(guildId);
+        setUserId(userId);
+        setRoleId(roleId);
     }
 }
