@@ -5,14 +5,13 @@ package de.netbeacon.xenia.joop.tables.records;
 
 
 import de.netbeacon.xenia.joop.tables.Licenses;
-
-import java.time.LocalDateTime;
-
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record6;
 import org.jooq.Row6;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -21,7 +20,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LicensesRecord extends UpdatableRecordImpl<LicensesRecord> implements Record6<Integer, String, Integer, Boolean, Integer, LocalDateTime> {
 
-    private static final long serialVersionUID = 1186088017;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.licenses.license_id</code>.
@@ -290,11 +289,11 @@ public class LicensesRecord extends UpdatableRecordImpl<LicensesRecord> implemen
     public LicensesRecord(Integer licenseId, String licenseKey, Integer licenseType, Boolean licenseClaimed, Integer licenseDurationDays, LocalDateTime licenseActivationTimestamp) {
         super(Licenses.LICENSES);
 
-        set(0, licenseId);
-        set(1, licenseKey);
-        set(2, licenseType);
-        set(3, licenseClaimed);
-        set(4, licenseDurationDays);
-        set(5, licenseActivationTimestamp);
+        setLicenseId(licenseId);
+        setLicenseKey(licenseKey);
+        setLicenseType(licenseType);
+        setLicenseClaimed(licenseClaimed);
+        setLicenseDurationDays(licenseDurationDays);
+        setLicenseActivationTimestamp(licenseActivationTimestamp);
     }
 }

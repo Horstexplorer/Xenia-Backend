@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UsersRecord extends UpdatableRecordImpl<UsersRecord> implements Record5<Long, LocalDateTime, String, String, String> {
 
-    private static final long serialVersionUID = 1222976125;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.users.user_id</code>.
@@ -252,10 +252,10 @@ public class UsersRecord extends UpdatableRecordImpl<UsersRecord> implements Rec
     public UsersRecord(Long userId, LocalDateTime creationTimestamp, String internalRole, String preferredLanguage, String metaUsername) {
         super(Users.USERS);
 
-        set(0, userId);
-        set(1, creationTimestamp);
-        set(2, internalRole);
-        set(3, preferredLanguage);
-        set(4, metaUsername);
+        setUserId(userId);
+        setCreationTimestamp(creationTimestamp);
+        setInternalRole(internalRole);
+        setPreferredLanguage(preferredLanguage);
+        setMetaUsername(metaUsername);
     }
 }

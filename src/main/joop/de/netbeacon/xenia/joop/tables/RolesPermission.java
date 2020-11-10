@@ -9,6 +9,7 @@ import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.RolesPermissionRecord;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 import java.util.Arrays;
@@ -21,7 +22,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RolesPermission extends TableImpl<RolesPermissionRecord> {
 
-    private static final long serialVersionUID = -832992513;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.roles_permission</code>
@@ -39,23 +40,24 @@ public class RolesPermission extends TableImpl<RolesPermissionRecord> {
     /**
      * The column <code>public.roles_permission.role_id</code>.
      */
-    public final TableField<RolesPermissionRecord, Long> ROLE_ID = createField(DSL.name("role_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<RolesPermissionRecord, Long> ROLE_ID = createField(DSL.name("role_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.roles_permission.permission_id</code>.
      */
-    public final TableField<RolesPermissionRecord, Integer> PERMISSION_ID = createField(DSL.name("permission_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<RolesPermissionRecord, Integer> PERMISSION_ID = createField(DSL.name("permission_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.roles_permission.permission_granted</code>.
      */
-    public final TableField<RolesPermissionRecord, Boolean> PERMISSION_GRANTED = createField(DSL.name("permission_granted"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<RolesPermissionRecord, Boolean> PERMISSION_GRANTED = createField(DSL.name("permission_granted"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
-    /**
-     * Create a <code>public.roles_permission</code> table reference
-     */
-    public RolesPermission() {
-        this(DSL.name("roles_permission"), null);
+    private RolesPermission(Name alias, Table<RolesPermissionRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private RolesPermission(Name alias, Table<RolesPermissionRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -72,12 +74,11 @@ public class RolesPermission extends TableImpl<RolesPermissionRecord> {
         this(alias, ROLES_PERMISSION);
     }
 
-    private RolesPermission(Name alias, Table<RolesPermissionRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private RolesPermission(Name alias, Table<RolesPermissionRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.roles_permission</code> table reference
+     */
+    public RolesPermission() {
+        this(DSL.name("roles_permission"), null);
     }
 
     public <O extends Record> RolesPermission(Table<O> child, ForeignKey<O, RolesPermissionRecord> key) {

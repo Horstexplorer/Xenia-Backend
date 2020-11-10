@@ -5,7 +5,6 @@ package de.netbeacon.xenia.joop.tables.records;
 
 
 import de.netbeacon.xenia.joop.tables.Permission;
-
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record3;
@@ -19,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PermissionRecord extends UpdatableRecordImpl<PermissionRecord> implements Record3<Integer, String, String> {
 
-    private static final long serialVersionUID = 1681601940;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.permission.permission_id</code>.
@@ -177,8 +176,8 @@ public class PermissionRecord extends UpdatableRecordImpl<PermissionRecord> impl
     public PermissionRecord(Integer permissionId, String permissionName, String permissionDescription) {
         super(Permission.PERMISSION);
 
-        set(0, permissionId);
-        set(1, permissionName);
-        set(2, permissionDescription);
+        setPermissionId(permissionId);
+        setPermissionName(permissionName);
+        setPermissionDescription(permissionDescription);
     }
 }

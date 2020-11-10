@@ -43,7 +43,8 @@ public class DataGuildMiscPollsVotes extends RequestProcessor {
 
     @Override
     public void post(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long pollId = Long.parseLong(ctx.pathParam("pollId"));
             int optionId = Integer.parseInt(ctx.pathParam("optionId"));

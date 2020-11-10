@@ -47,7 +47,8 @@ public class SetupBot extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             // fetch data for this client
             long clientId = client.getClientId();
             Result<InternalBotDataRecord> internalBotDataRecords = sqlContext.selectFrom(Tables.INTERNAL_BOT_DATA).where(Tables.INTERNAL_BOT_DATA.CLIENT_ID.eq(clientId)).fetch();

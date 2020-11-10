@@ -9,6 +9,7 @@ import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.PollsEntriesRecord;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 import java.util.Arrays;
@@ -21,7 +22,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PollsEntries extends TableImpl<PollsEntriesRecord> {
 
-    private static final long serialVersionUID = -1644348015;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.polls_entries</code>
@@ -39,23 +40,24 @@ public class PollsEntries extends TableImpl<PollsEntriesRecord> {
     /**
      * The column <code>public.polls_entries.poll_id</code>.
      */
-    public final TableField<PollsEntriesRecord, Long> POLL_ID = createField(DSL.name("poll_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<PollsEntriesRecord, Long> POLL_ID = createField(DSL.name("poll_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.polls_entries.poll_option_id</code>.
      */
-    public final TableField<PollsEntriesRecord, Integer> POLL_OPTION_ID = createField(DSL.name("poll_option_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<PollsEntriesRecord, Integer> POLL_OPTION_ID = createField(DSL.name("poll_option_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.polls_entries.user_id</code>.
      */
-    public final TableField<PollsEntriesRecord, Long> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<PollsEntriesRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.polls_entries</code> table reference
-     */
-    public PollsEntries() {
-        this(DSL.name("polls_entries"), null);
+    private PollsEntries(Name alias, Table<PollsEntriesRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private PollsEntries(Name alias, Table<PollsEntriesRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -72,12 +74,11 @@ public class PollsEntries extends TableImpl<PollsEntriesRecord> {
         this(alias, POLLS_ENTRIES);
     }
 
-    private PollsEntries(Name alias, Table<PollsEntriesRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private PollsEntries(Name alias, Table<PollsEntriesRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.polls_entries</code> table reference
+     */
+    public PollsEntries() {
+        this(DSL.name("polls_entries"), null);
     }
 
     public <O extends Record> PollsEntries(Table<O> child, ForeignKey<O, PollsEntriesRecord> key) {

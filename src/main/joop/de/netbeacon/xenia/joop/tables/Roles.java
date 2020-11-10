@@ -7,24 +7,14 @@ package de.netbeacon.xenia.joop.tables;
 import de.netbeacon.xenia.joop.Keys;
 import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.RolesRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row4;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -33,7 +23,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Roles extends TableImpl<RolesRecord> {
 
-    private static final long serialVersionUID = 1608956363;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.roles</code>
@@ -51,28 +41,29 @@ public class Roles extends TableImpl<RolesRecord> {
     /**
      * The column <code>public.roles.role_id</code>.
      */
-    public final TableField<RolesRecord, Long> ROLE_ID = createField(DSL.name("role_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('roles_role_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<RolesRecord, Long> ROLE_ID = createField(DSL.name("role_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.roles.guild_id</code>.
      */
-    public final TableField<RolesRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<RolesRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.roles.creation_timestamp</code>.
      */
-    public final TableField<RolesRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<RolesRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>public.roles.role_name</code>.
      */
-    public final TableField<RolesRecord, String> ROLE_NAME = createField(DSL.name("role_name"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false).defaultValue(org.jooq.impl.DSL.field("'unnamed_role'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<RolesRecord, String> ROLE_NAME = createField(DSL.name("role_name"), SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.field("'unnamed_role'::character varying", SQLDataType.VARCHAR)), this, "");
 
-    /**
-     * Create a <code>public.roles</code> table reference
-     */
-    public Roles() {
-        this(DSL.name("roles"), null);
+    private Roles(Name alias, Table<RolesRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Roles(Name alias, Table<RolesRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -89,12 +80,11 @@ public class Roles extends TableImpl<RolesRecord> {
         this(alias, ROLES);
     }
 
-    private Roles(Name alias, Table<RolesRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Roles(Name alias, Table<RolesRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.roles</code> table reference
+     */
+    public Roles() {
+        this(DSL.name("roles"), null);
     }
 
     public <O extends Record> Roles(Table<O> child, ForeignKey<O, RolesRecord> key) {
@@ -108,7 +98,7 @@ public class Roles extends TableImpl<RolesRecord> {
 
     @Override
     public Identity<RolesRecord, Long> getIdentity() {
-        return Keys.IDENTITY_ROLES;
+        return (Identity<RolesRecord, Long>) super.getIdentity();
     }
 
     @Override

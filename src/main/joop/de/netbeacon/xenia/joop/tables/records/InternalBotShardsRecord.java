@@ -18,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InternalBotShardsRecord extends UpdatableRecordImpl<InternalBotShardsRecord> implements Record2<Integer, Long> {
 
-    private static final long serialVersionUID = -836015080;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.internal_bot_shards.shard_id</code>.
@@ -139,7 +139,7 @@ public class InternalBotShardsRecord extends UpdatableRecordImpl<InternalBotShar
     public InternalBotShardsRecord(Integer shardId, Long clientId) {
         super(InternalBotShards.INTERNAL_BOT_SHARDS);
 
-        set(0, shardId);
-        set(1, clientId);
+        setShardId(shardId);
+        setClientId(clientId);
     }
 }

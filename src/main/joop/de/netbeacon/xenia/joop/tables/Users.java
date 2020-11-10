@@ -9,6 +9,7 @@ import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.UsersRecord;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Users extends TableImpl<UsersRecord> {
 
-    private static final long serialVersionUID = -467881850;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.users</code>
@@ -40,33 +41,34 @@ public class Users extends TableImpl<UsersRecord> {
     /**
      * The column <code>public.users.user_id</code>.
      */
-    public final TableField<UsersRecord, Long> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<UsersRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.users.creation_timestamp</code>.
      */
-    public final TableField<UsersRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<UsersRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>public.users.internal_role</code>.
      */
-    public final TableField<UsersRecord, String> INTERNAL_ROLE = createField(DSL.name("internal_role"), org.jooq.impl.SQLDataType.VARCHAR(16).nullable(false).defaultValue(org.jooq.impl.DSL.field("'default'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UsersRecord, String> INTERNAL_ROLE = createField(DSL.name("internal_role"), SQLDataType.VARCHAR(16).nullable(false).defaultValue(DSL.field("'default'::character varying", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.users.preferred_language</code>.
      */
-    public final TableField<UsersRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), org.jooq.impl.SQLDataType.VARCHAR(16).nullable(false).defaultValue(org.jooq.impl.DSL.field("'undefined'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UsersRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), SQLDataType.VARCHAR(16).nullable(false).defaultValue(DSL.field("'undefined'::character varying", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.users.meta_username</code>.
      */
-    public final TableField<UsersRecord, String> META_USERNAME = createField(DSL.name("meta_username"), org.jooq.impl.SQLDataType.VARCHAR(37).nullable(false).defaultValue(org.jooq.impl.DSL.field("'unknown_username'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<UsersRecord, String> META_USERNAME = createField(DSL.name("meta_username"), SQLDataType.VARCHAR(37).nullable(false).defaultValue(DSL.field("'unknown_username'::character varying", SQLDataType.VARCHAR)), this, "");
 
-    /**
-     * Create a <code>public.users</code> table reference
-     */
-    public Users() {
-        this(DSL.name("users"), null);
+    private Users(Name alias, Table<UsersRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Users(Name alias, Table<UsersRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class Users extends TableImpl<UsersRecord> {
         this(alias, USERS);
     }
 
-    private Users(Name alias, Table<UsersRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Users(Name alias, Table<UsersRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.users</code> table reference
+     */
+    public Users() {
+        this(DSL.name("users"), null);
     }
 
     public <O extends Record> Users(Table<O> child, ForeignKey<O, UsersRecord> key) {

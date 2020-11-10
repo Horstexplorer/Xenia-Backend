@@ -45,7 +45,8 @@ public class AuthToken extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             String authToken = Base64.getEncoder().encodeToString(String.valueOf(client.getClientId()).getBytes())+"."+((LocalClient) client).getAuth().getToken();
             // json
             JSONObject jsonObject = new JSONObject()

@@ -44,7 +44,8 @@ public class ManagementLicenses extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             LicensesRecord licensesRecord;
             if(ctx.queryParam("licenseId") != null){
                 Result<LicensesRecord> licensesRecords = sqlContext.selectFrom(Tables.LICENSES).where(Tables.LICENSES.LICENSE_ID.eq(Integer.parseInt(ctx.queryParam("licenseId")))).fetch();
@@ -84,7 +85,8 @@ public class ManagementLicenses extends RequestProcessor {
 
     @Override
     public void post(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             // create new license
             int licenseType = 1;
             if(ctx.queryParam("licenseType") != null){
@@ -126,7 +128,8 @@ public class ManagementLicenses extends RequestProcessor {
 
     @Override
     public void delete(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             int mod = 0;
             if(ctx.queryParam("licenseId") != null){
                 mod = sqlContext.deleteFrom(Tables.LICENSES).where(Tables.LICENSES.LICENSE_ID.eq(Integer.parseInt("licenseId"))).execute();

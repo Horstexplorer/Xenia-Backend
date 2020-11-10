@@ -18,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PollsEntriesRecord extends UpdatableRecordImpl<PollsEntriesRecord> implements Record3<Long, Integer, Long> {
 
-    private static final long serialVersionUID = 773028763;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.polls_entries.poll_id</code>.
@@ -176,8 +176,8 @@ public class PollsEntriesRecord extends UpdatableRecordImpl<PollsEntriesRecord> 
     public PollsEntriesRecord(Long pollId, Integer pollOptionId, Long userId) {
         super(PollsEntries.POLLS_ENTRIES);
 
-        set(0, pollId);
-        set(1, pollOptionId);
-        set(2, userId);
+        setPollId(pollId);
+        setPollOptionId(pollOptionId);
+        setUserId(userId);
     }
 }

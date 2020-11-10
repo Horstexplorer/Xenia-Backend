@@ -20,7 +20,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1286777286;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public</code>

@@ -7,24 +7,14 @@ package de.netbeacon.xenia.joop.tables;
 import de.netbeacon.xenia.joop.Keys;
 import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.LicensesRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row6;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -33,7 +23,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Licenses extends TableImpl<LicensesRecord> {
 
-    private static final long serialVersionUID = 507021738;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.licenses</code>
@@ -51,38 +41,39 @@ public class Licenses extends TableImpl<LicensesRecord> {
     /**
      * The column <code>public.licenses.license_id</code>.
      */
-    public final TableField<LicensesRecord, Integer> LICENSE_ID = createField(DSL.name("license_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('licenses_license_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<LicensesRecord, Integer> LICENSE_ID = createField(DSL.name("license_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.licenses.license_key</code>.
      */
-    public final TableField<LicensesRecord, String> LICENSE_KEY = createField(DSL.name("license_key"), org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false), this, "");
+    public final TableField<LicensesRecord, String> LICENSE_KEY = createField(DSL.name("license_key"), SQLDataType.VARCHAR(64).nullable(false), this, "");
 
     /**
      * The column <code>public.licenses.license_type</code>.
      */
-    public final TableField<LicensesRecord, Integer> LICENSE_TYPE = createField(DSL.name("license_type"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<LicensesRecord, Integer> LICENSE_TYPE = createField(DSL.name("license_type"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("1", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.licenses.license_claimed</code>.
      */
-    public final TableField<LicensesRecord, Boolean> LICENSE_CLAIMED = createField(DSL.name("license_claimed"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<LicensesRecord, Boolean> LICENSE_CLAIMED = createField(DSL.name("license_claimed"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.licenses.license_duration_days</code>.
      */
-    public final TableField<LicensesRecord, Integer> LICENSE_DURATION_DAYS = createField(DSL.name("license_duration_days"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("30", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<LicensesRecord, Integer> LICENSE_DURATION_DAYS = createField(DSL.name("license_duration_days"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("30", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.licenses.license_activation_timestamp</code>.
      */
-    public final TableField<LicensesRecord, LocalDateTime> LICENSE_ACTIVATION_TIMESTAMP = createField(DSL.name("license_activation_timestamp"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
+    public final TableField<LicensesRecord, LocalDateTime> LICENSE_ACTIVATION_TIMESTAMP = createField(DSL.name("license_activation_timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.licenses</code> table reference
-     */
-    public Licenses() {
-        this(DSL.name("licenses"), null);
+    private Licenses(Name alias, Table<LicensesRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Licenses(Name alias, Table<LicensesRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -99,12 +90,11 @@ public class Licenses extends TableImpl<LicensesRecord> {
         this(alias, LICENSES);
     }
 
-    private Licenses(Name alias, Table<LicensesRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Licenses(Name alias, Table<LicensesRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.licenses</code> table reference
+     */
+    public Licenses() {
+        this(DSL.name("licenses"), null);
     }
 
     public <O extends Record> Licenses(Table<O> child, ForeignKey<O, LicensesRecord> key) {
@@ -118,7 +108,7 @@ public class Licenses extends TableImpl<LicensesRecord> {
 
     @Override
     public Identity<LicensesRecord, Integer> getIdentity() {
-        return Keys.IDENTITY_LICENSES;
+        return (Identity<LicensesRecord, Integer>) super.getIdentity();
     }
 
     @Override

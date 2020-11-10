@@ -9,6 +9,7 @@ import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.MembersRolesRecord;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 import java.util.Arrays;
@@ -21,7 +22,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MembersRoles extends TableImpl<MembersRolesRecord> {
 
-    private static final long serialVersionUID = -175036281;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.members_roles</code>
@@ -39,23 +40,24 @@ public class MembersRoles extends TableImpl<MembersRolesRecord> {
     /**
      * The column <code>public.members_roles.guild_id</code>.
      */
-    public final TableField<MembersRolesRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MembersRolesRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.members_roles.user_id</code>.
      */
-    public final TableField<MembersRolesRecord, Long> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MembersRolesRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.members_roles.role_id</code>.
      */
-    public final TableField<MembersRolesRecord, Long> ROLE_ID = createField(DSL.name("role_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MembersRolesRecord, Long> ROLE_ID = createField(DSL.name("role_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.members_roles</code> table reference
-     */
-    public MembersRoles() {
-        this(DSL.name("members_roles"), null);
+    private MembersRoles(Name alias, Table<MembersRolesRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MembersRoles(Name alias, Table<MembersRolesRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -72,12 +74,11 @@ public class MembersRoles extends TableImpl<MembersRolesRecord> {
         this(alias, MEMBERS_ROLES);
     }
 
-    private MembersRoles(Name alias, Table<MembersRolesRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MembersRoles(Name alias, Table<MembersRolesRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.members_roles</code> table reference
+     */
+    public MembersRoles() {
+        this(DSL.name("members_roles"), null);
     }
 
     public <O extends Record> MembersRoles(Table<O> child, ForeignKey<O, MembersRolesRecord> key) {

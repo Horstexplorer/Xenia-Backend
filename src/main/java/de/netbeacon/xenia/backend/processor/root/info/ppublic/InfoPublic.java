@@ -45,7 +45,8 @@ public class InfoPublic extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             // the number of known users
             int users = sqlContext.fetchCount(Tables.USERS);
             // get the number of known guilds

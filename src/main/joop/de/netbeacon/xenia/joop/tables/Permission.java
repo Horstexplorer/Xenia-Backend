@@ -7,23 +7,13 @@ package de.netbeacon.xenia.joop.tables;
 import de.netbeacon.xenia.joop.Keys;
 import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.PermissionRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row3;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -32,7 +22,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Permission extends TableImpl<PermissionRecord> {
 
-    private static final long serialVersionUID = -275218376;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.permission</code>
@@ -50,23 +40,24 @@ public class Permission extends TableImpl<PermissionRecord> {
     /**
      * The column <code>public.permission.permission_id</code>.
      */
-    public final TableField<PermissionRecord, Integer> PERMISSION_ID = createField(DSL.name("permission_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('permission_permission_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<PermissionRecord, Integer> PERMISSION_ID = createField(DSL.name("permission_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.permission.permission_name</code>.
      */
-    public final TableField<PermissionRecord, String> PERMISSION_NAME = createField(DSL.name("permission_name"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
+    public final TableField<PermissionRecord, String> PERMISSION_NAME = createField(DSL.name("permission_name"), SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
      * The column <code>public.permission.permission_description</code>.
      */
-    public final TableField<PermissionRecord, String> PERMISSION_DESCRIPTION = createField(DSL.name("permission_description"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
+    public final TableField<PermissionRecord, String> PERMISSION_DESCRIPTION = createField(DSL.name("permission_description"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.permission</code> table reference
-     */
-    public Permission() {
-        this(DSL.name("permission"), null);
+    private Permission(Name alias, Table<PermissionRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Permission(Name alias, Table<PermissionRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +74,11 @@ public class Permission extends TableImpl<PermissionRecord> {
         this(alias, PERMISSION);
     }
 
-    private Permission(Name alias, Table<PermissionRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Permission(Name alias, Table<PermissionRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.permission</code> table reference
+     */
+    public Permission() {
+        this(DSL.name("permission"), null);
     }
 
     public <O extends Record> Permission(Table<O> child, ForeignKey<O, PermissionRecord> key) {
@@ -102,7 +92,7 @@ public class Permission extends TableImpl<PermissionRecord> {
 
     @Override
     public Identity<PermissionRecord, Integer> getIdentity() {
-        return Keys.IDENTITY_PERMISSION;
+        return (Identity<PermissionRecord, Integer>) super.getIdentity();
     }
 
     @Override

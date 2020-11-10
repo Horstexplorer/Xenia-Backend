@@ -9,6 +9,7 @@ import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.MessagesRecord;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Messages extends TableImpl<MessagesRecord> {
 
-    private static final long serialVersionUID = -2029722210;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.messages</code>
@@ -40,48 +41,49 @@ public class Messages extends TableImpl<MessagesRecord> {
     /**
      * The column <code>public.messages.message_id</code>.
      */
-    public final TableField<MessagesRecord, Long> MESSAGE_ID = createField(DSL.name("message_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MessagesRecord, Long> MESSAGE_ID = createField(DSL.name("message_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.messages.guild_id</code>.
      */
-    public final TableField<MessagesRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MessagesRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.messages.channel_id</code>.
      */
-    public final TableField<MessagesRecord, Long> CHANNEL_ID = createField(DSL.name("channel_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MessagesRecord, Long> CHANNEL_ID = createField(DSL.name("channel_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.messages.user_id</code>.
      */
-    public final TableField<MessagesRecord, Long> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MessagesRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.messages.creation_timestamp</code>.
      */
-    public final TableField<MessagesRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<MessagesRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>public.messages.creation_timestamp_discord</code>.
      */
-    public final TableField<MessagesRecord, LocalDateTime> CREATION_TIMESTAMP_DISCORD = createField(DSL.name("creation_timestamp_discord"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
+    public final TableField<MessagesRecord, LocalDateTime> CREATION_TIMESTAMP_DISCORD = createField(DSL.name("creation_timestamp_discord"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
 
     /**
      * The column <code>public.messages.message_salt</code>.
      */
-    public final TableField<MessagesRecord, String> MESSAGE_SALT = createField(DSL.name("message_salt"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<MessagesRecord, String> MESSAGE_SALT = createField(DSL.name("message_salt"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.messages.message_content</code>.
      */
-    public final TableField<MessagesRecord, String> MESSAGE_CONTENT = createField(DSL.name("message_content"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<MessagesRecord, String> MESSAGE_CONTENT = createField(DSL.name("message_content"), SQLDataType.CLOB.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.messages</code> table reference
-     */
-    public Messages() {
-        this(DSL.name("messages"), null);
+    private Messages(Name alias, Table<MessagesRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Messages(Name alias, Table<MessagesRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -98,12 +100,11 @@ public class Messages extends TableImpl<MessagesRecord> {
         this(alias, MESSAGES);
     }
 
-    private Messages(Name alias, Table<MessagesRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Messages(Name alias, Table<MessagesRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.messages</code> table reference
+     */
+    public Messages() {
+        this(DSL.name("messages"), null);
     }
 
     public <O extends Record> Messages(Table<O> child, ForeignKey<O, MessagesRecord> key) {

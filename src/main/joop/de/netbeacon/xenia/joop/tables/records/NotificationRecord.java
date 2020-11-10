@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class NotificationRecord extends UpdatableRecordImpl<NotificationRecord> implements Record7<Long, LocalDateTime, Long, Long, Long, LocalDateTime, String> {
 
-    private static final long serialVersionUID = -411055761;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.notification.notification_id</code>.
@@ -326,12 +326,12 @@ public class NotificationRecord extends UpdatableRecordImpl<NotificationRecord> 
     public NotificationRecord(Long notificationId, LocalDateTime creationTimestamp, Long guildId, Long channelId, Long userId, LocalDateTime notificationTarget, String notificationMessage) {
         super(Notification.NOTIFICATION);
 
-        set(0, notificationId);
-        set(1, creationTimestamp);
-        set(2, guildId);
-        set(3, channelId);
-        set(4, userId);
-        set(5, notificationTarget);
-        set(6, notificationMessage);
+        setNotificationId(notificationId);
+        setCreationTimestamp(creationTimestamp);
+        setGuildId(guildId);
+        setChannelId(channelId);
+        setUserId(userId);
+        setNotificationTarget(notificationTarget);
+        setNotificationMessage(notificationMessage);
     }
 }

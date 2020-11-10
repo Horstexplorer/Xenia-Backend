@@ -5,14 +5,13 @@ package de.netbeacon.xenia.joop.tables.records;
 
 
 import de.netbeacon.xenia.joop.tables.Roles;
-
-import java.time.LocalDateTime;
-
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record4;
 import org.jooq.Row4;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -21,7 +20,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RolesRecord extends UpdatableRecordImpl<RolesRecord> implements Record4<Long, Long, LocalDateTime, String> {
 
-    private static final long serialVersionUID = -5179795;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.roles.role_id</code>.
@@ -216,9 +215,9 @@ public class RolesRecord extends UpdatableRecordImpl<RolesRecord> implements Rec
     public RolesRecord(Long roleId, Long guildId, LocalDateTime creationTimestamp, String roleName) {
         super(Roles.ROLES);
 
-        set(0, roleId);
-        set(1, guildId);
-        set(2, creationTimestamp);
-        set(3, roleName);
+        setRoleId(roleId);
+        setGuildId(guildId);
+        setCreationTimestamp(creationTimestamp);
+        setRoleName(roleName);
     }
 }

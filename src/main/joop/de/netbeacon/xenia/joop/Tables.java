@@ -8,7 +8,7 @@ import de.netbeacon.xenia.joop.tables.*;
 
 
 /**
- * Convenience access to all tables in public
+ * Convenience access to all tables in public.
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {

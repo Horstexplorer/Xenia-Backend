@@ -7,23 +7,14 @@ package de.netbeacon.xenia.joop.tables;
 import de.netbeacon.xenia.joop.Keys;
 import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.GuildsRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row4;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -32,7 +23,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Guilds extends TableImpl<GuildsRecord> {
 
-    private static final long serialVersionUID = -454956054;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.guilds</code>
@@ -50,28 +41,29 @@ public class Guilds extends TableImpl<GuildsRecord> {
     /**
      * The column <code>public.guilds.guild_id</code>.
      */
-    public final TableField<GuildsRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<GuildsRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.guilds.creation_timestamp</code>.
      */
-    public final TableField<GuildsRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<GuildsRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>public.guilds.preferred_language</code>.
      */
-    public final TableField<GuildsRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), org.jooq.impl.SQLDataType.VARCHAR(16).nullable(false).defaultValue(org.jooq.impl.DSL.field("'undefined'::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<GuildsRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), SQLDataType.VARCHAR(16).nullable(false).defaultValue(DSL.field("'undefined'::character varying", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.guilds.license_id</code>.
      */
-    public final TableField<GuildsRecord, Integer> LICENSE_ID = createField(DSL.name("license_id"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<GuildsRecord, Integer> LICENSE_ID = createField(DSL.name("license_id"), SQLDataType.INTEGER, this, "");
 
-    /**
-     * Create a <code>public.guilds</code> table reference
-     */
-    public Guilds() {
-        this(DSL.name("guilds"), null);
+    private Guilds(Name alias, Table<GuildsRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Guilds(Name alias, Table<GuildsRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -88,12 +80,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
         this(alias, GUILDS);
     }
 
-    private Guilds(Name alias, Table<GuildsRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Guilds(Name alias, Table<GuildsRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.guilds</code> table reference
+     */
+    public Guilds() {
+        this(DSL.name("guilds"), null);
     }
 
     public <O extends Record> Guilds(Table<O> child, ForeignKey<O, GuildsRecord> key) {

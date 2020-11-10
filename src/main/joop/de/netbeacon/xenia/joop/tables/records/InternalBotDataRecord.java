@@ -18,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class InternalBotDataRecord extends UpdatableRecordImpl<InternalBotDataRecord> implements Record5<Long, String, String, String, String> {
 
-    private static final long serialVersionUID = -1912523255;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.internal_bot_data.client_id</code>.
@@ -250,10 +250,10 @@ public class InternalBotDataRecord extends UpdatableRecordImpl<InternalBotDataRe
     public InternalBotDataRecord(Long clientId, String clientName, String clientInfo, String discordToken, String messageCryptHash) {
         super(InternalBotData.INTERNAL_BOT_DATA);
 
-        set(0, clientId);
-        set(1, clientName);
-        set(2, clientInfo);
-        set(3, discordToken);
-        set(4, messageCryptHash);
+        setClientId(clientId);
+        setClientName(clientName);
+        setClientInfo(clientInfo);
+        setDiscordToken(discordToken);
+        setMessageCryptHash(messageCryptHash);
     }
 }

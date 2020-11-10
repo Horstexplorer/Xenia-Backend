@@ -9,6 +9,7 @@ import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.PollsOptionsRecord;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 import java.util.Arrays;
@@ -21,7 +22,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PollsOptions extends TableImpl<PollsOptionsRecord> {
 
-    private static final long serialVersionUID = 1184491286;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.polls_options</code>
@@ -39,23 +40,24 @@ public class PollsOptions extends TableImpl<PollsOptionsRecord> {
     /**
      * The column <code>public.polls_options.poll_id</code>.
      */
-    public final TableField<PollsOptionsRecord, Long> POLL_ID = createField(DSL.name("poll_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<PollsOptionsRecord, Long> POLL_ID = createField(DSL.name("poll_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.polls_options.poll_option_id</code>.
      */
-    public final TableField<PollsOptionsRecord, Integer> POLL_OPTION_ID = createField(DSL.name("poll_option_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<PollsOptionsRecord, Integer> POLL_OPTION_ID = createField(DSL.name("poll_option_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.polls_options.poll_option_description</code>.
      */
-    public final TableField<PollsOptionsRecord, String> POLL_OPTION_DESCRIPTION = createField(DSL.name("poll_option_description"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false).defaultValue(org.jooq.impl.DSL.field("''::character varying", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<PollsOptionsRecord, String> POLL_OPTION_DESCRIPTION = createField(DSL.name("poll_option_description"), SQLDataType.VARCHAR(255).nullable(false).defaultValue(DSL.field("''::character varying", SQLDataType.VARCHAR)), this, "");
 
-    /**
-     * Create a <code>public.polls_options</code> table reference
-     */
-    public PollsOptions() {
-        this(DSL.name("polls_options"), null);
+    private PollsOptions(Name alias, Table<PollsOptionsRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private PollsOptions(Name alias, Table<PollsOptionsRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -72,12 +74,11 @@ public class PollsOptions extends TableImpl<PollsOptionsRecord> {
         this(alias, POLLS_OPTIONS);
     }
 
-    private PollsOptions(Name alias, Table<PollsOptionsRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private PollsOptions(Name alias, Table<PollsOptionsRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.polls_options</code> table reference
+     */
+    public PollsOptions() {
+        this(DSL.name("polls_options"), null);
     }
 
     public <O extends Record> PollsOptions(Table<O> child, ForeignKey<O, PollsOptionsRecord> key) {

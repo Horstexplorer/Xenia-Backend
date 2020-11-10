@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MembersRecord extends UpdatableRecordImpl<MembersRecord> implements Record6<Long, Long, LocalDateTime, String, Boolean, Boolean> {
 
-    private static final long serialVersionUID = -1065273202;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.members.guild_id</code>.
@@ -289,11 +289,11 @@ public class MembersRecord extends UpdatableRecordImpl<MembersRecord> implements
     public MembersRecord(Long guildId, Long userId, LocalDateTime creationTimestamp, String metaNickname, Boolean metaIsOwner, Boolean metaIsAdministrator) {
         super(Members.MEMBERS);
 
-        set(0, guildId);
-        set(1, userId);
-        set(2, creationTimestamp);
-        set(3, metaNickname);
-        set(4, metaIsOwner);
-        set(5, metaIsAdministrator);
+        setGuildId(guildId);
+        setUserId(userId);
+        setCreationTimestamp(creationTimestamp);
+        setMetaNickname(metaNickname);
+        setMetaIsOwner(metaIsOwner);
+        setMetaIsAdministrator(metaIsAdministrator);
     }
 }

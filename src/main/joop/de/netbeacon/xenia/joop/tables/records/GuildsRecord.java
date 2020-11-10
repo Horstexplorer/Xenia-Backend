@@ -5,14 +5,13 @@ package de.netbeacon.xenia.joop.tables.records;
 
 
 import de.netbeacon.xenia.joop.tables.Guilds;
-
-import java.time.LocalDateTime;
-
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record4;
 import org.jooq.Row4;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -21,7 +20,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GuildsRecord extends UpdatableRecordImpl<GuildsRecord> implements Record4<Long, LocalDateTime, String, Integer> {
 
-    private static final long serialVersionUID = -1072683855;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.guilds.guild_id</code>.
@@ -216,9 +215,9 @@ public class GuildsRecord extends UpdatableRecordImpl<GuildsRecord> implements R
     public GuildsRecord(Long guildId, LocalDateTime creationTimestamp, String preferredLanguage, Integer licenseId) {
         super(Guilds.GUILDS);
 
-        set(0, guildId);
-        set(1, creationTimestamp);
-        set(2, preferredLanguage);
-        set(3, licenseId);
+        setGuildId(guildId);
+        setCreationTimestamp(creationTimestamp);
+        setPreferredLanguage(preferredLanguage);
+        setLicenseId(licenseId);
     }
 }

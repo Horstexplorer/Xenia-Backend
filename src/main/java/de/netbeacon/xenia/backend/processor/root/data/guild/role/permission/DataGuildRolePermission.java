@@ -46,7 +46,8 @@ public class DataGuildRolePermission extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long roleId = Long.parseLong(ctx.pathParam("roleId"));
             int permissionId = Integer.parseInt(ctx.pathParam("permissionId"));
@@ -80,7 +81,8 @@ public class DataGuildRolePermission extends RequestProcessor {
 
     @Override
     public void put(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long roleId = Long.parseLong(ctx.pathParam("roleId"));
             int permissionId = Integer.parseInt(ctx.pathParam("permissionId"));
@@ -126,7 +128,8 @@ public class DataGuildRolePermission extends RequestProcessor {
 
     @Override
     public void post(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long roleId = Long.parseLong(ctx.pathParam("roleId"));
             int permissionId = Integer.parseInt(ctx.pathParam("permissionId"));
@@ -173,7 +176,8 @@ public class DataGuildRolePermission extends RequestProcessor {
 
     @Override
     public void delete(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long roleId = Long.parseLong(ctx.pathParam("roleId"));
             int permissionId = Integer.parseInt(ctx.pathParam("permissionId"));

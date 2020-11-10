@@ -50,7 +50,8 @@ public class DataGuildMiscPolls extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             JSONObject jsonObject = new JSONObject();
             if(!ctx.pathParamMap().containsKey("pollId")){
@@ -128,7 +129,8 @@ public class DataGuildMiscPolls extends RequestProcessor {
 
     @Override
     public void post(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             // get data
             JSONObject newData = new JSONObject(ctx.body());
@@ -197,7 +199,8 @@ public class DataGuildMiscPolls extends RequestProcessor {
 
     @Override
     public void delete(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection(); var sqlContext = getSqlConnectionPool().getContext(con)){
+        try(var con = getSqlConnectionPool().getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long pollId = Long.parseLong(ctx.pathParam("pollId"));
             int mod = sqlContext.update(Tables.POLLS).set(Tables.POLLS.POLL_IS_ACTIVE, false).where(Tables.POLLS.GUILD_ID.eq(guildId).and(Tables.POLLS.POLL_ID.eq(pollId).and(Tables.POLLS.POLL_IS_ACTIVE))).execute();

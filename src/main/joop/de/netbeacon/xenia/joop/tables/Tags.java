@@ -9,6 +9,7 @@ import de.netbeacon.xenia.joop.Public;
 import de.netbeacon.xenia.joop.tables.records.TagsRecord;
 import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tags extends TableImpl<TagsRecord> {
 
-    private static final long serialVersionUID = -2088022159;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.tags</code>
@@ -40,33 +41,34 @@ public class Tags extends TableImpl<TagsRecord> {
     /**
      * The column <code>public.tags.tag_name</code>.
      */
-    public final TableField<TagsRecord, String> TAG_NAME = createField(DSL.name("tag_name"), org.jooq.impl.SQLDataType.VARCHAR(32).nullable(false), this, "");
+    public final TableField<TagsRecord, String> TAG_NAME = createField(DSL.name("tag_name"), SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
      * The column <code>public.tags.creation_timestamp</code>.
      */
-    public final TableField<TagsRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<TagsRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>public.tags.guild_id</code>.
      */
-    public final TableField<TagsRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<TagsRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.tags.user_id</code>.
      */
-    public final TableField<TagsRecord, Long> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<TagsRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.tags.tag_content</code>.
      */
-    public final TableField<TagsRecord, String> TAG_CONTENT = createField(DSL.name("tag_content"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TagsRecord, String> TAG_CONTENT = createField(DSL.name("tag_content"), SQLDataType.CLOB.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.tags</code> table reference
-     */
-    public Tags() {
-        this(DSL.name("tags"), null);
+    private Tags(Name alias, Table<TagsRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Tags(Name alias, Table<TagsRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class Tags extends TableImpl<TagsRecord> {
         this(alias, TAGS);
     }
 
-    private Tags(Name alias, Table<TagsRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Tags(Name alias, Table<TagsRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.tags</code> table reference
+     */
+    public Tags() {
+        this(DSL.name("tags"), null);
     }
 
     public <O extends Record> Tags(Table<O> child, ForeignKey<O, TagsRecord> key) {
