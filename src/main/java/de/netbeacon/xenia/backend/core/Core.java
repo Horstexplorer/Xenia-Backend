@@ -328,37 +328,6 @@ public class Core {
                                                 processor.next("data").next("guild").next("misc").next("notifications").preProcessor(client, ctx).get(client, ctx); // get full notification data
                                             });
                                         });
-                                        // polls
-                                        path("polls", ()->{
-                                            path(":pollId", ()->{
-                                                path(":optionId", ()->{
-                                                    path("vote", ()->{
-                                                        path(":userId", ()->{
-                                                            post(ctx -> {
-                                                                Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
-                                                                processor.next("data").next("guild").next("misc").next("polls").next("vote").preProcessor(client, ctx).post(client, ctx); // register vote for a poll
-                                                            });
-                                                        });
-                                                    });
-                                                });
-                                                get(ctx -> {
-                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
-                                                    processor.next("data").next("guild").next("misc").next("polls").preProcessor(client, ctx).get(client, ctx); // get poll data
-                                                });
-                                                post(ctx -> {
-                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
-                                                    processor.next("data").next("guild").next("misc").next("polls").preProcessor(client, ctx).post(client, ctx); // create poll
-                                                });
-                                                delete(ctx -> {
-                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
-                                                    processor.next("data").next("guild").next("misc").next("polls").preProcessor(client, ctx).delete(client, ctx); // close poll
-                                                });
-                                            });
-                                            get(ctx -> {
-                                                Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
-                                                processor.next("data").next("guild").next("misc").next("polls").preProcessor(client, ctx).get(client, ctx); // get full notification data
-                                            });
-                                        });
                                     });
                                     // guild
                                     get(ctx -> {

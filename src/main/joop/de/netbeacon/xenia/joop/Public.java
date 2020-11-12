@@ -83,21 +83,6 @@ public class Public extends SchemaImpl {
     public final Permission PERMISSION = Permission.PERMISSION;
 
     /**
-     * The table <code>public.polls</code>.
-     */
-    public final Polls POLLS = Polls.POLLS;
-
-    /**
-     * The table <code>public.polls_entries</code>.
-     */
-    public final PollsEntries POLLS_ENTRIES = PollsEntries.POLLS_ENTRIES;
-
-    /**
-     * The table <code>public.polls_options</code>.
-     */
-    public final PollsOptions POLLS_OPTIONS = PollsOptions.POLLS_OPTIONS;
-
-    /**
      * The table <code>public.roles</code>.
      */
     public final Roles ROLES = Roles.ROLES;
@@ -136,7 +121,6 @@ public class Public extends SchemaImpl {
             Sequences.LICENSES_LICENSE_ID_SEQ,
             Sequences.NOTIFICATION_NOTIFICATION_ID_SEQ,
             Sequences.PERMISSION_PERMISSION_ID_SEQ,
-            Sequences.POLLS_POLL_ID_SEQ,
             Sequences.ROLES_ROLE_ID_SEQ);
     }
 
@@ -154,9 +138,6 @@ public class Public extends SchemaImpl {
             Messages.MESSAGES,
             Notification.NOTIFICATION,
             Permission.PERMISSION,
-            Polls.POLLS,
-            PollsEntries.POLLS_ENTRIES,
-            PollsOptions.POLLS_OPTIONS,
             Roles.ROLES,
             RolesPermission.ROLES_PERMISSION,
             Tags.TAGS,
