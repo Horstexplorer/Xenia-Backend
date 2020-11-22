@@ -75,7 +75,7 @@ public class SetupBot extends RequestProcessor {
                     .put("discordToken", internalBotData.getDiscordToken())
                     .put("cryptHash", internalBotData.getMessageCryptHash())
                     .put("shards", new JSONObject()
-                            .put("total", shardsTotal)
+                            .put("total", (!shards.isEmpty()) ? shardsTotal : 0)
                             .put("use", shards));
             // return
             ctx.status(200);
