@@ -23,7 +23,10 @@ import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.joop.Tables;
 import de.netbeacon.xenia.joop.tables.records.InternalBotDataRecord;
 import de.netbeacon.xenia.joop.tables.records.InternalBotShardsRecord;
-import io.javalin.http.*;
+import io.javalin.http.BadRequestResponse;
+import io.javalin.http.Context;
+import io.javalin.http.HttpResponseException;
+import io.javalin.http.NotFoundResponse;
 import org.jooq.Result;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -60,9 +63,6 @@ public class SetupBot extends RequestProcessor {
             int shardsTotal = sqlContext.fetchCount(Tables.INTERNAL_BOT_SHARDS);
             // get shards
             Result<InternalBotShardsRecord> internalBotShardsRecords = sqlContext.selectFrom(Tables.INTERNAL_BOT_SHARDS).where(Tables.INTERNAL_BOT_SHARDS.CLIENT_ID.eq(clientId)).fetch();
-            if(internalBotShardsRecords.isEmpty()){
-                throw new InternalServerErrorResponse();
-            }
             List<Integer> shards = new ArrayList<>();
             for(InternalBotShardsRecord internalBotShardsRecord : internalBotShardsRecords){
                 shards.add(internalBotShardsRecord.getShardId());
