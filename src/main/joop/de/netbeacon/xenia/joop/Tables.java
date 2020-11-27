@@ -64,21 +64,6 @@ public class Tables {
     public static final Notification NOTIFICATION = Notification.NOTIFICATION;
 
     /**
-     * The table <code>public.permission</code>.
-     */
-    public static final Permission PERMISSION = Permission.PERMISSION;
-
-    /**
-     * The table <code>public.roles</code>.
-     */
-    public static final Roles ROLES = Roles.ROLES;
-
-    /**
-     * The table <code>public.roles_permission</code>.
-     */
-    public static final RolesPermission ROLES_PERMISSION = RolesPermission.ROLES_PERMISSION;
-
-    /**
      * The table <code>public.tags</code>.
      */
     public static final Tags TAGS = Tags.TAGS;
@@ -87,4 +72,9 @@ public class Tables {
      * The table <code>public.users</code>.
      */
     public static final Users USERS = Users.USERS;
+
+    /**
+     * The table <code>public.vroles</code>.
+     */
+    public static final Vroles VROLES = Vroles.VROLES;
 }
