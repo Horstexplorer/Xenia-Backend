@@ -78,21 +78,6 @@ public class Public extends SchemaImpl {
     public final Notification NOTIFICATION = Notification.NOTIFICATION;
 
     /**
-     * The table <code>public.permission</code>.
-     */
-    public final Permission PERMISSION = Permission.PERMISSION;
-
-    /**
-     * The table <code>public.roles</code>.
-     */
-    public final Roles ROLES = Roles.ROLES;
-
-    /**
-     * The table <code>public.roles_permission</code>.
-     */
-    public final RolesPermission ROLES_PERMISSION = RolesPermission.ROLES_PERMISSION;
-
-    /**
      * The table <code>public.tags</code>.
      */
     public final Tags TAGS = Tags.TAGS;
@@ -101,6 +86,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.users</code>.
      */
     public final Users USERS = Users.USERS;
+
+    /**
+     * The table <code>public.vroles</code>.
+     */
+    public final Vroles VROLES = Vroles.VROLES;
 
     /**
      * No further instances allowed
@@ -120,7 +110,6 @@ public class Public extends SchemaImpl {
         return Arrays.<Sequence<?>>asList(
             Sequences.LICENSES_LICENSE_ID_SEQ,
             Sequences.NOTIFICATION_NOTIFICATION_ID_SEQ,
-            Sequences.PERMISSION_PERMISSION_ID_SEQ,
             Sequences.ROLES_ROLE_ID_SEQ);
     }
 
@@ -137,10 +126,8 @@ public class Public extends SchemaImpl {
             MembersRoles.MEMBERS_ROLES,
             Messages.MESSAGES,
             Notification.NOTIFICATION,
-            Permission.PERMISSION,
-            Roles.ROLES,
-            RolesPermission.ROLES_PERMISSION,
             Tags.TAGS,
-            Users.USERS);
+            Users.USERS,
+            Vroles.VROLES);
     }
 }

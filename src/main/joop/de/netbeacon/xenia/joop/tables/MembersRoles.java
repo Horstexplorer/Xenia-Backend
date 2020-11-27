@@ -113,8 +113,8 @@ public class MembersRoles extends TableImpl<MembersRolesRecord> {
         return new Members(this, Keys.MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_USER_ID_FKEY);
     }
 
-    public Roles roles() {
-        return new Roles(this, Keys.MEMBERS_ROLES__MEMBERS_ROLES_ROLE_ID_FKEY);
+    public Vroles vroles() {
+        return new Vroles(this, Keys.MEMBERS_ROLES__MEMBERS_ROLES_ROLE_ID_FKEY);
     }
 
     @Override

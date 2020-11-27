@@ -176,24 +176,6 @@ public class Core {
                                     // role
                                     path("roles", ()->{
                                         path(":roleId", ()->{
-                                            path(":permissionId", ()->{
-                                                get(ctx -> {
-                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
-                                                    processor.next("data").next("guild").next("role").next("permission").preProcessor(client, ctx).get(client, ctx); // get role data
-                                                });
-                                                put(ctx -> {
-                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
-                                                    processor.next("data").next("guild").next("role").next("permission").preProcessor(client, ctx).put(client, ctx); // get update role data
-                                                });
-                                                post(ctx -> {
-                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
-                                                    processor.next("data").next("guild").next("role").next("permission").preProcessor(client, ctx).post(client, ctx); // create new
-                                                });
-                                                delete(ctx -> {
-                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
-                                                    processor.next("data").next("guild").next("role").next("permission").preProcessor(client, ctx).delete(client, ctx); // delete role
-                                                });
-                                            });
                                             get(ctx -> {
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("role").get(client, ctx); // get role data

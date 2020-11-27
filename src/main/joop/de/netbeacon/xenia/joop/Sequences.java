@@ -26,11 +26,6 @@ public class Sequences {
     public static final Sequence<Integer> NOTIFICATION_NOTIFICATION_ID_SEQ = Internal.createSequence("notification_notification_id_seq", Public.PUBLIC, SQLDataType.INTEGER.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.permission_permission_id_seq</code>
-     */
-    public static final Sequence<Integer> PERMISSION_PERMISSION_ID_SEQ = Internal.createSequence("permission_permission_id_seq", Public.PUBLIC, SQLDataType.INTEGER.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.roles_role_id_seq</code>
      */
     public static final Sequence<Integer> ROLES_ROLE_ID_SEQ = Internal.createSequence("roles_role_id_seq", Public.PUBLIC, SQLDataType.INTEGER.nullable(false), null, null, null, null, false, null);
