@@ -20,14 +20,9 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.backend.processor.root.data.guild.role.permission.DataGuildRolePermission;
 import de.netbeacon.xenia.joop.Tables;
-import de.netbeacon.xenia.joop.tables.records.PermissionRecord;
-import de.netbeacon.xenia.joop.tables.records.RolesPermissionRecord;
-import de.netbeacon.xenia.joop.tables.records.RolesRecord;
+import de.netbeacon.xenia.joop.tables.records.VrolesRecord;
 import io.javalin.http.*;
-import org.jooq.InsertValuesStep2;
-import org.jooq.Record;
 import org.jooq.Result;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,7 +34,7 @@ public class DataGuildRole extends RequestProcessor {
     public final Logger logger = LoggerFactory.getLogger(DataGuildRole.class);
 
     public DataGuildRole(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("role", sqlConnectionPool, websocketProcessor, new DataGuildRolePermission(sqlConnectionPool, websocketProcessor));
+        super("role", sqlConnectionPool, websocketProcessor);
     }
 
     @Override
@@ -54,48 +49,28 @@ public class DataGuildRole extends RequestProcessor {
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             JSONObject jsonObject = new JSONObject();
             if(!ctx.pathParamMap().containsKey("roleId")){
-                Result<RolesRecord> rolesRecords = sqlContext.selectFrom(Tables.ROLES).where(Tables.ROLES.GUILD_ID.eq(guildId)).fetch();
+                Result<VrolesRecord> rolesRecords = sqlContext.selectFrom(Tables.VROLES).where(Tables.VROLES.GUILD_ID.eq(guildId)).fetch();
                 JSONArray jsonArray = new JSONArray();
                 jsonObject.put("roles", jsonArray);
-                for(RolesRecord rolesRecord : rolesRecords){
-                    Result<Record> rolesPermissions = sqlContext.select().from(Tables.ROLES_PERMISSION).leftJoin(Tables.PERMISSION).on(Tables.ROLES_PERMISSION.PERMISSION_ID.eq(Tables.PERMISSION.PERMISSION_ID)).where(Tables.ROLES_PERMISSION.ROLE_ID.eq(rolesRecord.getRoleId())).fetch();
-                    JSONArray jsonArray2 = new JSONArray();
-                    for(Record record : rolesPermissions){
-                        jsonArray2.put(new JSONObject()
-                                .put("permissionId", record.get(Tables.PERMISSION.PERMISSION_ID))
-                                .put("permissionName", record.get(Tables.PERMISSION.PERMISSION_NAME))
-                                .put("permissionDescription", record.get(Tables.PERMISSION.PERMISSION_DESCRIPTION))
-                                .put("permissionGranted", record.get(Tables.ROLES_PERMISSION.PERMISSION_GRANTED))
-                        );
-                    }
+                for(VrolesRecord rolesRecord : rolesRecords){
                     jsonArray.put(new JSONObject()
                             .put("guildId", rolesRecord.getGuildId())
-                            .put("roleId", rolesRecord.getRoleId())
-                            .put("roleName", rolesRecord.getRoleName())
-                            .put("permissions", jsonArray));
+                            .put("roleId", rolesRecord.getVroleId())
+                            .put("roleName", rolesRecord.getVroleName())
+                            .put("rolePermissions", rolesRecord.getVrolePermission()));
                 }
             }else{
                 long roleId = Long.parseLong(ctx.pathParam("roleId"));
-                Result<RolesRecord> rolesRecords = sqlContext.selectFrom(Tables.ROLES).where(Tables.ROLES.ROLE_ID.eq(roleId).and(Tables.ROLES.GUILD_ID.eq(guildId))).fetch();
-                Result<Record> rolesPermissions = sqlContext.select().from(Tables.ROLES_PERMISSION).leftJoin(Tables.PERMISSION).on(Tables.ROLES_PERMISSION.PERMISSION_ID.eq(Tables.PERMISSION.PERMISSION_ID)).where(Tables.ROLES_PERMISSION.ROLE_ID.eq(roleId)).fetch();
+                Result<VrolesRecord> rolesRecords = sqlContext.selectFrom(Tables.VROLES).where(Tables.VROLES.VROLE_ID.eq(roleId).and(Tables.VROLES.GUILD_ID.eq(guildId))).fetch();
                 if(rolesRecords.isEmpty()){
                     throw new NotFoundResponse();
                 }
-                RolesRecord rolesRecord = rolesRecords.get(0);
-                JSONArray jsonArray = new JSONArray();
-                for(Record record : rolesPermissions){
-                    jsonArray.put(new JSONObject()
-                            .put("permissionId", record.get(Tables.PERMISSION.PERMISSION_ID))
-                            .put("permissionName", record.get(Tables.PERMISSION.PERMISSION_NAME))
-                            .put("permissionDescription", record.get(Tables.PERMISSION.PERMISSION_DESCRIPTION))
-                            .put("permissionGranted", record.get(Tables.ROLES_PERMISSION.PERMISSION_GRANTED))
-                    );
-                }
+                VrolesRecord rolesRecord = rolesRecords.get(0);
                 jsonObject
                         .put("guildId", rolesRecord.getGuildId())
-                        .put("roleId", rolesRecord.getRoleId())
-                        .put("roleName", rolesRecord.getRoleName())
-                        .put("permissions", jsonArray);
+                        .put("roleId", rolesRecord.getVroleId())
+                        .put("roleName", rolesRecord.getVroleName())
+                        .put("rolePermissions", rolesRecord.getVrolePermission());
             }
             // respond
             ctx.status(200);
@@ -121,32 +96,23 @@ public class DataGuildRole extends RequestProcessor {
             var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long roleId = Long.parseLong(ctx.pathParam("roleId"));
-            Result<RolesRecord> rolesRecords = sqlContext.selectFrom(Tables.ROLES).where(Tables.ROLES.ROLE_ID.eq(roleId).and(Tables.ROLES.GUILD_ID.eq(guildId))).fetch();
+            Result<VrolesRecord> rolesRecords = sqlContext.selectFrom(Tables.VROLES).where(Tables.VROLES.VROLE_ID.eq(roleId).and(Tables.VROLES.GUILD_ID.eq(guildId))).fetch();
             if(rolesRecords.isEmpty()){
                 throw new NotFoundResponse();
             }
-            RolesRecord rolesRecord = rolesRecords.get(0);
+            VrolesRecord rolesRecord = rolesRecords.get(0);
             // get new data
             JSONObject newData = new JSONObject(ctx.body());
             // update object data
-            rolesRecord.setRoleName(newData.getString("roleName"));
+            rolesRecord.setVroleName(newData.getString("roleName"));
+            rolesRecord.setVrolePermission(newData.getLong("rolePermissions"));
             // update with db
             sqlContext.executeUpdate(rolesRecord);
-            Result<Record> rolesPermissionsRecords = sqlContext.select().from(Tables.ROLES_PERMISSION).leftJoin(Tables.PERMISSION).on(Tables.ROLES_PERMISSION.PERMISSION_ID.eq(Tables.PERMISSION.PERMISSION_ID)).where(Tables.ROLES_PERMISSION.ROLE_ID.eq(rolesRecord.getRoleId())).fetch();
-            JSONArray rolePermissions = new JSONArray();
-            for(Record record : rolesPermissionsRecords){
-                rolePermissions.put(new JSONObject()
-                        .put("permissionId", record.get(Tables.PERMISSION.PERMISSION_ID))
-                        .put("permissionName", record.get(Tables.PERMISSION.PERMISSION_NAME))
-                        .put("permissionDescription", record.get(Tables.PERMISSION.PERMISSION_DESCRIPTION))
-                        .put("permissionGranted", record.get(Tables.ROLES_PERMISSION.PERMISSION_GRANTED))
-                );
-            }
             JSONObject jsonObject = new JSONObject()
                     .put("guildId", rolesRecord.getGuildId())
-                    .put("roleId", rolesRecord.getRoleId())
-                    .put("roleName", rolesRecord.getRoleName())
-                    .put("permissions", rolePermissions);
+                    .put("roleId", rolesRecord.getVroleId())
+                    .put("roleName", rolesRecord.getVroleName())
+                    .put("rolePermissions", rolesRecord.getVrolePermission());
             // respond
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
@@ -175,39 +141,23 @@ public class DataGuildRole extends RequestProcessor {
             var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             // long roleId = Long.parseLong(ctx.pathParam("roleId")); - given by db
-            Result<RolesRecord> rolesRecords = sqlContext.insertInto(Tables.ROLES, Tables.ROLES.GUILD_ID).values(guildId).returning().fetch();
+            Result<VrolesRecord> rolesRecords = sqlContext.insertInto(Tables.VROLES, Tables.VROLES.GUILD_ID).values(guildId).returning().fetch();
             if(rolesRecords.isEmpty()){
                 throw new InternalServerErrorResponse();
             }
-            RolesRecord rolesRecord = rolesRecords.get(0);
-            Result<PermissionRecord> permissionRecords = sqlContext.selectFrom(Tables.PERMISSION).fetch();
-            InsertValuesStep2<RolesPermissionRecord, Long, Integer> ivs = sqlContext.insertInto(Tables.ROLES_PERMISSION).columns(Tables.ROLES_PERMISSION.ROLE_ID, Tables.ROLES_PERMISSION.PERMISSION_ID);
-            for(PermissionRecord permissionRecord : permissionRecords){
-                ivs.values(rolesRecord.getRoleId(), permissionRecord.getPermissionId());
-            }
-            ivs.execute();
-            Result<Record> rolesPermissionsRecords = sqlContext.select().from(Tables.ROLES_PERMISSION).leftJoin(Tables.PERMISSION).on(Tables.ROLES_PERMISSION.PERMISSION_ID.eq(Tables.PERMISSION.PERMISSION_ID)).where(Tables.ROLES_PERMISSION.ROLE_ID.eq(rolesRecord.getRoleId())).fetch();
-            JSONArray rolePermissions = new JSONArray();
-            for(Record record : rolesPermissionsRecords){
-                rolePermissions.put(new JSONObject()
-                        .put("permissionId", record.get(Tables.PERMISSION.PERMISSION_ID))
-                        .put("permissionName", record.get(Tables.PERMISSION.PERMISSION_NAME))
-                        .put("permissionDescription", record.get(Tables.PERMISSION.PERMISSION_DESCRIPTION))
-                        .put("permissionGranted", record.get(Tables.ROLES_PERMISSION.PERMISSION_GRANTED))
-                );
-            }
+            VrolesRecord rolesRecord = rolesRecords.get(0);
             JSONObject jsonObject = new JSONObject()
                     .put("guildId", rolesRecord.getGuildId())
-                    .put("roleId", rolesRecord.getRoleId())
-                    .put("roleName", rolesRecord.getRoleName())
-                    .put("permissions", rolePermissions);
+                    .put("roleId", rolesRecord.getVroleId())
+                    .put("roleName", rolesRecord.getVroleName())
+                    .put("rolePermissions", rolesRecord.getVrolePermission());
             // respond
             ctx.status(202);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
             WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD_ROLE").put("action", "CREATE").put("guildId", guildId).put("roleId", rolesRecord.getRoleId());
+            broadcastMessage.get().put("type", "GUILD_ROLE").put("action", "CREATE").put("guildId", guildId).put("roleId", rolesRecord.getVroleId());
             getWebsocketProcessor().broadcast(broadcastMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
@@ -229,7 +179,7 @@ public class DataGuildRole extends RequestProcessor {
             var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long roleId = Long.parseLong(ctx.pathParam("roleId"));
-            int mod = sqlContext.deleteFrom(Tables.ROLES).where(Tables.ROLES.ROLE_ID.eq(roleId).and(Tables.ROLES.GUILD_ID.eq(guildId))).execute();
+            int mod = sqlContext.deleteFrom(Tables.VROLES).where(Tables.VROLES.VROLE_ID.eq(roleId).and(Tables.VROLES.GUILD_ID.eq(guildId))).execute();
             if(mod == 0){
                 throw new NotFoundResponse();
             }
