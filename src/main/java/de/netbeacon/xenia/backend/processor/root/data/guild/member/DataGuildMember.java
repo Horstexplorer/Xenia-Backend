@@ -23,7 +23,7 @@ import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.joop.Tables;
 import de.netbeacon.xenia.joop.tables.records.MembersRecord;
 import de.netbeacon.xenia.joop.tables.records.MembersRolesRecord;
-import de.netbeacon.xenia.joop.tables.records.RolesRecord;
+import de.netbeacon.xenia.joop.tables.records.VrolesRecord;
 import io.javalin.http.*;
 import org.jooq.InsertValuesStep3;
 import org.jooq.Result;
@@ -145,12 +145,12 @@ public class DataGuildMember extends RequestProcessor {
             for(int i = 0; i < newData.getJSONArray("roles").length(); i++){
                 newRoles.add(newData.getJSONArray("roles").getLong(i));
             }
-            Result<RolesRecord> rolesRecords = sqlContext.selectFrom(Tables.ROLES).where(Tables.ROLES.ROLE_ID.in(newRoles).and(Tables.ROLES.GUILD_ID.eq(guildId))).fetch();
+            Result<VrolesRecord> rolesRecords = sqlContext.selectFrom(Tables.VROLES).where(Tables.VROLES.VROLE_ID.in(newRoles).and(Tables.VROLES.GUILD_ID.eq(guildId))).fetch();
             InsertValuesStep3<MembersRolesRecord, Long, Long, Long> ivs = sqlContext.insertInto(Tables.MEMBERS_ROLES).columns(Tables.MEMBERS_ROLES.GUILD_ID, Tables.MEMBERS_ROLES.USER_ID, Tables.MEMBERS_ROLES.ROLE_ID);
             JSONArray jsonArray = new JSONArray();
-            for(RolesRecord rolesRecord : rolesRecords){
-                ivs.values(guildId, userId, rolesRecord.getRoleId());
-                jsonArray.put(rolesRecord.getRoleId());
+            for(VrolesRecord rolesRecord : rolesRecords){
+                ivs.values(guildId, userId, rolesRecord.getVroleId());
+                jsonArray.put(rolesRecord.getVroleId());
             }
             ivs.execute();
             // json
