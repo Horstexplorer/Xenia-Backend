@@ -58,6 +58,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
      */
     public final TableField<GuildsRecord, Integer> LICENSE_ID = createField(DSL.name("license_id"), SQLDataType.INTEGER, this, "");
 
+    /**
+     * The column <code>public.guilds.use_vperms</code>.
+     */
+    public final TableField<GuildsRecord, Boolean> USE_VPERMS = createField(DSL.name("use_vperms"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
+
     private Guilds(Name alias, Table<GuildsRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -142,11 +147,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, LocalDateTime, String, Integer> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Long, LocalDateTime, String, Integer, Boolean> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }
