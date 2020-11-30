@@ -63,7 +63,8 @@ public class DataGuild extends RequestProcessor {
             JSONObject jsonObject = new JSONObject()
                     .put("guildId", guildsRecord.getGuildId())
                     .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
-                    .put("preferredLanguage", guildsRecord.getPreferredLanguage());
+                    .put("preferredLanguage", guildsRecord.getPreferredLanguage())
+                    .put("useVPerms", guildsRecord.getUseVperms());
             // respond
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
@@ -101,13 +102,15 @@ public class DataGuild extends RequestProcessor {
             JSONObject newData = new JSONObject(ctx.body());
             // update data
             guildsRecord.setPreferredLanguage(newData.getString("preferredLanguage"));
+            guildsRecord.setUseVperms(newData.getBoolean("useVPerms"));
             // update db
             sqlContext.executeUpdate(guildsRecord);
             // build json
             JSONObject jsonObject = new JSONObject()
                     .put("guildId", guildsRecord.getGuildId())
                     .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
-                    .put("preferredLanguage", guildsRecord.getPreferredLanguage());
+                    .put("preferredLanguage", guildsRecord.getPreferredLanguage())
+                    .put("useVPerms", guildsRecord.getUseVperms());
             // respond
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
@@ -144,7 +147,8 @@ public class DataGuild extends RequestProcessor {
             JSONObject jsonObject = new JSONObject()
                     .put("guildId", guildsRecord.getGuildId())
                     .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
-                    .put("preferredLanguage", guildsRecord.getPreferredLanguage());
+                    .put("preferredLanguage", guildsRecord.getPreferredLanguage())
+                    .put("useVPerms", guildsRecord.getUseVperms());
             // respond
             ctx.status(202);
             ctx.header("Content-Type", "application/json");
