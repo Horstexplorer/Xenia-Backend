@@ -66,7 +66,7 @@ public class Licenses extends TableImpl<LicensesRecord> {
     /**
      * The column <code>public.licenses.license_activation_timestamp</code>.
      */
-    public final TableField<LicensesRecord, LocalDateTime> LICENSE_ACTIVATION_TIMESTAMP = createField(DSL.name("license_activation_timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
+    public final TableField<LicensesRecord, LocalDateTime> LICENSE_ACTIVATION_TIMESTAMP = createField(DSL.name("license_activation_timestamp"), SQLDataType.LOCALDATETIME(6), this, "");
 
     private Licenses(Name alias, Table<LicensesRecord> aliased) {
         this(alias, aliased, null);
