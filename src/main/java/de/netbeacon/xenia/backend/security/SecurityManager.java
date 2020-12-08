@@ -18,6 +18,7 @@ package de.netbeacon.xenia.backend.security;
 
 import de.netbeacon.utils.ratelimiter.RateLimiter;
 import de.netbeacon.utils.shutdownhook.IShutdown;
+import de.netbeacon.utils.tuples.Triplet;
 import de.netbeacon.xenia.backend.client.ClientManager;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
@@ -48,7 +49,8 @@ public class SecurityManager implements IShutdown {
     private final ClientManager clientManager;
 
     private final HashSet<String> blockedIPs = new HashSet<>();
-    private final ConcurrentHashMap<String, RateLimiter> rateLimiterMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, ConcurrentHashMap<Client, RateLimiter>> authRateLimiterMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, RateLimiter> noAuthRateLimiterMap = new ConcurrentHashMap<>();
 
     private final Logger logger = LoggerFactory.getLogger(SecurityManager.class);
 
@@ -89,6 +91,28 @@ public class SecurityManager implements IShutdown {
                 if(client == null || !client.verifyAuth(authHeaderContent.getType(), authHeaderContent.getCredentialsB())){
                     throw new UnauthorizedResponse();
                 }
+                // check rate limit
+                UUID secSetUUID = securitySettings.getSecSetUUID();
+                if(!authRateLimiterMap.containsKey(secSetUUID)){
+                    authRateLimiterMap.put(secSetUUID, new ConcurrentHashMap<>());
+                }
+                ConcurrentHashMap<Client, RateLimiter> rateLimiterEndpointMap = authRateLimiterMap.get(secSetUUID);
+                if(!rateLimiterEndpointMap.containsKey(client)){
+                    Triplet<TimeUnit, Integer, Long> rateLimiterSettings = securitySettings.getRateLimiterSettings(client.getClientType());
+                    RateLimiter rateLimiter = new RateLimiter(rateLimiterSettings.getValue1(), rateLimiterSettings.getValue2());
+                    rateLimiter.setMaxUsages(rateLimiterSettings.getValue3());
+                    rateLimiterEndpointMap.put(client, rateLimiter);
+                }
+                RateLimiter rateLimiter = rateLimiterEndpointMap.get(client);
+                try{
+                    if(!rateLimiter.takeNice()){
+                        throw new HttpResponseException(429, "Too Many Requests", new HashMap<>());
+                    }
+                }finally {
+                    ctx.header("Ratelimit-Limit", String.valueOf(rateLimiter.getMaxUsages()));
+                    ctx.header("Ratelimit-Remaining", String.valueOf(rateLimiter.getRemainingUsages()));
+                    ctx.header("Ratelimit-Reset", String.valueOf(rateLimiter.getRefillTime()));
+                }
             }
             // check client type
             if(!securitySettings.getRequiredClientType().equals(ClientType.ANY) && !securitySettings.getRequiredAuthType().equals(SecuritySettings.AuthType.OPTIONAL) && client != null){
@@ -98,12 +122,15 @@ public class SecurityManager implements IShutdown {
             }
             return client;
         }catch (HttpResponseException e){
-            if(!rateLimiterMap.containsKey(clientIP)){
+            if(e.getStatus() == 429){
+                throw e;
+            }
+            if(!noAuthRateLimiterMap.containsKey(clientIP)){
                 RateLimiter rateLimiter = new RateLimiter(TimeUnit.MINUTES, 5);
                 rateLimiter.setMaxUsages(35);
-                rateLimiterMap.put(clientIP, rateLimiter);
+                noAuthRateLimiterMap.put(clientIP, rateLimiter);
             }
-            if(!rateLimiterMap.get(clientIP).takeNice()){
+            if(!noAuthRateLimiterMap.get(clientIP).takeNice()){
                 throw new HttpResponseException(429, "Too Many Requests", new HashMap<>());
             }
             throw e;
@@ -141,12 +168,12 @@ public class SecurityManager implements IShutdown {
             ctx.send("{\"type\":\"status\", \"action\":\"connected\"}"); // send something which can be parsed by the client to check if the auth succeeded
             return client;
         }catch (HttpResponseException e){
-            if(!rateLimiterMap.containsKey(clientIP)){
+            if(!noAuthRateLimiterMap.containsKey(clientIP)){
                 RateLimiter rateLimiter = new RateLimiter(TimeUnit.MINUTES, 5);
                 rateLimiter.setMaxUsages(35);
-                rateLimiterMap.put(clientIP, rateLimiter);
+                noAuthRateLimiterMap.put(clientIP, rateLimiter);
             }
-            if(!rateLimiterMap.get(clientIP).takeNice()){
+            if(!noAuthRateLimiterMap.get(clientIP).takeNice()){
                 closeWS(ctx.session, 3429, "Too Many Requests", true);
             }
             closeWS(ctx.session, 3000+e.getStatus(), e.getMessage(), false);

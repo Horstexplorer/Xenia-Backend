@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -80,7 +81,9 @@ public class Core {
             // prepare security manager
             SecurityManager securityManager = new SecurityManager(clientManager, new File("./xenia-backend/config/security")).loadFromFile();
             // prepare security settings
-            SecuritySettings regularDataAccessSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN_OR_DISCORD, ClientType.ANY);
+            SecuritySettings regularDataAccessSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN_OR_DISCORD, ClientType.ANY)
+                    .putRateLimiterSetting(ClientType.DISCORD, TimeUnit.MINUTES, 1, 120L)
+                    .putRateLimiterSetting(ClientType.BOT, TimeUnit.MINUTES, 1, 200000L);
             SecuritySettings tokenRequestSetting = new SecuritySettings(SecuritySettings.AuthType.BASIC, ClientType.INTERNAL);
             SecuritySettings tokenRenewSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.INTERNAL);
             SecuritySettings discordAuthSetting = new SecuritySettings(SecuritySettings.AuthType.OPTIONAL, ClientType.ANY); // no auth required, accepts oauth data
