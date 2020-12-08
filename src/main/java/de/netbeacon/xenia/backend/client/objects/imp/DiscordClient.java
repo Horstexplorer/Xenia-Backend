@@ -20,10 +20,18 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
+import de.netbeacon.xenia.joop.Tables;
+import de.netbeacon.xenia.joop.tables.records.OauthRecord;
+import org.jooq.Result;
+import org.mindrot.jbcrypt.BCrypt;
+
+import java.time.LocalDateTime;
 
 public class DiscordClient extends Client {
 
     private final SQLConnectionPool sqlConnectionPool;
+    private LocalDateTime validUntil = LocalDateTime.now().minusHours(1);
+    private String authHash = "";
 
     public static DiscordClient create(long clientId, SQLConnectionPool sqlConnectionPool){
         return new DiscordClient(clientId, sqlConnectionPool);
@@ -32,6 +40,16 @@ public class DiscordClient extends Client {
     private DiscordClient(long clientId, SQLConnectionPool sqlConnectionPool) {
         super(clientId, ClientType.DISCORD);
         this.sqlConnectionPool = sqlConnectionPool;
+        try(var con = sqlConnectionPool.getConnection()){
+            var sqlContext = getSqlConnectionPool().getContext(con);
+            Result<OauthRecord> oauthRecords = sqlContext.selectFrom(Tables.OAUTH).where(Tables.OAUTH.USER_ID.eq(clientId)).fetch();
+            if(!oauthRecords.isEmpty()){
+                return;
+            }
+            OauthRecord oauthRecord = oauthRecords.get(0);
+            validUntil = oauthRecord.getLocalAuthInvalidationTime();
+            authHash = oauthRecord.getLocalAuthHash();
+        }catch (Exception ignore){}
     }
 
     public SQLConnectionPool getSqlConnectionPool(){
@@ -41,7 +59,7 @@ public class DiscordClient extends Client {
     @Override
     public boolean verifyAuth(SecuritySettings.AuthType authType, String credentials) {
         if(SecuritySettings.AuthType.DISCORD.equals(authType)){
-            return false;
+            return !LocalDateTime.now().isAfter(validUntil) && BCrypt.checkpw(credentials, authHash);
         }
         return false;
     }
