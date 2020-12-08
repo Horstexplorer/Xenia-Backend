@@ -78,6 +78,11 @@ public class Public extends SchemaImpl {
     public final Notification NOTIFICATION = Notification.NOTIFICATION;
 
     /**
+     * The table <code>public.oauth</code>.
+     */
+    public final Oauth OAUTH = Oauth.OAUTH;
+
+    /**
      * The table <code>public.tags</code>.
      */
     public final Tags TAGS = Tags.TAGS;
@@ -126,6 +131,7 @@ public class Public extends SchemaImpl {
             MembersRoles.MEMBERS_ROLES,
             Messages.MESSAGES,
             Notification.NOTIFICATION,
+            Oauth.OAUTH,
             Tags.TAGS,
             Users.USERS,
             Vroles.VROLES);
