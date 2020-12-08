@@ -73,9 +73,20 @@ public class AuthDiscord extends RequestProcessor {
             String authToken = Base64.getEncoder().encodeToString(String.valueOf(userId).getBytes())+Base64.getEncoder().encodeToString(byteBuffer.array());
             String authTokenHash = BCrypt.hashpw(authToken, BCrypt.gensalt(4));
             // insert all that to da db
-            sqlContext.deleteFrom(Tables.OAUTH).where(Tables.OAUTH.USER_ID.eq(userId)).execute();
-            Result<OauthRecord> recordResult = sqlContext.insertInto(Tables.OAUTH, Tables.OAUTH.USER_ID, Tables.OAUTH.LOCAL_AUTH_HASH, Tables.OAUTH.LOCAL_AUTH_INVALIDATION_TIME, Tables.OAUTH.DISCORD_ACCESS_TOKEN, Tables.OAUTH.DISCORD_REFRESH_TOKEN, Tables.OAUTH.DISCORD_INVALIDATION_TIME, Tables.OAUTH.DISCORD_SCOPES)
-                    .values(userId, authTokenHash, LocalDateTime.now().plusMinutes(30), token.getAccessToken(), token.getRefreshToken(), token.expiresOn(), token.getScopes()).returning().fetch();
+            Result<OauthRecord> recordResult = sqlContext
+                    .insertInto(Tables.OAUTH, Tables.OAUTH.USER_ID, Tables.OAUTH.LOCAL_AUTH_HASH, Tables.OAUTH.LOCAL_AUTH_INVALIDATION_TIME, Tables.OAUTH.DISCORD_ACCESS_TOKEN, Tables.OAUTH.DISCORD_REFRESH_TOKEN, Tables.OAUTH.DISCORD_INVALIDATION_TIME, Tables.OAUTH.DISCORD_SCOPES)
+                    .values(userId, authTokenHash, LocalDateTime.now().plusMinutes(60), token.getAccessToken(), token.getRefreshToken(), token.expiresOn(), token.getScopes())
+                    .onConflict(Tables.OAUTH.USER_ID)
+                    .doUpdate()
+                    .set(Tables.OAUTH.LOCAL_AUTH_HASH, authTokenHash)
+                    .set(Tables.OAUTH.LOCAL_AUTH_INVALIDATION_TIME, LocalDateTime.now().plusMinutes(60))
+                    .set(Tables.OAUTH.DISCORD_ACCESS_TOKEN, token.getAccessToken())
+                    .set(Tables.OAUTH.DISCORD_REFRESH_TOKEN, token.getRefreshToken())
+                    .set(Tables.OAUTH.DISCORD_INVALIDATION_TIME, token.expiresOn())
+                    .set(Tables.OAUTH.DISCORD_SCOPES, token.getScopes())
+                    .where(Tables.OAUTH.USER_ID.eq(userId))
+                    .returning()
+                    .fetch();
             if(recordResult.isEmpty()){
                 throw new InternalServerErrorResponse();
             }
