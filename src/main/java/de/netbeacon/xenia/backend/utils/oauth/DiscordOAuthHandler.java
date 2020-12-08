@@ -24,9 +24,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.TimeZone;
 
-public class OAuthHandler {
+public class DiscordOAuthHandler {
 
-    private static OAuthHandler instance;
+    private static DiscordOAuthHandler instance;
 
     private final OkHttpClient okHttpClient;
     private final long appId;
@@ -34,18 +34,18 @@ public class OAuthHandler {
     private final String appRedirectUrl;
     private final static String TOKEN_URL = "https://discord.com/api/oauth2/token";
 
-    private static OAuthHandler getInstance(){
+    public static DiscordOAuthHandler getInstance(){
         return instance;
     }
 
-    private static OAuthHandler createInstance(long appId, String appSecret, String appRedirectUrl){
+    public static DiscordOAuthHandler createInstance(long appId, String appSecret, String appRedirectUrl){
         if(instance == null){
-            instance = new OAuthHandler(appId, appSecret, appRedirectUrl);
+            instance = new DiscordOAuthHandler(appId, appSecret, appRedirectUrl);
         }
         return instance;
     }
 
-    private OAuthHandler(long appId, String appSecret, String appRedirectUrl){
+    private DiscordOAuthHandler(long appId, String appSecret, String appRedirectUrl){
         okHttpClient = new OkHttpClient.Builder().build();
         this.appId = appId;
         this.appSecret = appSecret;
@@ -67,12 +67,12 @@ public class OAuthHandler {
                     .post(requestBody);
             try(Response response = okHttpClient.newCall(builder.build()).execute()){
                 if(response.code() != 200){
-                    throw new OAuthHandler.Exception(response.code(), response.message());
+                    throw new DiscordOAuthHandler.Exception(response.code(), response.message());
                 }
                 return new Token(new JSONObject(response.body().string()));
             }
         }catch (java.lang.Exception e){
-            throw new OAuthHandler.Exception(e);
+            throw new DiscordOAuthHandler.Exception(e);
         }
     }
 
@@ -91,12 +91,29 @@ public class OAuthHandler {
                     .post(requestBody);
             try(Response response = okHttpClient.newCall(builder.build()).execute()){
                 if(response.code() != 200){
-                    throw new OAuthHandler.Exception(response.code(), response.message());
+                    throw new DiscordOAuthHandler.Exception(response.code(), response.message());
                 }
-                return new Token(new JSONObject(response.body().toString()));
+                return new Token(new JSONObject(response.body().string()));
             }
         }catch (java.lang.Exception e){
-            throw new OAuthHandler.Exception(e);
+            throw new DiscordOAuthHandler.Exception(e);
+        }
+    }
+
+    public Long getUserID(Token token){
+        try{
+            Request.Builder builder = new Request.Builder()
+                    .url("https://discordapp.com/api/users/@me")
+                    .header("Authorization", "Bearer "+token.getAccessToken())
+                    .get();
+            try(Response response = okHttpClient.newCall(builder.build()).execute()){
+                if(response.code() != 200){
+                    throw new DiscordOAuthHandler.Exception(response.code(), response.message());
+                }
+                return new JSONObject(response.body().string()).getLong("id");
+            }
+        }catch (java.lang.Exception e){
+            return null;
         }
     }
 

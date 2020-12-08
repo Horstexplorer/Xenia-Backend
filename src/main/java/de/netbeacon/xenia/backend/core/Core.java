@@ -33,6 +33,7 @@ import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.Root;
 import de.netbeacon.xenia.backend.security.SecurityManager;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
+import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
 import io.javalin.Javalin;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
@@ -96,6 +97,8 @@ public class Core {
             WebsocketProcessor websocketProcessor = new WebsocketProcessor();
             // prepare processor
             RequestProcessor processor = new Root(clientManager, connectionPool, websocketProcessor);
+            // prepare oAuth handler
+            DiscordOAuthHandler.createInstance(config.getLong("discord_client_id"), config.getString("discord_client_secret"),"https://web.xenia.netbeacon.de/oauth");
             // start background tasks
             BackgroundServiceScheduler backgroundServiceScheduler = new BackgroundServiceScheduler();
             shutdownHook.addShutdownAble(backgroundServiceScheduler);
