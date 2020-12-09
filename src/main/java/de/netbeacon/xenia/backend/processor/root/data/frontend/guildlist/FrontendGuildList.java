@@ -19,6 +19,7 @@ package de.netbeacon.xenia.backend.processor.root.data.frontend.guildlist;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
+import de.netbeacon.xenia.backend.client.objects.imp.DiscordClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.joop.Tables;
@@ -55,17 +56,22 @@ public class FrontendGuildList extends RequestProcessor {
         try(var con = getSqlConnectionPool().getConnection()) {
             var sqlContext = getSqlConnectionPool().getContext(con);
             // select all guilds the user is able to interact with
-            Result<GuildsRecord> records = sqlContext.selectFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.in(
-                    sqlContext.select(Tables.MEMBERS_ROLES.GUILD_ID)
-                            .from(Tables.MEMBERS_ROLES)
-                            .join(Tables.VROLES)
-                            .on(Tables.MEMBERS_ROLES.ROLE_ID.eq(Tables.VROLES.VROLE_ID))
-                            .where(
-                                    Tables.MEMBERS_ROLES.USER_ID.eq(client.getClientId())
-                                            .and(bitAnd(DISCORD_USER_PERM_FILTER, Tables.VROLES.VROLE_ID).eq(DISCORD_USER_PERM_FILTER))
-                            )
-                            .groupBy(Tables.MEMBERS_ROLES.GUILD_ID)
-            )).fetch();
+            Result<GuildsRecord> records;
+            if(((DiscordClient)client).getInternalRole().equalsIgnoreCase("admin")){
+                records = sqlContext.selectFrom(Tables.GUILDS).fetch();
+            }else{
+                records = sqlContext.selectFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.in(
+                        sqlContext.select(Tables.MEMBERS_ROLES.GUILD_ID)
+                                .from(Tables.MEMBERS_ROLES)
+                                .join(Tables.VROLES)
+                                .on(Tables.MEMBERS_ROLES.ROLE_ID.eq(Tables.VROLES.VROLE_ID))
+                                .where(
+                                        Tables.MEMBERS_ROLES.USER_ID.eq(client.getClientId())
+                                                .and(bitAnd(DISCORD_USER_PERM_FILTER, Tables.VROLES.VROLE_ID).eq(DISCORD_USER_PERM_FILTER))
+                                )
+                                .groupBy(Tables.MEMBERS_ROLES.GUILD_ID)
+                )).fetch();
+            }
 
             JSONArray jsonArray = new JSONArray();
 
