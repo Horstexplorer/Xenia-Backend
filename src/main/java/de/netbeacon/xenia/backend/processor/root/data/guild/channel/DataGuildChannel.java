@@ -44,7 +44,7 @@ public class DataGuildChannel extends RequestProcessor {
         super("channel", sqlConnectionPool, websocketProcessor, new DataGuildChannelMessage(sqlConnectionPool, websocketProcessor));
     }
 
-    private static final long DISCORD_USER_PERM_FILTER = 0;
+    private static final long DISCORD_USER_PERM_FILTER = 335544321; // interact, web_use, guild_channel_ov
 
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {

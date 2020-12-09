@@ -43,7 +43,7 @@ public class DataGuildMiscTag extends RequestProcessor {
         super("tags", sqlConnectionPool, websocketProcessor);
     }
 
-    private static final long DISCORD_USER_PERM_FILTER = 0;
+    private static final long DISCORD_USER_PERM_FILTER = 268435465; // interact, web_use, tag_ov
 
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
