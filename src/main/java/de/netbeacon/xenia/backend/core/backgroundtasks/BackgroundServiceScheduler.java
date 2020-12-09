@@ -43,13 +43,13 @@ public class BackgroundServiceScheduler implements IShutdown {
         scheduledExecutorService.shutdown();
     }
 
-    public static abstract class Task {
+    public abstract static class Task {
 
         private final SQLConnectionPool sqlConnectionPool;
         private final WebsocketProcessor websocketProcessor;
         private final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-        public Task(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor){
+        protected Task(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor){
             this.sqlConnectionPool = sqlConnectionPool;
             this.websocketProcessor = websocketProcessor;
         }

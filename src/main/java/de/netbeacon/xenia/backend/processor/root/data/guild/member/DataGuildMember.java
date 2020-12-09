@@ -18,6 +18,7 @@ package de.netbeacon.xenia.backend.processor.root.data.guild.member;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
+import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.joop.Tables;
@@ -26,6 +27,7 @@ import de.netbeacon.xenia.joop.tables.records.MembersRolesRecord;
 import de.netbeacon.xenia.joop.tables.records.VrolesRecord;
 import io.javalin.http.*;
 import org.jooq.InsertValuesStep3;
+import org.jooq.Record;
 import org.jooq.Result;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,6 +38,8 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.jooq.impl.DSL.bitAnd;
+
 
 public class DataGuildMember extends RequestProcessor {
 
@@ -45,8 +49,41 @@ public class DataGuildMember extends RequestProcessor {
         super("member", sqlConnectionPool, websocketProcessor);
     }
 
+    private static final long DISCORD_USER_PERM_FILTER = 805306369; // interact, web_use, guild_set_ov
+
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
+        if(client.getClientType().equals(ClientType.DISCORD)){
+            if(!(context.method().equalsIgnoreCase("get") || context.method().equalsIgnoreCase("put"))){
+                throw new ForbiddenResponse();
+            }
+            try(var con = getSqlConnectionPool().getConnection()) {
+                var sqlContext = getSqlConnectionPool().getContext(con);
+                Result<Record> records = sqlContext.select()
+                        .from(Tables.MEMBERS_ROLES)
+                        .join(Tables.VROLES)
+                        .on(Tables.MEMBERS_ROLES.ROLE_ID.eq(Tables.VROLES.VROLE_ID))
+                        .where(
+                                Tables.MEMBERS_ROLES.GUILD_ID.eq(Long.parseLong(context.pathParam("guildId")))
+                                        .and(Tables.MEMBERS_ROLES.USER_ID.eq(client.getClientId()))
+                                        .and(bitAnd(DISCORD_USER_PERM_FILTER, Tables.VROLES.VROLE_ID).eq(DISCORD_USER_PERM_FILTER))
+                        )
+                        .fetch();
+                if(records.isEmpty()){
+                    throw new ForbiddenResponse();
+                }
+            }catch (HttpResponseException e){
+                if(e instanceof InternalServerErrorResponse){
+                    logger.error("An Error Occurred Processing DataGuild#PRE ", e);
+                }
+                throw e;
+            }catch (NullPointerException e){
+                throw new BadRequestResponse();
+            }catch (Exception e){
+                logger.warn("An Error Occurred Processing DataGuild#PRE ", e);
+                throw new BadRequestResponse();
+            }
+        }
         return this;
     }
 

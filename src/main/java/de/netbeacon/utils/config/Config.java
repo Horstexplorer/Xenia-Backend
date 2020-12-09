@@ -30,7 +30,7 @@ import java.nio.file.Files;
  */
 public class Config {
 
-    private final JSONObject config;
+    private final JSONObject configJSON;
 
     /**
      * Creates a new config from a given file
@@ -42,7 +42,7 @@ public class Config {
         if(!file.exists()){
             throw new IOException("Config File Not Found");
         }else{
-            config = new JSONObject(new String(Files.readAllBytes(file.toPath())));
+            configJSON = new JSONObject(new String(Files.readAllBytes(file.toPath())));
         }
     }
 
@@ -54,7 +54,7 @@ public class Config {
      */
     public String getString(String key){
         try{
-            return config.getString(key);
+            return configJSON.getString(key);
         }catch (Exception e){
             return "";
         }
@@ -68,7 +68,7 @@ public class Config {
      */
     public long getLong(String key){
         try{
-            return config.getLong(key);
+            return configJSON.getLong(key);
         }catch (Exception e){
             return 0L;
         }
@@ -82,7 +82,7 @@ public class Config {
      */
     public int getInt(String key){
         try{
-            return config.getInt(key);
+            return configJSON.getInt(key);
         }catch (Exception e){
             return 0;
         }
@@ -96,7 +96,7 @@ public class Config {
      */
     public boolean getBoolean(String key){
         try{
-            return config.getBoolean(key);
+            return configJSON.getBoolean(key);
         }catch (Exception e){
             return false;
         }
@@ -110,7 +110,7 @@ public class Config {
      */
     public int[] getIntArray(String key){
         try{
-            JSONArray jsonArray = config.getJSONArray(key);
+            JSONArray jsonArray = configJSON.getJSONArray(key);
             int[] ia = new int[jsonArray.length()];
             for(int i = 0; i < jsonArray.length(); i++)
                 ia[i] = jsonArray.getInt(i);
@@ -128,7 +128,7 @@ public class Config {
      */
     public long[] getLongArray(String key){
         try{
-            JSONArray jsonArray = config.getJSONArray(key);
+            JSONArray jsonArray = configJSON.getJSONArray(key);
             long[] ia = new long[jsonArray.length()];
             for(int i = 0; i < jsonArray.length(); i++)
                 ia[i] = jsonArray.getLong(i);
@@ -146,7 +146,7 @@ public class Config {
      */
     public String[] getStringArray(String key){
         try{
-            JSONArray jsonArray = config.getJSONArray(key);
+            JSONArray jsonArray = configJSON.getJSONArray(key);
             String[] ia = new String[jsonArray.length()];
             for(int i = 0; i < jsonArray.length(); i++)
                 ia[i] = jsonArray.getString(i);

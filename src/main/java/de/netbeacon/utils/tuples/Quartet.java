@@ -14,26 +14,35 @@
  * limitations under the License.
  */
 
-package de.netbeacon.utils.appinfo;
+package de.netbeacon.utils.tuples;
 
-import java.util.Properties;
+public class Quartet<V1, V2, V3, V4> {
 
-public class AppInfo {
+    private final V1 value1;
+    private final V2 value2;
+    private final V3 value3;
+    private final V4 value4;
 
-    private static final Properties properties = new Properties();
-
-    private AppInfo(){}
-
-    static {
-        try{
-            properties.load(AppInfo.class.getClassLoader().getResourceAsStream("app.properties"));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+    public Quartet(V1 v1, V2 v2, V3 v3, V4 v4){
+        this.value1 = v1;
+        this.value2 = v2;
+        this.value3 = v3;
+        this.value4 = v4;
     }
 
-    public static String get(String property){
-        String prop = properties.getProperty(property);
-        return (prop != null)?prop:"";
+    public V1 getValue1() {
+        return value1;
+    }
+
+    public V2 getValue2() {
+        return value2;
+    }
+
+    public V3 getValue3() {
+        return value3;
+    }
+
+    public V4 getValue4() {
+        return value4;
     }
 }

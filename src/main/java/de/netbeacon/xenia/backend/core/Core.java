@@ -33,18 +33,20 @@ import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.Root;
 import de.netbeacon.xenia.backend.security.SecurityManager;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
+import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
 import io.javalin.Javalin;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class Core {
 
-    private final static Logger logger = LoggerFactory.getLogger(Core.class);
+    private static final Logger logger = LoggerFactory.getLogger(Core.class);
 
     public static void main(String...args){
         logger.info("\n"+
@@ -80,11 +82,14 @@ public class Core {
             // prepare security manager
             SecurityManager securityManager = new SecurityManager(clientManager, new File("./xenia-backend/config/security")).loadFromFile();
             // prepare security settings
-            SecuritySettings regularDataAccessSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN_OR_DISCORD, ClientType.ANY);
+            SecuritySettings regularDataAccessSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN_OR_DISCORD, ClientType.ANY)
+                    .putRateLimiterSetting(ClientType.DISCORD, TimeUnit.MINUTES, 1, 120L)
+                    .putRateLimiterSetting(ClientType.BOT, TimeUnit.MINUTES, 1, 200000L);
             SecuritySettings tokenRequestSetting = new SecuritySettings(SecuritySettings.AuthType.BASIC, ClientType.INTERNAL);
             SecuritySettings tokenRenewSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.INTERNAL);
             SecuritySettings discordAuthSetting = new SecuritySettings(SecuritySettings.AuthType.OPTIONAL, ClientType.ANY); // no auth required, accepts oauth data
             SecuritySettings botSetupSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.BOT);
+            SecuritySettings botPrivateStatSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.BOT);
             SecuritySettings managementSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.SYSTEM);
             SecuritySettings websocketSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.INTERNAL);
             // add to shutdown hook
@@ -93,6 +98,8 @@ public class Core {
             WebsocketProcessor websocketProcessor = new WebsocketProcessor();
             // prepare processor
             RequestProcessor processor = new Root(clientManager, connectionPool, websocketProcessor);
+            // prepare oAuth handler
+            DiscordOAuthHandler.createInstance(config.getLong("discord_client_id"), config.getString("discord_client_secret"),"https://web.xenia.netbeacon.de/oauth");
             // start background tasks
             BackgroundServiceScheduler backgroundServiceScheduler = new BackgroundServiceScheduler();
             shutdownHook.addShutdownAble(backgroundServiceScheduler);
@@ -380,7 +387,7 @@ public class Core {
                             });
                             path("private", ()->{
                                 get(ctx -> {
-                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                    Client client = securityManager.authorizeConnection(botPrivateStatSetting, ctx);
                                     processor.next("info").next("private").preProcessor(client, ctx).get(client, ctx); // get private stats
                                 });
                             });

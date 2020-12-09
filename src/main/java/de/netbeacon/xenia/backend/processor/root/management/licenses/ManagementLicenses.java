@@ -18,6 +18,7 @@ package de.netbeacon.xenia.backend.processor.root.management.licenses;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
+import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.joop.Tables;
@@ -39,6 +40,9 @@ public class ManagementLicenses extends RequestProcessor {
 
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
+        if(client.getClientType().equals(ClientType.DISCORD)){
+            throw new ForbiddenResponse();
+        }
         return this;
     }
 

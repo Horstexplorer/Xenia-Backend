@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package de.netbeacon.utils.appinfo;
+package de.netbeacon.utils.tuples;
 
-import java.util.Properties;
+public class Pair<V1,V2>{
 
-public class AppInfo {
+    private final V1 value1;
+    private final V2 value2;
 
-    private static final Properties properties = new Properties();
-
-    private AppInfo(){}
-
-    static {
-        try{
-            properties.load(AppInfo.class.getClassLoader().getResourceAsStream("app.properties"));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+    public Pair(V1 v1, V2 v2){
+        this.value1 = v1;
+        this.value2 = v2;
     }
 
-    public static String get(String property){
-        String prop = properties.getProperty(property);
-        return (prop != null)?prop:"";
+    public V1 getValue1() {
+        return value1;
+    }
+
+    public V2 getValue2() {
+        return value2;
     }
 }
