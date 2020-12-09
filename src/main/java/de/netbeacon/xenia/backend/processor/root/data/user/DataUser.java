@@ -43,7 +43,7 @@ public class DataUser extends RequestProcessor {
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
         if(client.getClientType().equals(ClientType.DISCORD)){
-            if(client.getClientId() != Long.parseLong(context.pathParam("userId"))){
+            if(!context.method().equalsIgnoreCase("get") || client.getClientId() != Long.parseLong(context.pathParam("userId"))){
                 throw new ForbiddenResponse();
             }
         }

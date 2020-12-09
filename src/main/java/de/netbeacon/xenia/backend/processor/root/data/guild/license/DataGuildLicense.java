@@ -50,6 +50,9 @@ public class DataGuildLicense extends RequestProcessor {
 
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
+        if(!(context.method().equalsIgnoreCase("get") || context.method().equalsIgnoreCase("put"))){
+            throw new ForbiddenResponse();
+        }
         if(client.getClientType().equals(ClientType.DISCORD)){
             try(var con = getSqlConnectionPool().getConnection()) {
                 var sqlContext = getSqlConnectionPool().getContext(con);

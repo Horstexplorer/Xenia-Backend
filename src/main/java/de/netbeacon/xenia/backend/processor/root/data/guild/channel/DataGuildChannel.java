@@ -49,6 +49,9 @@ public class DataGuildChannel extends RequestProcessor {
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
         if(client.getClientType().equals(ClientType.DISCORD)){
+            if(!(context.method().equalsIgnoreCase("get") || context.method().equalsIgnoreCase("put"))){
+                throw new ForbiddenResponse();
+            }
             try(var con = getSqlConnectionPool().getConnection()) {
                 var sqlContext = getSqlConnectionPool().getContext(con);
                 Result<Record> records = sqlContext.select()
