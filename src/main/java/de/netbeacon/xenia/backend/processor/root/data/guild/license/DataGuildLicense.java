@@ -51,13 +51,13 @@ public class DataGuildLicense extends RequestProcessor {
 
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
-        if(((DiscordClient)client).getInternalRole().equalsIgnoreCase("admin")){
-            return this;
-        }
-        if(!(context.method().equalsIgnoreCase("get") || context.method().equalsIgnoreCase("put"))){
-            throw new ForbiddenResponse();
-        }
         if(client.getClientType().equals(ClientType.DISCORD)){
+            if(((DiscordClient)client).getInternalRole().equalsIgnoreCase("admin")){
+                return this;
+            }
+            if(!(context.method().equalsIgnoreCase("get") || context.method().equalsIgnoreCase("put"))){
+                throw new ForbiddenResponse();
+            }
             try(var con = getSqlConnectionPool().getConnection()) {
                 var sqlContext = getSqlConnectionPool().getContext(con);
                 Result<Record> records = sqlContext.select()
