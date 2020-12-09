@@ -22,6 +22,7 @@ import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
 import de.netbeacon.xenia.joop.Tables;
 import de.netbeacon.xenia.joop.tables.records.OauthRecord;
+import de.netbeacon.xenia.joop.tables.records.UsersRecord;
 import org.jooq.Result;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -32,6 +33,7 @@ public class DiscordClient extends Client {
     private final SQLConnectionPool sqlConnectionPool;
     private LocalDateTime validUntil = LocalDateTime.now().minusHours(1);
     private String authHash = "";
+    private String internalRole = "";
 
     public static DiscordClient create(long clientId, SQLConnectionPool sqlConnectionPool){
         return new DiscordClient(clientId, sqlConnectionPool);
@@ -49,11 +51,22 @@ public class DiscordClient extends Client {
             OauthRecord oauthRecord = oauthRecords.get(0);
             validUntil = oauthRecord.getLocalAuthInvalidationTime();
             authHash = oauthRecord.getLocalAuthHash();
+
+            Result<UsersRecord> usersRecords = sqlContext.selectFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(clientId)).fetch();
+            if(usersRecords.isEmpty()){
+                return;
+            }
+            UsersRecord usersRecord = usersRecords.get(0);
+            this.internalRole = usersRecord.getInternalRole();
         }catch (Exception ignore){}
     }
 
     public SQLConnectionPool getSqlConnectionPool(){
         return sqlConnectionPool;
+    }
+
+    public String getInternalRole(){
+        return internalRole;
     }
 
     @Override
