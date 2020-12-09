@@ -143,6 +143,8 @@ public class DataGuild extends RequestProcessor {
             // update data
             guildsRecord.setPreferredLanguage(newData.getString("preferredLanguage"));
             guildsRecord.setUseVperms(newData.getBoolean("useVPerms"));
+            JSONObject metaData = newData.getJSONObject("meta");
+            guildsRecord.setMetaGuildname(metaData.getString("name"));
             // update db
             sqlContext.executeUpdate(guildsRecord);
             // build json
