@@ -68,6 +68,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
      */
     public final TableField<GuildsRecord, String> META_GUILDNAME = createField(DSL.name("meta_guildname"), SQLDataType.VARCHAR(100).nullable(false).defaultValue(DSL.field("'unknown_name'::character varying", SQLDataType.VARCHAR)), this, "");
 
+    /**
+     * The column <code>public.guilds.meta_iconurl</code>.
+     */
+    public final TableField<GuildsRecord, String> META_ICONURL = createField(DSL.name("meta_iconurl"), SQLDataType.CLOB, this, "");
+
     private Guilds(Name alias, Table<GuildsRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -152,11 +157,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, LocalDateTime, String, Integer, Boolean, String> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Long, LocalDateTime, String, Integer, Boolean, String, String> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }
