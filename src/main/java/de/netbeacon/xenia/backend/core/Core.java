@@ -28,6 +28,7 @@ import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.core.backgroundtasks.BackgroundServiceScheduler;
 import de.netbeacon.xenia.backend.core.backgroundtasks.LicenseCheck;
+import de.netbeacon.xenia.backend.core.backgroundtasks.RatelimiterCleaner;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.Root;
@@ -90,6 +91,7 @@ public class Core {
             SecuritySettings discordAuthSetting = new SecuritySettings(SecuritySettings.AuthType.OPTIONAL, ClientType.ANY); // no auth required, accepts oauth data
             SecuritySettings botSetupSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.BOT);
             SecuritySettings botPrivateStatSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.BOT);
+            SecuritySettings frontendQoLSetting = new SecuritySettings(SecuritySettings.AuthType.DISCORD, ClientType.DISCORD);
             SecuritySettings managementSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.SYSTEM);
             SecuritySettings websocketSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.INTERNAL);
             // add to shutdown hook
@@ -104,6 +106,7 @@ public class Core {
             BackgroundServiceScheduler backgroundServiceScheduler = new BackgroundServiceScheduler();
             shutdownHook.addShutdownAble(backgroundServiceScheduler);
             backgroundServiceScheduler.schedule(new LicenseCheck(connectionPool, websocketProcessor), 30000, true);
+            backgroundServiceScheduler.schedule(new RatelimiterCleaner(securityManager), 120000, true);
             // prepare javalin
             Javalin javalin = Javalin
                     .create(cnf -> {
@@ -340,6 +343,14 @@ public class Core {
                                     delete(ctx -> {
                                         Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                         processor.next("data").next("guild").preProcessor(client, ctx).delete(client, ctx); // delete guild
+                                    });
+                                });
+                            });
+                            path("frontend", ()->{
+                                path("guildlist", ()->{
+                                    get(ctx -> {
+                                        Client client = securityManager.authorizeConnection(frontendQoLSetting, ctx);
+                                        processor.next("data").next("frontend").next("guildlist").preProcessor(client, ctx).get(client, ctx);
                                     });
                                 });
                             });

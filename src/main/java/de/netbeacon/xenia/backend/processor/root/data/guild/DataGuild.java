@@ -106,7 +106,11 @@ public class DataGuild extends RequestProcessor {
                     .put("guildId", guildsRecord.getGuildId())
                     .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage())
-                    .put("useVPerms", guildsRecord.getUseVperms());
+                    .put("useVPerms", guildsRecord.getUseVperms())
+                    .put("meta", new JSONObject()
+                            .put("name", guildsRecord.getMetaGuildname())
+                            .put("iconUrl", (guildsRecord.getMetaIconurl() != null) ? guildsRecord.getMetaIconurl() : JSONObject.NULL)
+                    );
             // respond
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
@@ -140,6 +144,9 @@ public class DataGuild extends RequestProcessor {
             // update data
             guildsRecord.setPreferredLanguage(newData.getString("preferredLanguage"));
             guildsRecord.setUseVperms(newData.getBoolean("useVPerms"));
+            JSONObject metaData = newData.getJSONObject("meta");
+            guildsRecord.setMetaGuildname(metaData.getString("name"));
+            guildsRecord.setMetaIconurl(metaData.get("iconUrl") != JSONObject.NULL ? metaData.getString("iconUrl") : null);
             // update db
             sqlContext.executeUpdate(guildsRecord);
             // build json
@@ -147,7 +154,11 @@ public class DataGuild extends RequestProcessor {
                     .put("guildId", guildsRecord.getGuildId())
                     .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage())
-                    .put("useVPerms", guildsRecord.getUseVperms());
+                    .put("useVPerms", guildsRecord.getUseVperms())
+                    .put("meta", new JSONObject()
+                            .put("name", guildsRecord.getMetaGuildname())
+                            .put("iconUrl", (guildsRecord.getMetaIconurl() != null) ? guildsRecord.getMetaIconurl() : JSONObject.NULL)
+                    );
             // respond
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
@@ -185,7 +196,11 @@ public class DataGuild extends RequestProcessor {
                     .put("guildId", guildsRecord.getGuildId())
                     .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage())
-                    .put("useVPerms", guildsRecord.getUseVperms());
+                    .put("useVPerms", guildsRecord.getUseVperms())
+                    .put("meta", new JSONObject()
+                            .put("name", guildsRecord.getMetaGuildname())
+                            .put("iconUrl", (guildsRecord.getMetaIconurl() != null) ? guildsRecord.getMetaIconurl() : JSONObject.NULL)
+                    );
             // respond
             ctx.status(202);
             ctx.header("Content-Type", "application/json");

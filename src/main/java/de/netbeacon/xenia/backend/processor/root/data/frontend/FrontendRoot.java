@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package de.netbeacon.xenia.backend.processor.root.data;
+package de.netbeacon.xenia.backend.processor.root.data.frontend;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.backend.processor.root.data.frontend.FrontendRoot;
-import de.netbeacon.xenia.backend.processor.root.data.guild.DataGuild;
-import de.netbeacon.xenia.backend.processor.root.data.user.DataUser;
+import de.netbeacon.xenia.backend.processor.root.data.frontend.guildlist.FrontendGuildList;
 
-public class DataRoot extends RequestProcessor {
+public class FrontendRoot extends RequestProcessor {
 
-    public DataRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("data", sqlConnectionPool, websocketProcessor,
-                new DataGuild(sqlConnectionPool, websocketProcessor),
-                new DataUser(sqlConnectionPool, websocketProcessor),
-                new FrontendRoot(sqlConnectionPool, websocketProcessor)
+    public FrontendRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("frontend", sqlConnectionPool, websocketProcessor,
+                new FrontendGuildList(sqlConnectionPool, websocketProcessor)
         );
     }
 
