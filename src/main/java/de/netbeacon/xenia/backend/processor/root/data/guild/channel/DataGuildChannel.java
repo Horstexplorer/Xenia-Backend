@@ -19,6 +19,7 @@ package de.netbeacon.xenia.backend.processor.root.data.guild.channel;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
+import de.netbeacon.xenia.backend.client.objects.imp.DiscordClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.data.guild.channel.message.DataGuildChannelMessage;
@@ -49,6 +50,9 @@ public class DataGuildChannel extends RequestProcessor {
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
         if(client.getClientType().equals(ClientType.DISCORD)){
+            if(((DiscordClient)client).getInternalRole().equalsIgnoreCase("admin")){
+                return this;
+            }
             if(!(context.method().equalsIgnoreCase("get") || context.method().equalsIgnoreCase("put"))){
                 throw new ForbiddenResponse();
             }
