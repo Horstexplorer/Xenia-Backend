@@ -20,7 +20,9 @@ import java.util.Properties;
 
 public class AppInfo {
 
-    private final static Properties properties = new Properties();
+    private static final Properties properties = new Properties();
+
+    private AppInfo(){}
 
     static {
         try{

@@ -40,7 +40,7 @@ public class SecuritySettings {
     private final ClientType clientType;
 
     private final HashMap<ClientType, Triplet<TimeUnit, Integer, Long>> rateLimiterSettings = new HashMap<>();
-    private final static Triplet<TimeUnit, Integer, Long> DEFAULT_RATELIMITER_SETTING = new Triplet<>(TimeUnit.MINUTES, 1, 200000L);
+    private static final Triplet<TimeUnit, Integer, Long> DEFAULT_RATELIMITER_SETTING = new Triplet<>(TimeUnit.MINUTES, 1, 200000L);
 
     public SecuritySettings(AuthType authType, ClientType clientType){
         this.authType = authType;

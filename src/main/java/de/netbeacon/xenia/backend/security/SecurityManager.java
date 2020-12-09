@@ -30,8 +30,6 @@ import io.javalin.websocket.WsContext;
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -51,8 +49,6 @@ public class SecurityManager implements IShutdown {
     private final HashSet<String> blockedIPs = new HashSet<>();
     private final ConcurrentHashMap<UUID, ConcurrentHashMap<Client, RateLimiter>> authRateLimiterMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, RateLimiter> noAuthRateLimiterMap = new ConcurrentHashMap<>();
-
-    private final Logger logger = LoggerFactory.getLogger(SecurityManager.class);
 
     public SecurityManager(ClientManager clientManager, File data){
         this.clientManager = clientManager;
@@ -215,7 +211,7 @@ public class SecurityManager implements IShutdown {
         private final SecuritySettings.AuthType type;
         private final String credentialsA;
         private final String credentialsB;
-        private final static Pattern SPLIT = Pattern.compile("\\s+");
+        private static final Pattern SPLIT = Pattern.compile("\\s+");
 
         private AuthHeaderContent(SecuritySettings.AuthType type, String credentialsA, String credentialsB){
             this.type = type;

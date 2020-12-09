@@ -46,7 +46,7 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class Core {
 
-    private final static Logger logger = LoggerFactory.getLogger(Core.class);
+    private static final Logger logger = LoggerFactory.getLogger(Core.class);
 
     public static void main(String...args){
         logger.info("\n"+

@@ -32,7 +32,7 @@ public class DiscordOAuthHandler {
     private final long appId;
     private final String appSecret;
     private final String appRedirectUrl;
-    private final static String TOKEN_URL = "https://discord.com/api/oauth2/token";
+    private static final String TOKEN_URL = "https://discord.com/api/oauth2/token";
 
     public static DiscordOAuthHandler getInstance(){
         return instance;
