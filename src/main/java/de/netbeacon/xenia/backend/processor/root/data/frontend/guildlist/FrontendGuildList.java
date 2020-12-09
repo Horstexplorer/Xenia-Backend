@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package de.netbeacon.xenia.backend.processor.root.data;
+package de.netbeacon.xenia.backend.processor.root.data.frontend.guildlist;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
+import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.backend.processor.root.data.frontend.FrontendRoot;
-import de.netbeacon.xenia.backend.processor.root.data.guild.DataGuild;
-import de.netbeacon.xenia.backend.processor.root.data.user.DataUser;
+import io.javalin.http.Context;
 
-public class DataRoot extends RequestProcessor {
+public class FrontendGuildList extends RequestProcessor {
 
-    public DataRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("data", sqlConnectionPool, websocketProcessor,
-                new DataGuild(sqlConnectionPool, websocketProcessor),
-                new DataUser(sqlConnectionPool, websocketProcessor),
-                new FrontendRoot(sqlConnectionPool, websocketProcessor)
-        );
+    public FrontendGuildList(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("guildlist", sqlConnectionPool, websocketProcessor);
     }
 
+    @Override
+    public RequestProcessor preProcessor(Client client, Context context) {
+        return super.preProcessor(client, context);
+    }
+
+    @Override
+    public void get(Client client, Context ctx) {
+        super.get(client, ctx);
+    }
 }

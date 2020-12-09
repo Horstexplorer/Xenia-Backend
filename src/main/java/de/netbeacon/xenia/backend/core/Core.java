@@ -90,6 +90,7 @@ public class Core {
             SecuritySettings discordAuthSetting = new SecuritySettings(SecuritySettings.AuthType.OPTIONAL, ClientType.ANY); // no auth required, accepts oauth data
             SecuritySettings botSetupSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.BOT);
             SecuritySettings botPrivateStatSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.BOT);
+            SecuritySettings frontendQoLSetting = new SecuritySettings(SecuritySettings.AuthType.DISCORD, ClientType.DISCORD);
             SecuritySettings managementSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.SYSTEM);
             SecuritySettings websocketSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.INTERNAL);
             // add to shutdown hook
@@ -340,6 +341,14 @@ public class Core {
                                     delete(ctx -> {
                                         Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                         processor.next("data").next("guild").preProcessor(client, ctx).delete(client, ctx); // delete guild
+                                    });
+                                });
+                            });
+                            path("frontend", ()->{
+                                path("guildlist", ()->{
+                                    get(ctx -> {
+                                        Client client = securityManager.authorizeConnection(frontendQoLSetting, ctx);
+                                        processor.next("data").next("frontend").next("guildlist").preProcessor(client, ctx).get(client, ctx);
                                     });
                                 });
                             });
