@@ -89,6 +89,7 @@ public class Core {
             SecuritySettings tokenRenewSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.INTERNAL);
             SecuritySettings discordAuthSetting = new SecuritySettings(SecuritySettings.AuthType.OPTIONAL, ClientType.ANY); // no auth required, accepts oauth data
             SecuritySettings botSetupSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.BOT);
+            SecuritySettings botPrivateStatSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.BOT);
             SecuritySettings managementSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.SYSTEM);
             SecuritySettings websocketSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.INTERNAL);
             // add to shutdown hook
@@ -386,7 +387,7 @@ public class Core {
                             });
                             path("private", ()->{
                                 get(ctx -> {
-                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                    Client client = securityManager.authorizeConnection(botPrivateStatSetting, ctx);
                                     processor.next("info").next("private").preProcessor(client, ctx).get(client, ctx); // get private stats
                                 });
                             });
