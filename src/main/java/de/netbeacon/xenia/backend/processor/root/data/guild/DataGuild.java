@@ -106,7 +106,10 @@ public class DataGuild extends RequestProcessor {
                     .put("guildId", guildsRecord.getGuildId())
                     .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage())
-                    .put("useVPerms", guildsRecord.getUseVperms());
+                    .put("useVPerms", guildsRecord.getUseVperms())
+                    .put("meta", new JSONObject()
+                            .put("name", guildsRecord.getMetaGuildname())
+                    );
             // respond
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
@@ -147,7 +150,10 @@ public class DataGuild extends RequestProcessor {
                     .put("guildId", guildsRecord.getGuildId())
                     .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage())
-                    .put("useVPerms", guildsRecord.getUseVperms());
+                    .put("useVPerms", guildsRecord.getUseVperms())
+                    .put("meta", new JSONObject()
+                            .put("name", guildsRecord.getMetaGuildname())
+                    );
             // respond
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
@@ -185,7 +191,10 @@ public class DataGuild extends RequestProcessor {
                     .put("guildId", guildsRecord.getGuildId())
                     .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage())
-                    .put("useVPerms", guildsRecord.getUseVperms());
+                    .put("useVPerms", guildsRecord.getUseVperms())
+                    .put("meta", new JSONObject()
+                            .put("name", guildsRecord.getMetaGuildname())
+                    );
             // respond
             ctx.status(202);
             ctx.header("Content-Type", "application/json");
