@@ -19,13 +19,11 @@ package de.netbeacon.xenia.backend.processor.root.info.pprivate;
 import de.netbeacon.utils.appinfo.AppInfo;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
+import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.joop.Tables;
-import io.javalin.http.BadRequestResponse;
-import io.javalin.http.Context;
-import io.javalin.http.HttpResponseException;
-import io.javalin.http.InternalServerErrorResponse;
+import io.javalin.http.*;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +38,9 @@ public class InfoPrivate extends RequestProcessor {
 
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
+        if(client.getClientType().equals(ClientType.DISCORD)){
+            throw new ForbiddenResponse();
+        }
         return this;
     }
 

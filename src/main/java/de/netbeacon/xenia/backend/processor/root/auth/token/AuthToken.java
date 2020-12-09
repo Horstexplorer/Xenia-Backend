@@ -18,11 +18,13 @@ package de.netbeacon.xenia.backend.processor.root.auth.token;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
+import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.client.objects.imp.LocalClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
+import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.HttpResponseException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -40,6 +42,9 @@ public class AuthToken extends RequestProcessor {
 
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
+        if(client.getClientType().equals(ClientType.DISCORD)){
+            throw new ForbiddenResponse();
+        }
         return this;
     }
 

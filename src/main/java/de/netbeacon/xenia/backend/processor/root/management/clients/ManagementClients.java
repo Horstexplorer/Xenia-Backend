@@ -48,6 +48,9 @@ public class ManagementClients extends RequestProcessor {
 
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
+        if(client.getClientType().equals(ClientType.DISCORD)){
+            throw new ForbiddenResponse();
+        }
         return this;
     }
 
