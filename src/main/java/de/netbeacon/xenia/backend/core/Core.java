@@ -28,6 +28,7 @@ import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.core.backgroundtasks.BackgroundServiceScheduler;
 import de.netbeacon.xenia.backend.core.backgroundtasks.LicenseCheck;
+import de.netbeacon.xenia.backend.core.backgroundtasks.RatelimiterCleaner;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.Root;
@@ -105,6 +106,7 @@ public class Core {
             BackgroundServiceScheduler backgroundServiceScheduler = new BackgroundServiceScheduler();
             shutdownHook.addShutdownAble(backgroundServiceScheduler);
             backgroundServiceScheduler.schedule(new LicenseCheck(connectionPool, websocketProcessor), 30000, true);
+            backgroundServiceScheduler.schedule(new RatelimiterCleaner(securityManager), 120000, true);
             // prepare javalin
             Javalin javalin = Javalin
                     .create(cnf -> {

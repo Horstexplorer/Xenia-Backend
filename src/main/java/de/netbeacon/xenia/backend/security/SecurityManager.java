@@ -191,6 +191,13 @@ public class SecurityManager implements IShutdown {
         }catch (Exception ignore){}
     }
 
+    public ConcurrentHashMap<String, RateLimiter> getNoAuthRateLimiterMap() {
+        return noAuthRateLimiterMap;
+    }
+
+    public ConcurrentHashMap<UUID, ConcurrentHashMap<Client, RateLimiter>> getAuthRateLimiterMap() {
+        return authRateLimiterMap;
+    }
 
     public SecurityManager loadFromFile() throws IOException {
         String contentS = new String(Files.readAllBytes(file.toPath()));
