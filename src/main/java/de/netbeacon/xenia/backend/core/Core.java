@@ -124,7 +124,7 @@ public class Core {
                                 path("renew", ()->{
                                     get(ctx -> {
                                         Client client = securityManager.authorizeConnection(tokenRenewSetting, ctx);
-                                        processor.next("auth").next("renew").preProcessor(client, ctx).get(client, ctx); // renew token by using it
+                                        processor.next("auth").next("token").next("renew").preProcessor(client, ctx).get(client, ctx); // renew token by using it
                                     });
                                 });
                                 get(ctx -> {

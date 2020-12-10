@@ -36,7 +36,9 @@ public class AuthToken extends RequestProcessor {
     private final Logger logger = LoggerFactory.getLogger(AuthToken.class);
 
     public AuthToken(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("token", sqlConnectionPool, websocketProcessor);
+        super("token", sqlConnectionPool, websocketProcessor,
+                new AuthTokenRenew(sqlConnectionPool, websocketProcessor)
+        );
     }
 
     @Override
