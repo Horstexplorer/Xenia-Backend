@@ -14,36 +14,29 @@
  * limitations under the License.
  */
 
-package de.netbeacon.xenia.backend.processor.root.auth.token;
+package de.netbeacon.xenia.backend.processor.root.auth.discord;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
-import de.netbeacon.xenia.backend.client.objects.imp.LocalClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import io.javalin.http.BadRequestResponse;
-import io.javalin.http.Context;
-import io.javalin.http.ForbiddenResponse;
-import org.json.JSONObject;
+import de.netbeacon.xenia.joop.Tables;
+import io.javalin.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Base64;
+public class AuthDiscordRevoke extends RequestProcessor {
 
-public class AuthToken extends RequestProcessor {
+    private final Logger logger = LoggerFactory.getLogger(AuthDiscordRevoke.class);
 
-    private final Logger logger = LoggerFactory.getLogger(AuthToken.class);
-
-    public AuthToken(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("token", sqlConnectionPool, websocketProcessor,
-                new AuthTokenRenew(sqlConnectionPool, websocketProcessor)
-        );
+    public AuthDiscordRevoke(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("revoke", sqlConnectionPool, websocketProcessor);
     }
 
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
-        if(client.getClientType().equals(ClientType.DISCORD)){
+        if(!client.getClientType().equals(ClientType.DISCORD) || !context.method().equalsIgnoreCase("get")){
             throw new ForbiddenResponse();
         }
         return this;
@@ -51,18 +44,25 @@ public class AuthToken extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        try{
-            String authToken = Base64.getEncoder().encodeToString(String.valueOf(client.getClientId()).getBytes())+"."+((LocalClient) client).getAuth().getToken();
-            // json
-            JSONObject jsonObject = new JSONObject()
-                    .put("token", authToken);
-            // return
+        try(var con = getSqlConnectionPool().getConnection()) {
+            var sqlContext = getSqlConnectionPool().getContext(con);
+            int mod = sqlContext.deleteFrom(Tables.OAUTH).where(Tables.OAUTH.USER_ID.eq(client.getClientId())).execute();
+            if(mod == 0){
+                throw new InternalServerErrorResponse();
+            }
             ctx.status(200);
-            ctx.header("Content-Type", "application/json");
-            ctx.result(jsonObject.toString());
+        }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing AuthDiscordRevoke#GET ", e);
+            }
+            throw e;
+        }catch (NullPointerException e){
+            // dont log
+            throw new BadRequestResponse();
         }catch (Exception e){
-            logger.warn("An Error Occurred Processing AuthToken#GET ", e);
+            logger.warn("An Error Occurred Processing AuthDiscordRevoke#GET ", e);
             throw new BadRequestResponse();
         }
     }
+
 }

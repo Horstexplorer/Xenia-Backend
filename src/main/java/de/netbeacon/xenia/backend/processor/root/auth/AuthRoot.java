@@ -21,14 +21,12 @@ import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.auth.discord.AuthDiscord;
 import de.netbeacon.xenia.backend.processor.root.auth.token.AuthToken;
-import de.netbeacon.xenia.backend.processor.root.auth.token.AuthTokenRenew;
 
 public class AuthRoot extends RequestProcessor {
 
     public AuthRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
         super("auth", sqlConnectionPool, websocketProcessor,
                 new AuthToken(sqlConnectionPool, websocketProcessor),
-                new AuthTokenRenew(sqlConnectionPool, websocketProcessor),
                 new AuthDiscord(sqlConnectionPool, websocketProcessor)
         );
     }

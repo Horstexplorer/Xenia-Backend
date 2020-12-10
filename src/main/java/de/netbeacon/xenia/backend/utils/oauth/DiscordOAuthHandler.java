@@ -16,13 +16,12 @@
 
 package de.netbeacon.xenia.backend.utils.oauth;
 
+import de.netbeacon.xenia.joop.tables.records.OauthRecord;
 import okhttp3.*;
 import org.json.JSONObject;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.TimeZone;
 
 public class DiscordOAuthHandler {
 
@@ -159,33 +158,33 @@ public class DiscordOAuthHandler {
     public static class Token{
 
         private final String accessToken;
-        private final String tokenType;
         private final LocalDateTime expires;
         private final String refreshToken;
         private final String scope;
 
         public Token(String accessToken, String tokenType, long expiresIn, String refreshToken, String scope){
             this.accessToken = accessToken;
-            this.tokenType = tokenType;
             this.expires = LocalDateTime.now().plusSeconds(expiresIn);
             this.refreshToken = refreshToken;
             this.scope = scope;
         }
 
         public Token(JSONObject jsonObject){
-            accessToken = jsonObject.getString("access_token");
-            tokenType = jsonObject.getString("token_type");
-            expires = LocalDateTime.ofInstant(Instant.ofEpochMilli(jsonObject.getLong("expires_in")), TimeZone.getDefault().toZoneId());
-            refreshToken = jsonObject.getString("refresh_token");
-            scope = jsonObject.getString("scope");
+            this.accessToken = jsonObject.getString("access_token");
+            this.expires = LocalDateTime.now().plusSeconds(jsonObject.getLong("expires_in"));
+            this.refreshToken = jsonObject.getString("refresh_token");
+            this.scope = jsonObject.getString("scope");
+        }
+
+        public Token(OauthRecord dbOauthRecord){
+            this.accessToken = dbOauthRecord.getDiscordAccessToken();
+            this.refreshToken = dbOauthRecord.getDiscordRefreshToken();
+            this.scope = dbOauthRecord.getDiscordScopes();
+            this.expires = dbOauthRecord.getDiscordInvalidationTime();
         }
 
         public String getAccessToken() {
             return accessToken;
-        }
-
-        public String getTokenType() {
-            return tokenType;
         }
 
         public LocalDateTime expiresOn() {
@@ -200,14 +199,5 @@ public class DiscordOAuthHandler {
             return scope;
         }
 
-        public JSONObject asJSON(){
-            return new JSONObject()
-                    .put("access_token", accessToken)
-                    .put("token_type", tokenType)
-                    .put("expires", expires)
-                    .put("refresh_token", refreshToken)
-                    .put("scope", scope);
-        }
     }
-
 }

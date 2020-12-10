@@ -49,7 +49,7 @@ public class DiscordClient extends Client {
                 return;
             }
             OauthRecord oauthRecord = oauthRecords.get(0);
-            validUntil = oauthRecord.getLocalAuthInvalidationTime();
+            validUntil = oauthRecord.getDiscordInvalidationTime();
             authHash = oauthRecord.getLocalAuthHash();
 
             Result<UsersRecord> usersRecords = sqlContext.selectFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(clientId)).fetch();
