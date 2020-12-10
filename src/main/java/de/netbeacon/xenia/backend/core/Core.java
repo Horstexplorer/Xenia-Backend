@@ -88,7 +88,8 @@ public class Core {
                     .putRateLimiterSetting(ClientType.BOT, TimeUnit.MINUTES, 1, 200000L);
             SecuritySettings tokenRequestSetting = new SecuritySettings(SecuritySettings.AuthType.BASIC, ClientType.INTERNAL);
             SecuritySettings tokenRenewSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.INTERNAL);
-            SecuritySettings discordAuthSetting = new SecuritySettings(SecuritySettings.AuthType.OPTIONAL, ClientType.ANY); // no auth required, accepts oauth data
+            SecuritySettings discordAuthReqSetting = new SecuritySettings(SecuritySettings.AuthType.OPTIONAL, ClientType.ANY); // no auth required, accepts oauth data
+            SecuritySettings discordAuthSetting = new SecuritySettings(SecuritySettings.AuthType.DISCORD, ClientType.DISCORD);
             SecuritySettings botSetupSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.BOT);
             SecuritySettings botPrivateStatSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.BOT);
             SecuritySettings frontendQoLSetting = new SecuritySettings(SecuritySettings.AuthType.DISCORD, ClientType.DISCORD);
@@ -115,8 +116,26 @@ public class Core {
                     .routes(()->{
                         path("auth", ()->{
                             path("discord", ()->{
+                                path("verify", ()-> {
+                                    get(ctx -> {
+                                        Client client = securityManager.authorizeConnection(discordAuthSetting, ctx);
+                                        processor.next("auth").next("discord").next("verify").preProcessor(client, ctx).get(client, ctx);
+                                    });
+                                });
+                                path("renew", ()-> {
+                                    get(ctx -> {
+                                        Client client = securityManager.authorizeConnection(discordAuthSetting, ctx);
+                                        processor.next("auth").next("discord").next("renew").preProcessor(client, ctx).get(client, ctx);
+                                    });
+                                });
+                                path("revoke", ()-> {
+                                    get(ctx -> {
+                                        Client client = securityManager.authorizeConnection(discordAuthSetting, ctx);
+                                        processor.next("auth").next("discord").next("revoke").preProcessor(client, ctx).get(client, ctx);
+                                    });
+                                });
                                 get(ctx -> {
-                                    Client client = securityManager.authorizeConnection(discordAuthSetting, ctx);
+                                    Client client = securityManager.authorizeConnection(discordAuthReqSetting, ctx);
                                     processor.next("auth").next("discord").preProcessor(client, ctx).get(client, ctx); // verify oauth and hand over local auth token
                                 });
                             });
