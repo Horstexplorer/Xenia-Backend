@@ -49,11 +49,6 @@ public class Oauth extends TableImpl<OauthRecord> {
     public final TableField<OauthRecord, String> LOCAL_AUTH_HASH = createField(DSL.name("local_auth_hash"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>public.oauth.local_auth_invalidation_time</code>.
-     */
-    public final TableField<OauthRecord, LocalDateTime> LOCAL_AUTH_INVALIDATION_TIME = createField(DSL.name("local_auth_invalidation_time"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
-
-    /**
      * The column <code>public.oauth.discord_access_token</code>.
      */
     public final TableField<OauthRecord, String> DISCORD_ACCESS_TOKEN = createField(DSL.name("discord_access_token"), SQLDataType.CLOB.nullable(false), this, "");
@@ -157,11 +152,11 @@ public class Oauth extends TableImpl<OauthRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, String, LocalDateTime, String, String, LocalDateTime, String> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row6<Long, String, String, String, LocalDateTime, String> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }
