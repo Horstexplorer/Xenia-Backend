@@ -67,7 +67,6 @@ public class DiscordOAuthHandler {
                     .post(requestBody);
             try(Response response = okHttpClient.newCall(builder.build()).execute()){
                 if(response.code() != 200){
-                    System.out.println(response.body().string());
                     throw new DiscordOAuthHandler.Exception(response.code(), response.message());
                 }
                 return new Token(new JSONObject(response.body().string()));
@@ -89,6 +88,7 @@ public class DiscordOAuthHandler {
                     .build();
             Request.Builder builder = new Request.Builder()
                     .url(TOKEN_URL)
+                    .header("User-Agent", "Xenia/X Backend")
                     .post(requestBody);
             try(Response response = okHttpClient.newCall(builder.build()).execute()){
                 if(response.code() != 200){
