@@ -38,17 +38,17 @@ public class OauthRecord extends UpdatableRecordImpl<OauthRecord> implements Rec
     }
 
     /**
-     * Setter for <code>public.oauth.local_auth_hash</code>.
+     * Setter for <code>public.oauth.local_auth_secret</code>.
      */
-    public OauthRecord setLocalAuthHash(String value) {
+    public OauthRecord setLocalAuthSecret(String value) {
         set(1, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.oauth.local_auth_hash</code>.
+     * Getter for <code>public.oauth.local_auth_secret</code>.
      */
-    public String getLocalAuthHash() {
+    public String getLocalAuthSecret() {
         return (String) get(1);
     }
 
@@ -142,7 +142,7 @@ public class OauthRecord extends UpdatableRecordImpl<OauthRecord> implements Rec
 
     @Override
     public Field<String> field2() {
-        return Oauth.OAUTH.LOCAL_AUTH_HASH;
+        return Oauth.OAUTH.LOCAL_AUTH_SECRET;
     }
 
     @Override
@@ -172,7 +172,7 @@ public class OauthRecord extends UpdatableRecordImpl<OauthRecord> implements Rec
 
     @Override
     public String component2() {
-        return getLocalAuthHash();
+        return getLocalAuthSecret();
     }
 
     @Override
@@ -202,7 +202,7 @@ public class OauthRecord extends UpdatableRecordImpl<OauthRecord> implements Rec
 
     @Override
     public String value2() {
-        return getLocalAuthHash();
+        return getLocalAuthSecret();
     }
 
     @Override
@@ -233,7 +233,7 @@ public class OauthRecord extends UpdatableRecordImpl<OauthRecord> implements Rec
 
     @Override
     public OauthRecord value2(String value) {
-        setLocalAuthHash(value);
+        setLocalAuthSecret(value);
         return this;
     }
 
@@ -286,11 +286,11 @@ public class OauthRecord extends UpdatableRecordImpl<OauthRecord> implements Rec
     /**
      * Create a detached, initialised OauthRecord
      */
-    public OauthRecord(Long userId, String localAuthHash, String discordAccessToken, String discordRefreshToken, LocalDateTime discordInvalidationTime, String discordScopes) {
+    public OauthRecord(Long userId, String localAuthSecret, String discordAccessToken, String discordRefreshToken, LocalDateTime discordInvalidationTime, String discordScopes) {
         super(Oauth.OAUTH);
 
         setUserId(userId);
-        setLocalAuthHash(localAuthHash);
+        setLocalAuthSecret(localAuthSecret);
         setDiscordAccessToken(discordAccessToken);
         setDiscordRefreshToken(discordRefreshToken);
         setDiscordInvalidationTime(discordInvalidationTime);
