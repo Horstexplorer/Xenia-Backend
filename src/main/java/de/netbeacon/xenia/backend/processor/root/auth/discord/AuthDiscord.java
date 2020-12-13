@@ -18,7 +18,6 @@ package de.netbeacon.xenia.backend.processor.root.auth.discord;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
-import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
@@ -49,7 +48,7 @@ public class AuthDiscord extends RequestProcessor {
 
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
-        if(!client.getClientType().equals(ClientType.DISCORD) || !context.method().equalsIgnoreCase("get")){
+        if(!context.method().equalsIgnoreCase("get")){
             throw new ForbiddenResponse();
         }
         return this;
