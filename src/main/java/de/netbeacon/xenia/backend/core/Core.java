@@ -134,6 +134,12 @@ public class Core {
                                         processor.next("auth").next("discord").next("revoke").preProcessor(client, ctx).get(client, ctx);
                                     });
                                 });
+                                path("prepare", ()-> {
+                                    get(ctx -> {
+                                        Client client = securityManager.authorizeConnection(discordAuthReqSetting, ctx);
+                                        processor.next("auth").next("discord").next("prepare").preProcessor(client, ctx).get(client, ctx);
+                                    });
+                                });
                                 get(ctx -> {
                                     Client client = securityManager.authorizeConnection(discordAuthReqSetting, ctx);
                                     processor.next("auth").next("discord").preProcessor(client, ctx).get(client, ctx); // verify oauth and hand over local auth token
