@@ -84,7 +84,7 @@ public class SecurityManager implements IShutdown {
                 if(!securitySettings.getRequiredAuthType().equals(authHeaderContent.getGeneric("authType")) && !(securitySettings.getRequiredAuthType().equals(SecuritySettings.AuthType.BEARER))){
                     throw new ForbiddenResponse();
                 }
-                Long id = authHeaderContent.getGeneric("clientId");
+                Long id = authHeaderContent.getGeneric("userId");
                 if(SecuritySettings.AuthType.BEARER.equals(authHeaderContent.getGeneric("authType"))){
                     if(authHeaderContent.getGeneric("isDiscordToken")){
                         client = clientManager.getClient(ClientType.DISCORD, id);
@@ -156,7 +156,7 @@ public class SecurityManager implements IShutdown {
             }
             // check auth if specified
             Client client = null;
-            AuthHeaderContent authHeaderContent = AuthHeaderContent.parseHeader("Token "+ctx.queryParam("token", ""));
+            AuthHeaderContent authHeaderContent = AuthHeaderContent.parseHeader("Bearer "+ctx.queryParam("token", ""));
             if(authHeaderContent == null || !SecuritySettings.AuthType.BEARER.equals(authHeaderContent.getGeneric("authType"))){
                 throw new ForbiddenResponse(); // not actually a valid status code
             }
