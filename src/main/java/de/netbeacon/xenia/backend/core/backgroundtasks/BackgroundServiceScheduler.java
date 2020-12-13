@@ -49,7 +49,7 @@ public class BackgroundServiceScheduler implements IShutdown {
         private final WebsocketProcessor websocketProcessor;
         private final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-        protected Task(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor){
+        public Task(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor){
             this.sqlConnectionPool = sqlConnectionPool;
             this.websocketProcessor = websocketProcessor;
         }
