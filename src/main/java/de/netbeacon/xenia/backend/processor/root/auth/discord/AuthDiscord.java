@@ -23,17 +23,17 @@ import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
 import de.netbeacon.xenia.joop.Tables;
-import de.netbeacon.xenia.joop.tables.records.OauthRecord;
 import io.javalin.http.*;
-import org.jooq.Result;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.json.JSONObject;
-import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.ByteBuffer;
+import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.UUID;
+import java.util.Date;
 
 public class AuthDiscord extends RequestProcessor {
 
@@ -71,33 +71,35 @@ public class AuthDiscord extends RequestProcessor {
             // get user id
             long userId = DiscordOAuthHandler.getInstance().getUserID(token);
             // generate auth
-            UUID uuid = UUID.randomUUID();
-            ByteBuffer byteBuffer = ByteBuffer.allocate(Long.BYTES*2);
-            byteBuffer.putLong(uuid.getMostSignificantBits()).putLong(uuid.getLeastSignificantBits());
-            String authToken = Base64.getEncoder().encodeToString(String.valueOf(userId).getBytes())+Base64.getEncoder().encodeToString(byteBuffer.array());
-            String authTokenHash = BCrypt.hashpw(authToken, BCrypt.gensalt(4));
+            byte[] bytes = new byte[64];
+            new SecureRandom().nextBytes(bytes);
+            String localAuthSecret = Base64.getEncoder().encodeToString(bytes);
+            String localAuthToken = Jwts.builder()
+                    .setIssuedAt(new Date())
+                    .setSubject("Auth")
+                    .setHeaderParam("cid", userId)
+                    .setHeaderParam("isDiscordToken", true)
+                    .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(localAuthSecret)))
+                    .compact();
             // insert all that to da db
-            Result<OauthRecord> recordResult = sqlContext
-                    .insertInto(Tables.OAUTH, Tables.OAUTH.USER_ID, Tables.OAUTH.LOCAL_AUTH_HASH, Tables.OAUTH.DISCORD_ACCESS_TOKEN, Tables.OAUTH.DISCORD_REFRESH_TOKEN, Tables.OAUTH.DISCORD_INVALIDATION_TIME, Tables.OAUTH.DISCORD_SCOPES)
-                    .values(userId, authTokenHash, token.getAccessToken(), token.getRefreshToken(), token.expiresOn(), token.getScopes())
+            int mod = sqlContext
+                    .insertInto(Tables.OAUTH, Tables.OAUTH.USER_ID, Tables.OAUTH.LOCAL_AUTH_SECRET, Tables.OAUTH.DISCORD_ACCESS_TOKEN, Tables.OAUTH.DISCORD_REFRESH_TOKEN, Tables.OAUTH.DISCORD_INVALIDATION_TIME, Tables.OAUTH.DISCORD_SCOPES)
+                    .values(userId, localAuthSecret, token.getAccessToken(), token.getRefreshToken(), token.expiresOn(), token.getScopes())
                     .onConflict(Tables.OAUTH.USER_ID)
                     .doUpdate()
-                    .set(Tables.OAUTH.LOCAL_AUTH_HASH, authTokenHash)
+                    .set(Tables.OAUTH.LOCAL_AUTH_SECRET, localAuthSecret)
                     .set(Tables.OAUTH.DISCORD_ACCESS_TOKEN, token.getAccessToken())
                     .set(Tables.OAUTH.DISCORD_REFRESH_TOKEN, token.getRefreshToken())
                     .set(Tables.OAUTH.DISCORD_INVALIDATION_TIME, token.expiresOn())
                     .set(Tables.OAUTH.DISCORD_SCOPES, token.getScopes())
                     .where(Tables.OAUTH.USER_ID.eq(userId))
-                    .returning()
-                    .fetch();
-            if(recordResult.isEmpty()){
+                    .execute();
+            if(mod == 0){
                 throw new InternalServerErrorResponse();
             }
-            OauthRecord record = recordResult.get(0);
             // prepare nice response
             JSONObject jsonObject = new JSONObject()
-                    .put("authToken", authToken)
-                    .put("validUntil", record.getDiscordInvalidationTime());
+                    .put("authToken", localAuthToken);
             // return
             ctx.status(200);
             ctx.header("Content-Type", "application/json");

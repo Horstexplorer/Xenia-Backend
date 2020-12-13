@@ -27,6 +27,8 @@ import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.HttpResponseException;
 import io.javalin.http.UnauthorizedResponse;
 import io.javalin.websocket.WsContext;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwts;
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -79,16 +81,20 @@ public class SecurityManager implements IShutdown {
                     throw new UnauthorizedResponse();
                 }
             }else{
-                if(!securitySettings.getRequiredAuthType().equals(authHeaderContent.getType()) && !(securitySettings.getRequiredAuthType().equals(SecuritySettings.AuthType.TOKEN_OR_DISCORD) && (authHeaderContent.getType().equals(SecuritySettings.AuthType.TOKEN) || authHeaderContent.getType().equals(SecuritySettings.AuthType.DISCORD)))){
+                if(!securitySettings.getRequiredAuthType().equals(authHeaderContent.getGeneric("authType")) && !(securitySettings.getRequiredAuthType().equals(SecuritySettings.AuthType.BEARER))){
                     throw new ForbiddenResponse();
                 }
-                long id = Long.parseLong(authHeaderContent.credentialsA);
-                if(authHeaderContent.getType().equals(SecuritySettings.AuthType.DISCORD)){
-                    client = clientManager.getClient(ClientType.DISCORD, id);
+                Long id = authHeaderContent.getGeneric("clientId");
+                if(SecuritySettings.AuthType.BEARER.equals(authHeaderContent.getGeneric("authType"))){
+                    if(authHeaderContent.getGeneric("isDiscordToken")){
+                        client = clientManager.getClient(ClientType.DISCORD, id);
+                    }else {
+                        client = clientManager.getClient(ClientType.INTERNAL, id);
+                    }
                 }else {
                     client = clientManager.getClient(ClientType.INTERNAL, id);
                 }
-                if(client == null || !client.verifyAuth(authHeaderContent.getType(), authHeaderContent.getCredentialsB())){
+                if(client == null || !client.verifyAuth(authHeaderContent.getGeneric("authType"), authHeaderContent.getGeneric("userAuth"))){
                     throw new UnauthorizedResponse();
                 }
                 // check rate limit
@@ -151,12 +157,12 @@ public class SecurityManager implements IShutdown {
             // check auth if specified
             Client client = null;
             AuthHeaderContent authHeaderContent = AuthHeaderContent.parseHeader("Token "+ctx.queryParam("token", ""));
-            if(authHeaderContent == null || !SecuritySettings.AuthType.TOKEN.equals(authHeaderContent.getType())){
+            if(authHeaderContent == null || !SecuritySettings.AuthType.BEARER.equals(authHeaderContent.getGeneric("authType"))){
                 throw new ForbiddenResponse(); // not actually a valid status code
             }
-            long id = Long.parseLong(authHeaderContent.getCredentialsA());
+            Long id = authHeaderContent.getGeneric("userId");
             client = clientManager.getClient(ClientType.INTERNAL, id);
-            if(client == null || !client.verifyAuth(authHeaderContent.getType(), authHeaderContent.getCredentialsB())){
+            if(client == null || !client.verifyAuth(authHeaderContent.getGeneric("authType"), authHeaderContent.getGeneric("userAuth"))){
                 throw new UnauthorizedResponse();
             }
             // check client type
@@ -213,53 +219,6 @@ public class SecurityManager implements IShutdown {
         return this;
     }
 
-    private static class AuthHeaderContent{
-
-        private final SecuritySettings.AuthType type;
-        private final String credentialsA;
-        private final String credentialsB;
-        private static final Pattern SPLIT = Pattern.compile("\\s+");
-
-        private AuthHeaderContent(SecuritySettings.AuthType type, String credentialsA, String credentialsB){
-            this.type = type;
-            this.credentialsA = credentialsA;
-            this.credentialsB = credentialsB;
-        }
-
-        public SecuritySettings.AuthType getType() {
-            return type;
-        }
-
-        public String getCredentialsA() {
-            return credentialsA;
-        }
-
-        public String getCredentialsB() {
-            return credentialsB;
-        }
-
-        protected static AuthHeaderContent parseHeader(String content){
-            try{
-                List<String> parts = new ArrayList<>(Arrays.asList(SPLIT.split(content)));
-                switch (parts.get(0).toLowerCase()){
-                    case "basic":
-                        String decoded = new String(Base64.getDecoder().decode(parts.get(1)));
-                        return new AuthHeaderContent(SecuritySettings.AuthType.BASIC, decoded.substring(0, decoded.indexOf(":")), decoded.substring(decoded.indexOf(":")+1));
-                    case "token":
-                    case "discord":
-                        String token = parts.get(1);
-                        String a = new String(Base64.getDecoder().decode(token.substring(0,token.indexOf("."))));
-                        String b = token.substring(token.indexOf(".")+1);
-                        return new AuthHeaderContent(SecuritySettings.AuthType.valueOf(parts.get(0).toUpperCase()), a, b);
-                    default:
-                        return null;
-                }
-            }catch (Exception e){
-                return null;
-            }
-        }
-    }
-
     public SecurityManager writeToFile() throws IOException {
         try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))){
             JSONObject jsonObject = new JSONObject().put("blockedIPs", blockedIPs);
@@ -273,5 +232,56 @@ public class SecurityManager implements IShutdown {
     @Override
     public void onShutdown() throws Exception {
         writeToFile();
+    }
+
+    private static class AuthHeaderContent{
+
+        private final HashMap<String, Object> data = new HashMap<>();
+        private static final Pattern WS_SPLIT = Pattern.compile("\\s+");
+        private static final Pattern D_SPLIT = Pattern.compile("\\.");
+
+        private AuthHeaderContent(){}
+
+        public AuthHeaderContent add(String key, Object object){
+            data.put(key, object);
+            return this;
+        }
+
+        public Object getObject(String key){
+            return data.get(key);
+        }
+
+        public <T> T getGeneric(String key){
+            return (T) data.get(key);
+        }
+
+        protected static AuthHeaderContent parseHeader(String content){
+            try{
+                List<String> parts = new ArrayList<>(Arrays.asList(WS_SPLIT.split(content)));
+                switch (parts.get(0).toLowerCase()){
+                    case "basic": {
+                        String decoded = new String(Base64.getDecoder().decode(parts.get(1)));
+                        return new AuthHeaderContent()
+                                .add("userId", Long.parseLong(decoded.substring(0, decoded.indexOf(":"))))
+                                .add("userAuth", decoded.substring(decoded.indexOf(":") + 1))
+                                .add("authType", SecuritySettings.AuthType.BASIC);
+                    }
+                    case "bearer": {
+                        String token = parts.get(1);
+                        String[] splitToken = D_SPLIT.split(token);
+                        Header<?> jwtHeader = Jwts.parserBuilder().build().parse(splitToken[0] + "." + splitToken[1] + ".").getHeader();
+                        return new AuthHeaderContent()
+                                .add("userId", Long.parseLong(String.valueOf(jwtHeader.get("cid"))))
+                                .add("userAuth", token)
+                                .add("authType", SecuritySettings.AuthType.BEARER)
+                                .add("isDiscordToken", jwtHeader.containsKey("isDiscordToken") );
+                    }
+                    default:
+                        return null;
+                }
+            }catch (Exception e){
+                return null;
+            }
+        }
     }
 }

@@ -29,9 +29,7 @@ public class SecuritySettings {
         OPTIONAL,
         REQUIRED,
         BASIC,
-        TOKEN,
-        DISCORD,
-        TOKEN_OR_DISCORD;
+        BEARER;
     }
 
 
