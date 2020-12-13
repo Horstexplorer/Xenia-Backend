@@ -32,6 +32,13 @@ dependencies {
 
     implementation group: 'org.json', name: 'json', version: '20201115' // https://mvnrepository.com/artifact/org.json/json
 
+    // JJWT
+
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2' // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2' // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-orgjson', version: '0.11.2' // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-orgjson
+
+
     // LOGGING
 
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30' // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
