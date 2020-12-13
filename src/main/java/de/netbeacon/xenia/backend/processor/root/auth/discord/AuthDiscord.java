@@ -69,7 +69,7 @@ public class AuthDiscord extends RequestProcessor {
             }
             // verify state
             int mod0 = sqlContext.deleteFrom(Tables.OAUTH_STATES)
-                    .where(Tables.OAUTH_STATES.STATE.eq(state).and(Tables.OAUTH_STATES.STATE_OWNER.eq(owner)))
+                    .where(Tables.OAUTH_STATES.STATE.eq(state).and((owner != null) ? Tables.OAUTH_STATES.STATE_OWNER.eq(owner) : Tables.OAUTH_STATES.STATE_OWNER.isNull()))
                     .execute();
             if(mod0 != 1){
                 throw new BadRequestResponse();
