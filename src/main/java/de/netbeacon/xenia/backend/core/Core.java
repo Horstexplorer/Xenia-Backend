@@ -83,18 +83,18 @@ public class Core {
             // prepare security manager
             SecurityManager securityManager = new SecurityManager(clientManager, new File("./xenia-backend/config/security")).loadFromFile();
             // prepare security settings
-            SecuritySettings regularDataAccessSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN_OR_DISCORD, ClientType.ANY)
+            SecuritySettings regularDataAccessSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.ANY)
                     .putRateLimiterSetting(ClientType.DISCORD, TimeUnit.MINUTES, 1, 120L)
                     .putRateLimiterSetting(ClientType.BOT, TimeUnit.MINUTES, 1, 200000L);
             SecuritySettings tokenRequestSetting = new SecuritySettings(SecuritySettings.AuthType.BASIC, ClientType.INTERNAL);
-            SecuritySettings tokenRenewSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.INTERNAL);
+            SecuritySettings tokenRenewSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.INTERNAL);
             SecuritySettings discordAuthReqSetting = new SecuritySettings(SecuritySettings.AuthType.OPTIONAL, ClientType.ANY); // no auth required, accepts oauth data
-            SecuritySettings discordAuthSetting = new SecuritySettings(SecuritySettings.AuthType.DISCORD, ClientType.DISCORD);
-            SecuritySettings botSetupSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.BOT);
-            SecuritySettings botPrivateStatSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.BOT);
-            SecuritySettings frontendQoLSetting = new SecuritySettings(SecuritySettings.AuthType.DISCORD, ClientType.DISCORD);
-            SecuritySettings managementSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.SYSTEM);
-            SecuritySettings websocketSetting = new SecuritySettings(SecuritySettings.AuthType.TOKEN, ClientType.INTERNAL);
+            SecuritySettings discordAuthSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.DISCORD);
+            SecuritySettings botSetupSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.BOT);
+            SecuritySettings botPrivateStatSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.BOT);
+            SecuritySettings frontendQoLSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.DISCORD);
+            SecuritySettings managementSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.SYSTEM);
+            SecuritySettings websocketSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.INTERNAL);
             // add to shutdown hook
             shutdownHook.addShutdownAble(securityManager);
             // prepare websocket connection handler

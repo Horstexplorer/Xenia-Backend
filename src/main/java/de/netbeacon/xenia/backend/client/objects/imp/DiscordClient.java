@@ -17,22 +17,29 @@
 package de.netbeacon.xenia.backend.client.objects.imp;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
+import de.netbeacon.xenia.backend.client.objects.Auth;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
 import de.netbeacon.xenia.joop.Tables;
 import de.netbeacon.xenia.joop.tables.records.OauthRecord;
 import de.netbeacon.xenia.joop.tables.records.UsersRecord;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.jooq.Result;
-import org.mindrot.jbcrypt.BCrypt;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Base64;
+import java.util.Date;
 
 public class DiscordClient extends Client {
 
     private final SQLConnectionPool sqlConnectionPool;
     private LocalDateTime validUntil = LocalDateTime.now().minusHours(1);
-    private String authHash = "";
+    private DCAuth dcAuth;
     private String internalRole = "";
 
     public static DiscordClient create(long clientId, SQLConnectionPool sqlConnectionPool){
@@ -50,12 +57,13 @@ public class DiscordClient extends Client {
             }
             OauthRecord oauthRecord = oauthRecords.get(0);
             validUntil = oauthRecord.getDiscordInvalidationTime();
-            authHash = oauthRecord.getLocalAuthHash();
+            dcAuth = new DCAuth(this, oauthRecord.getLocalAuthSecret());
 
             Result<UsersRecord> usersRecords = sqlContext.selectFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(clientId)).fetch();
             if(usersRecords.isEmpty()){
                 return;
             }
+
             UsersRecord usersRecord = usersRecords.get(0);
             this.internalRole = usersRecord.getInternalRole();
         }catch (Exception ignore){}
@@ -71,9 +79,55 @@ public class DiscordClient extends Client {
 
     @Override
     public boolean verifyAuth(SecuritySettings.AuthType authType, String credentials) {
-        if(SecuritySettings.AuthType.DISCORD.equals(authType)){
-            return !LocalDateTime.now().isAfter(validUntil) && BCrypt.checkpw(credentials, authHash);
+        if(SecuritySettings.AuthType.BEARER.equals(authType)){
+            return !LocalDateTime.now().isAfter(validUntil) && dcAuth.verifyToken(credentials);
         }
         return false;
+    }
+
+    static class DCAuth implements Auth{
+
+        private final Client client;
+        private final String dcAuthSecret;
+
+        public DCAuth(Client client){
+            this.client = client;
+            byte[] bytes = new byte[64];
+            new SecureRandom().nextBytes(bytes);
+            this.dcAuthSecret = Base64.getEncoder().encodeToString(bytes);
+        }
+
+        public DCAuth(Client client, String localAuthSecret){
+            this.client = client;
+            this.dcAuthSecret = localAuthSecret;
+        }
+
+        public String getLocalAuthSecret(){
+            return dcAuthSecret;
+        }
+
+        @Override
+        public String getToken(){
+            return Jwts.builder()
+                    .setIssuedAt(new Date())
+                    .setSubject("Auth")
+                    .setHeaderParam("cid", client.getClientId())
+                    .setHeaderParam("isDiscordToken", true)
+                    .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(dcAuthSecret)))
+                    .compact();
+        }
+
+        @Override
+        public boolean verifyToken(String token) {
+            try{
+                Jwts.parserBuilder()
+                        .setSigningKey(Keys.hmacShaKeyFor(Decoders.BASE64.decode(dcAuthSecret)))
+                        .build()
+                        .parse(token);
+                return true;
+            }catch (JwtException ignore){}
+            return false;
+        }
+
     }
 }

@@ -29,8 +29,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Base64;
-
 public class AuthToken extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(AuthToken.class);
@@ -52,10 +50,9 @@ public class AuthToken extends RequestProcessor {
     @Override
     public void get(Client client, Context ctx) {
         try{
-            String authToken = Base64.getEncoder().encodeToString(String.valueOf(client.getClientId()).getBytes())+"."+((LocalClient) client).getAuth().getToken();
             // json
             JSONObject jsonObject = new JSONObject()
-                    .put("token", authToken);
+                    .put("token", ((LocalClient) client).getAuth().getToken());
             // return
             ctx.status(200);
             ctx.header("Content-Type", "application/json");

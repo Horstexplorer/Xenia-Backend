@@ -31,7 +31,7 @@ public interface IJSONSerializable {
      * @return JSONObject as serialized copy
      * @throws JSONSerializationException on exception
      */
-    public JSONObject asJSON() throws JSONSerializationException;
+    public default JSONObject asJSON() throws JSONSerializationException { return null; }
 
     /**
      * Sets up an object from a given serialized copy
@@ -39,6 +39,6 @@ public interface IJSONSerializable {
      * @param jsonObject as serialized copy
      * @throws JSONSerializationException on exception
      */
-    public void fromJSON(JSONObject jsonObject) throws JSONSerializationException;
+    public default void fromJSON(JSONObject jsonObject) throws JSONSerializationException {};
 
 }

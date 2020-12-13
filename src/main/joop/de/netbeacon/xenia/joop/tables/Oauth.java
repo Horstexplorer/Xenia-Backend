@@ -44,9 +44,9 @@ public class Oauth extends TableImpl<OauthRecord> {
     public final TableField<OauthRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.oauth.local_auth_hash</code>.
+     * The column <code>public.oauth.local_auth_secret</code>.
      */
-    public final TableField<OauthRecord, String> LOCAL_AUTH_HASH = createField(DSL.name("local_auth_hash"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<OauthRecord, String> LOCAL_AUTH_SECRET = createField(DSL.name("local_auth_secret"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.oauth.discord_access_token</code>.
