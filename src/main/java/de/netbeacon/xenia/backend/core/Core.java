@@ -114,6 +114,7 @@ public class Core {
             Javalin javalin = Javalin
                     .create(cnf -> {
                         cnf.enforceSsl = true;
+                        cnf.enableCorsForOrigin("https://xenia.netbeacon.de/");
                     })
                     .routes(()->{
                         path("auth", ()->{
