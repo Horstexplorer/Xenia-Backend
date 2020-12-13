@@ -42,7 +42,8 @@ public class AuthDiscord extends RequestProcessor {
         super("discord", sqlConnectionPool, websocketProcessor,
                 new AuthDiscordVerify(sqlConnectionPool, websocketProcessor),
                 new AuthDiscordRevoke(sqlConnectionPool, websocketProcessor),
-                new AuthDiscordRenew(sqlConnectionPool, websocketProcessor)
+                new AuthDiscordRenew(sqlConnectionPool, websocketProcessor),
+                new AuthDiscordPrepare(sqlConnectionPool, websocketProcessor)
         );
     }
 
@@ -58,7 +59,19 @@ public class AuthDiscord extends RequestProcessor {
     public void get(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection()){
             var sqlContext = getSqlConnectionPool().getContext(con);
-            if(!ctx.queryParamMap().containsKey("code") || !ctx.queryParamMap().containsKey("scope")){
+            if(!ctx.queryParamMap().containsKey("code") || !ctx.queryParamMap().containsKey("scope") || !ctx.queryParamMap().containsKey("state")){
+                throw new BadRequestResponse();
+            }
+            String state = ctx.queryParam("state");
+            String owner = null;
+            if(ctx.queryParamMap().containsKey("ownerId")){
+                owner = ctx.queryParam("ownerId");
+            }
+            // verify state
+            int mod0 = sqlContext.deleteFrom(Tables.OAUTH_STATES)
+                    .where(Tables.OAUTH_STATES.STATE.eq(state).and(Tables.OAUTH_STATES.STATE_OWNER.eq(owner)))
+                    .execute();
+            if(mod0 != 1){
                 throw new BadRequestResponse();
             }
             DiscordOAuthHandler.Token token;
