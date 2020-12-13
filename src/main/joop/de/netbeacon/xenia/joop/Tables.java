@@ -69,6 +69,11 @@ public class Tables {
     public static final Oauth OAUTH = Oauth.OAUTH;
 
     /**
+     * The table <code>public.oauth_states</code>.
+     */
+    public static final OauthStates OAUTH_STATES = OauthStates.OAUTH_STATES;
+
+    /**
      * The table <code>public.tags</code>.
      */
     public static final Tags TAGS = Tags.TAGS;

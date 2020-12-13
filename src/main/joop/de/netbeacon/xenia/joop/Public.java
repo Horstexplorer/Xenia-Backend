@@ -83,6 +83,11 @@ public class Public extends SchemaImpl {
     public final Oauth OAUTH = Oauth.OAUTH;
 
     /**
+     * The table <code>public.oauth_states</code>.
+     */
+    public final OauthStates OAUTH_STATES = OauthStates.OAUTH_STATES;
+
+    /**
      * The table <code>public.tags</code>.
      */
     public final Tags TAGS = Tags.TAGS;
@@ -115,6 +120,7 @@ public class Public extends SchemaImpl {
         return Arrays.<Sequence<?>>asList(
             Sequences.LICENSES_LICENSE_ID_SEQ,
             Sequences.NOTIFICATION_NOTIFICATION_ID_SEQ,
+            Sequences.OAUTH_STATES_STATE_ID_SEQ,
             Sequences.ROLES_ROLE_ID_SEQ);
     }
 
@@ -132,6 +138,7 @@ public class Public extends SchemaImpl {
             Messages.MESSAGES,
             Notification.NOTIFICATION,
             Oauth.OAUTH,
+            OauthStates.OAUTH_STATES,
             Tags.TAGS,
             Users.USERS,
             Vroles.VROLES);
