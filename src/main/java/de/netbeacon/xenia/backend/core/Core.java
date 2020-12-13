@@ -103,7 +103,7 @@ public class Core {
             // prepare processor
             RequestProcessor processor = new Root(clientManager, connectionPool, websocketProcessor);
             // prepare oAuth handler
-            DiscordOAuthHandler.createInstance(config.getLong("discord_client_id"), config.getString("discord_client_secret"),"https://web.xenia.netbeacon.de/oauth");
+            DiscordOAuthHandler.createInstance(config.getLong("discord_client_id"), config.getString("discord_client_secret"),"https://xenia.netbeacon.de/auth/returning");
             // start background tasks
             BackgroundServiceScheduler backgroundServiceScheduler = new BackgroundServiceScheduler();
             shutdownHook.addShutdownAble(backgroundServiceScheduler);
