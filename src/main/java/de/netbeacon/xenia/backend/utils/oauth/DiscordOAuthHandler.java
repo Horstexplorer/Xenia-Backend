@@ -16,7 +16,7 @@
 
 package de.netbeacon.xenia.backend.utils.oauth;
 
-import de.netbeacon.xenia.joop.tables.records.OauthRecord;
+import de.netbeacon.xenia.jooq.tables.records.OauthRecord;
 import okhttp3.*;
 import org.json.JSONObject;
 

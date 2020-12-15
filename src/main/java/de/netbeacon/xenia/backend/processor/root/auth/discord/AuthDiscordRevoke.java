@@ -21,7 +21,7 @@ import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.joop.Tables;
+import de.netbeacon.xenia.jooq.Tables;
 import io.javalin.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

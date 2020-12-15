@@ -21,7 +21,7 @@ import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
-import de.netbeacon.xenia.joop.Tables;
+import de.netbeacon.xenia.jooq.Tables;
 import io.javalin.http.*;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

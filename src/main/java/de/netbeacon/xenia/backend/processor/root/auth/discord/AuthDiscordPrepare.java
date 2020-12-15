@@ -20,7 +20,7 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.joop.Tables;
+import de.netbeacon.xenia.jooq.Tables;
 import io.javalin.http.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
