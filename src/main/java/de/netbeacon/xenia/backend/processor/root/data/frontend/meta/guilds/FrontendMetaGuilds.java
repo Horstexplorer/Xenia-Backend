@@ -25,11 +25,15 @@ import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.GuildsRecord;
 import io.javalin.http.*;
+import org.jooq.Record2;
 import org.jooq.Result;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.jooq.impl.DSL.bitAnd;
 
@@ -57,6 +61,7 @@ public class FrontendMetaGuilds extends RequestProcessor {
             var sqlContext = getSqlConnectionPool().getContext(con);
             // select all guilds the user is able to interact with
             Result<GuildsRecord> records;
+            Map<Long, Long> permMerge = new HashMap<>();
             if(((DiscordClient)client).getInternalRole().equalsIgnoreCase("admin")){
                 records = sqlContext.selectFrom(Tables.GUILDS).fetch();
             }else{
@@ -71,6 +76,17 @@ public class FrontendMetaGuilds extends RequestProcessor {
                                 )
                                 .groupBy(Tables.MEMBERS_ROLES.GUILD_ID)
                 )).fetch();
+                Result<Record2<Long, Long>> records1 =
+                        sqlContext.select(Tables.VROLES.GUILD_ID, Tables.VROLES.VROLE_PERMISSION).from(Tables.VROLES).join(Tables.MEMBERS_ROLES).on(Tables.VROLES.GUILD_ID.eq(Tables.MEMBERS_ROLES.GUILD_ID))
+                        .where(Tables.MEMBERS_ROLES.USER_ID.eq(client.getClientId()).and(bitAnd(1L, Tables.VROLES.VROLE_ID).eq(1L)))
+                        .fetch();
+                for(Record2<Long, Long> record1 : records1){
+                    if(!permMerge.containsKey(record1.value1())){
+                        permMerge.put(record1.value1(), record1.value2());
+                    }else{
+                        permMerge.put(record1.value1(), permMerge.get(record1.value2()) | record1.value2());
+                    }
+                }
             }
 
             JSONArray jsonArray = new JSONArray();
@@ -80,6 +96,7 @@ public class FrontendMetaGuilds extends RequestProcessor {
                         .put("guildId", record.getGuildId())
                         .put("guildName", record.getMetaGuildname())
                         .put("iconUrl", (record.getMetaIconurl() != null) ? record.getMetaIconurl() : JSONObject.NULL)
+                        .put("userPerm", permMerge.getOrDefault(record.getGuildId(), Long.MAX_VALUE))
                 );
             }
 
