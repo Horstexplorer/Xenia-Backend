@@ -72,7 +72,7 @@ public class DataUser extends RequestProcessor {
                     .put("preferredLanguage", usersRecord.getPreferredLanguage())
                     .put("meta", new JSONObject()
                             .put("username", usersRecord.getMetaUsername())
-                            .put("icon", (usersRecord.getMetaIconurl() != null)? usersRecord.getMetaIconurl() : JSONObject.NULL)
+                            .put("iconUrl", (usersRecord.getMetaIconurl() != null)? usersRecord.getMetaIconurl() : JSONObject.NULL)
                     );
             // respond
             ctx.status(200);
@@ -109,6 +109,7 @@ public class DataUser extends RequestProcessor {
             usersRecord.setPreferredLanguage(newData.getString("preferredLanguage"));
             JSONObject meta = newData.getJSONObject("meta");
             usersRecord.setMetaUsername(meta.getString("username"));
+            usersRecord.setMetaIconurl(meta.get("iconUrl") != JSONObject.NULL ? meta.getString("iconUrl") : null);
             // update db
             sqlContext.executeUpdate(usersRecord);
             // fluffy json
@@ -119,7 +120,7 @@ public class DataUser extends RequestProcessor {
                     .put("preferredLanguage", usersRecord.getPreferredLanguage())
                     .put("meta", new JSONObject()
                             .put("username", usersRecord.getMetaUsername())
-                            .put("icon", (usersRecord.getMetaIconurl() != null)? usersRecord.getMetaIconurl() : JSONObject.NULL)
+                            .put("iconUrl", (usersRecord.getMetaIconurl() != null)? usersRecord.getMetaIconurl() : JSONObject.NULL)
                     );
             // respond
             ctx.status(200);
@@ -161,7 +162,7 @@ public class DataUser extends RequestProcessor {
                     .put("preferredLanguage", usersRecord.getPreferredLanguage())
                     .put("meta", new JSONObject()
                             .put("username", usersRecord.getMetaUsername())
-                            .put("icon", (usersRecord.getMetaIconurl() != null)? usersRecord.getMetaIconurl() : JSONObject.NULL)
+                            .put("iconUrl", (usersRecord.getMetaIconurl() != null)? usersRecord.getMetaIconurl() : JSONObject.NULL)
                     );
             // respond
             ctx.status(202);
