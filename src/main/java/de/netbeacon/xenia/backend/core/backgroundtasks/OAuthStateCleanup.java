@@ -18,7 +18,7 @@ package de.netbeacon.xenia.backend.core.backgroundtasks;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.joop.Tables;
+import de.netbeacon.xenia.jooq.Tables;
 import io.javalin.http.BadRequestResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -22,8 +22,8 @@ import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.client.objects.imp.DiscordClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.joop.Tables;
-import de.netbeacon.xenia.joop.tables.records.UsersRecord;
+import de.netbeacon.xenia.jooq.Tables;
+import de.netbeacon.xenia.jooq.tables.records.UsersRecord;
 import io.javalin.http.*;
 import org.jooq.Result;
 import org.json.JSONObject;
@@ -72,6 +72,7 @@ public class DataUser extends RequestProcessor {
                     .put("preferredLanguage", usersRecord.getPreferredLanguage())
                     .put("meta", new JSONObject()
                             .put("username", usersRecord.getMetaUsername())
+                            .put("icon", (usersRecord.getMetaIconurl() != null)? usersRecord.getMetaIconurl() : JSONObject.NULL)
                     );
             // respond
             ctx.status(200);
@@ -118,6 +119,7 @@ public class DataUser extends RequestProcessor {
                     .put("preferredLanguage", usersRecord.getPreferredLanguage())
                     .put("meta", new JSONObject()
                             .put("username", usersRecord.getMetaUsername())
+                            .put("icon", (usersRecord.getMetaIconurl() != null)? usersRecord.getMetaIconurl() : JSONObject.NULL)
                     );
             // respond
             ctx.status(200);
@@ -159,6 +161,7 @@ public class DataUser extends RequestProcessor {
                     .put("preferredLanguage", usersRecord.getPreferredLanguage())
                     .put("meta", new JSONObject()
                             .put("username", usersRecord.getMetaUsername())
+                            .put("icon", (usersRecord.getMetaIconurl() != null)? usersRecord.getMetaIconurl() : JSONObject.NULL)
                     );
             // respond
             ctx.status(202);

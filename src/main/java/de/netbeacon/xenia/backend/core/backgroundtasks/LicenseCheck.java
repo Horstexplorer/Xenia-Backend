@@ -18,8 +18,8 @@ package de.netbeacon.xenia.backend.core.backgroundtasks;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.joop.Tables;
-import de.netbeacon.xenia.joop.tables.records.GuildsRecord;
+import de.netbeacon.xenia.jooq.Tables;
+import de.netbeacon.xenia.jooq.tables.records.GuildsRecord;
 import io.javalin.http.BadRequestResponse;
 import org.jooq.Record;
 import org.jooq.Result;

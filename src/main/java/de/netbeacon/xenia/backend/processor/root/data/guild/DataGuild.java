@@ -27,8 +27,8 @@ import de.netbeacon.xenia.backend.processor.root.data.guild.license.DataGuildLic
 import de.netbeacon.xenia.backend.processor.root.data.guild.member.DataGuildMember;
 import de.netbeacon.xenia.backend.processor.root.data.guild.misc.DataGuildMisc;
 import de.netbeacon.xenia.backend.processor.root.data.guild.role.DataGuildRole;
-import de.netbeacon.xenia.joop.Tables;
-import de.netbeacon.xenia.joop.tables.records.GuildsRecord;
+import de.netbeacon.xenia.jooq.Tables;
+import de.netbeacon.xenia.jooq.tables.records.GuildsRecord;
 import io.javalin.http.*;
 import org.jooq.Record;
 import org.jooq.Result;

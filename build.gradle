@@ -108,8 +108,8 @@ jooq {
                         fluentSetters = true
                     }
                     target {
-                        packageName = 'de.netbeacon.xenia.joop'
-                        directory = 'src/main/joop'
+                        packageName = 'de.netbeacon.xenia.jooq'
+                        directory = 'src/main/jooq'
                     }
                     strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
                 }
