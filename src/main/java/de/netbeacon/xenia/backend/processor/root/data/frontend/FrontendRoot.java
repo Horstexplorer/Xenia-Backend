@@ -19,13 +19,15 @@ package de.netbeacon.xenia.backend.processor.root.data.frontend;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.backend.processor.root.data.frontend.guildlist.FrontendGuildList;
+import de.netbeacon.xenia.backend.processor.root.data.frontend.me.FrontendMe;
+import de.netbeacon.xenia.backend.processor.root.data.frontend.meta.guilds.FrontendMetaGuilds;
 
 public class FrontendRoot extends RequestProcessor {
 
     public FrontendRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
         super("frontend", sqlConnectionPool, websocketProcessor,
-                new FrontendGuildList(sqlConnectionPool, websocketProcessor)
+                new FrontendMe(sqlConnectionPool, websocketProcessor),
+                new FrontendMetaGuilds(sqlConnectionPool, websocketProcessor)
         );
     }
 

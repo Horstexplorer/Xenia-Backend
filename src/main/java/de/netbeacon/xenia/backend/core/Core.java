@@ -85,15 +85,17 @@ public class Core {
             SecurityManager securityManager = new SecurityManager(clientManager, new File("./xenia-backend/config/security")).loadFromFile();
             // prepare security settings
             SecuritySettings regularDataAccessSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.ANY)
-                    .putRateLimiterSetting(ClientType.DISCORD, TimeUnit.MINUTES, 1, 120L)
+                    .putRateLimiterSetting(ClientType.DISCORD, TimeUnit.MINUTES, 1, 60L)
                     .putRateLimiterSetting(ClientType.BOT, TimeUnit.MINUTES, 1, 200000L);
             SecuritySettings tokenRequestSetting = new SecuritySettings(SecuritySettings.AuthType.BASIC, ClientType.INTERNAL);
             SecuritySettings tokenRenewSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.INTERNAL);
             SecuritySettings discordAuthReqSetting = new SecuritySettings(SecuritySettings.AuthType.OPTIONAL, ClientType.ANY); // no auth required, accepts oauth data
-            SecuritySettings discordAuthSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.DISCORD);
+            SecuritySettings discordAuthSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.DISCORD)
+                    .putRateLimiterSetting(ClientType.DISCORD, TimeUnit.MINUTES, 1, 60L);
             SecuritySettings botSetupSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.BOT);
             SecuritySettings botPrivateStatSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.BOT);
-            SecuritySettings frontendQoLSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.DISCORD);
+            SecuritySettings frontendQoLSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.DISCORD)
+                    .putRateLimiterSetting(ClientType.DISCORD, TimeUnit.MINUTES, 1, 60L);
             SecuritySettings managementSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.SYSTEM);
             SecuritySettings websocketSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.INTERNAL);
             // add to shutdown hook
@@ -375,10 +377,18 @@ public class Core {
                                 });
                             });
                             path("frontend", ()->{
-                                path("guildlist", ()->{
+                                path("me", ()->{
                                     get(ctx -> {
                                         Client client = securityManager.authorizeConnection(frontendQoLSetting, ctx);
-                                        processor.next("data").next("frontend").next("guildlist").preProcessor(client, ctx).get(client, ctx);
+                                        processor.next("data").next("frontend").next("me").preProcessor(client, ctx).get(client, ctx);
+                                    });
+                                });
+                                path("meta", ()->{
+                                    path("guilds", ()->{
+                                        get(ctx -> {
+                                            Client client = securityManager.authorizeConnection(frontendQoLSetting, ctx);
+                                            processor.next("data").next("frontend").next("meta_guilds").preProcessor(client, ctx).get(client, ctx);
+                                        });
                                     });
                                 });
                             });

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.netbeacon.xenia.backend.processor.root.data.frontend.guildlist;
+package de.netbeacon.xenia.backend.processor.root.data.frontend.meta.guilds;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
@@ -33,12 +33,12 @@ import org.slf4j.LoggerFactory;
 
 import static org.jooq.impl.DSL.bitAnd;
 
-public class FrontendGuildList extends RequestProcessor {
+public class FrontendMetaGuilds extends RequestProcessor {
 
-    private final Logger logger = LoggerFactory.getLogger(FrontendGuildList.class);
+    private final Logger logger = LoggerFactory.getLogger(FrontendMetaGuilds.class);
 
-    public FrontendGuildList(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("guildlist", sqlConnectionPool, websocketProcessor);
+    public FrontendMetaGuilds(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("meta_guilds", sqlConnectionPool, websocketProcessor);
     }
 
     @Override
@@ -89,14 +89,14 @@ public class FrontendGuildList extends RequestProcessor {
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
-                logger.error("An Error Occurred Processing FrontendGuildList#GET ", e);
+                logger.error("An Error Occurred Processing FrontendMetaGuilds#GET ", e);
             }
             throw e;
         }catch (NullPointerException e){
             // dont log
             throw new BadRequestResponse();
         }catch (Exception e){
-            logger.warn("An Error Occurred Processing FrontendGuildList#GET ", e);
+            logger.warn("An Error Occurred Processing FrontendMetaGuilds#GET ", e);
             throw new BadRequestResponse();
         }
     }
