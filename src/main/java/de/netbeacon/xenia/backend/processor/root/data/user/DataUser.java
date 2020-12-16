@@ -72,6 +72,7 @@ public class DataUser extends RequestProcessor {
                     .put("preferredLanguage", usersRecord.getPreferredLanguage())
                     .put("meta", new JSONObject()
                             .put("username", usersRecord.getMetaUsername())
+                            .put("icon", (usersRecord.getMetaIconurl() != null)? usersRecord.getMetaIconurl() : JSONObject.NULL)
                     );
             // respond
             ctx.status(200);
@@ -118,6 +119,7 @@ public class DataUser extends RequestProcessor {
                     .put("preferredLanguage", usersRecord.getPreferredLanguage())
                     .put("meta", new JSONObject()
                             .put("username", usersRecord.getMetaUsername())
+                            .put("icon", (usersRecord.getMetaIconurl() != null)? usersRecord.getMetaIconurl() : JSONObject.NULL)
                     );
             // respond
             ctx.status(200);
@@ -159,6 +161,7 @@ public class DataUser extends RequestProcessor {
                     .put("preferredLanguage", usersRecord.getPreferredLanguage())
                     .put("meta", new JSONObject()
                             .put("username", usersRecord.getMetaUsername())
+                            .put("icon", (usersRecord.getMetaIconurl() != null)? usersRecord.getMetaIconurl() : JSONObject.NULL)
                     );
             // respond
             ctx.status(202);
