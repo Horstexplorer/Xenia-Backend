@@ -63,6 +63,11 @@ public class Users extends TableImpl<UsersRecord> {
      */
     public final TableField<UsersRecord, String> META_USERNAME = createField(DSL.name("meta_username"), SQLDataType.VARCHAR(37).nullable(false).defaultValue(DSL.field("'unknown_username'::character varying", SQLDataType.VARCHAR)), this, "");
 
+    /**
+     * The column <code>public.users.meta_iconurl</code>.
+     */
+    public final TableField<UsersRecord, String> META_ICONURL = createField(DSL.name("meta_iconurl"), SQLDataType.CLOB, this, "");
+
     private Users(Name alias, Table<UsersRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -138,11 +143,11 @@ public class Users extends TableImpl<UsersRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, LocalDateTime, String, String, String> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, LocalDateTime, String, String, String, String> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }
