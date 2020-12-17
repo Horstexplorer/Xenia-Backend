@@ -82,6 +82,10 @@ public abstract class WebsocketProcessor implements IShutdown {
         }
     }
 
+    public Client getSelfClient(WsContext wsContext){
+        return wsContextClientConcurrentHashMap.get(wsContext);
+    }
+
     public Client findClient(long clientId){
         return wsContextClientConcurrentHashMap.values().stream()
                 .filter(c -> c.getClientId() == clientId)
@@ -95,7 +99,15 @@ public abstract class WebsocketProcessor implements IShutdown {
 
     public static class WsMessage {
 
-        private final JSONObject message = new JSONObject();
+        private final JSONObject message;
+
+        public WsMessage(){
+            this.message = new JSONObject();
+        }
+
+        public WsMessage(JSONObject jsonObject){
+            this.message = jsonObject;
+        }
 
         public JSONObject get(){
             return message;

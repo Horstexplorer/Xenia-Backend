@@ -16,10 +16,16 @@
 
 package de.netbeacon.xenia.backend.processor.ws;
 
+import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import io.javalin.websocket.WsMessageContext;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SecondaryWebsocketProcessor extends WebsocketProcessor {
+
+    private final Logger logger = LoggerFactory.getLogger(SecondaryWebsocketProcessor.class);
 
     @Override
     public WsMessage getHeartBeatMessage() {
@@ -28,8 +34,42 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor {
         return wsMessage;
     }
 
+    /**
+     * type:
+     *  HEARTBEAT
+     *  BROADCAST
+     *  UNICAST
+     * recipient: (set by client when UNICAST type)
+     *  Long
+     * sender: (set by backend)
+     *  Long
+     * timestamp:
+     *  Long
+     */
+
     @Override
     public void onMessage(WsMessageContext wsMessageContext) {
-
+        try{
+            JSONObject jsonObject = new JSONObject(wsMessageContext.message());
+            switch (jsonObject.getString("type").toLowerCase()){
+                case "unicast":{
+                    Client sender = getSelfClient(wsMessageContext);
+                    Client recipient = findClient(jsonObject.getLong("recipient"));
+                    if(recipient == null) return;
+                    jsonObject.put("sender", sender.getClientId());
+                    unicast(new WsMessage(jsonObject), recipient);
+                }
+                break;
+                case "broadcast":
+                default: {
+                    Client sender = getSelfClient(wsMessageContext);
+                    jsonObject.put("sender", sender.getClientId());
+                    broadcast(new WsMessage(jsonObject), sender);
+                }
+                break;
+            }
+        }catch (Exception e){
+            logger.debug("");
+        }
     }
 }
