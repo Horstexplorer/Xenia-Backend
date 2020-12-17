@@ -22,7 +22,6 @@ import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.client.objects.imp.DiscordClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.MembersRecord;
 import de.netbeacon.xenia.jooq.tables.records.MembersRolesRecord;
@@ -211,7 +210,7 @@ public class DataGuildMember extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
-            PrimaryWebsocketProcessor.WsMessage wsMessage = new PrimaryWebsocketProcessor.WsMessage();
+            WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
             wsMessage.get().put("type", "GUILD_MEMBER").put("action", "UPDATE").put("guildId", guildId).put("userId", userId);
             getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
@@ -261,7 +260,7 @@ public class DataGuildMember extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
-            PrimaryWebsocketProcessor.WsMessage wsMessage = new PrimaryWebsocketProcessor.WsMessage();
+            WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
             wsMessage.get().put("type", "GUILD_MEMBER").put("action", "CREATE").put("guildId", guildId).put("userId", userId);
             getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
@@ -290,7 +289,7 @@ public class DataGuildMember extends RequestProcessor {
             }
             ctx.status(200);
             // send ws notification
-            PrimaryWebsocketProcessor.WsMessage wsMessage = new PrimaryWebsocketProcessor.WsMessage();
+            WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
             wsMessage.get().put("type", "GUILD_MEMBER").put("action", "DELETE").put("guildId", guildId).put("userId", userId);
             getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){

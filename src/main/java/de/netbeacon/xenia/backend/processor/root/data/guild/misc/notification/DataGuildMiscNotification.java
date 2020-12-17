@@ -22,7 +22,6 @@ import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.client.objects.imp.DiscordClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.NotificationRecord;
 import io.javalin.http.*;
@@ -168,7 +167,7 @@ public class DataGuildMiscNotification extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
-            PrimaryWebsocketProcessor.WsMessage wsMessage = new PrimaryWebsocketProcessor.WsMessage();
+            WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
             wsMessage.get().put("type", "GUILD_MISC_NOTIFICATION").put("action", "UPDATE").put("guildId", guildId).put("notificationId", notificationRecord.getNotificationId());
             getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
@@ -208,7 +207,7 @@ public class DataGuildMiscNotification extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
-            PrimaryWebsocketProcessor.WsMessage wsMessage = new PrimaryWebsocketProcessor.WsMessage();
+            WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
             wsMessage.get().put("type", "GUILD_MISC_NOTIFICATION").put("action", "CREATE").put("guildId", guildId).put("notificationId", notificationRecord.getNotificationId());
             getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
@@ -234,7 +233,7 @@ public class DataGuildMiscNotification extends RequestProcessor {
             }
             ctx.status(200);
             // send ws notification
-            PrimaryWebsocketProcessor.WsMessage wsMessage = new PrimaryWebsocketProcessor.WsMessage();
+            WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
             wsMessage.get().put("type", "GUILD_MISC_NOTIFICATION").put("action", "DELETE").put("guildId", guildId).put("notificationId", notificationId);
             getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){

@@ -128,7 +128,7 @@ public class DataUser extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
-            PrimaryWebsocketProcessor.WsMessage wsMessage = new PrimaryWebsocketProcessor.WsMessage();
+            WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
             wsMessage.get().put("type", "USER").put("action", "UPDATE").put("userId", userId);
             getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
