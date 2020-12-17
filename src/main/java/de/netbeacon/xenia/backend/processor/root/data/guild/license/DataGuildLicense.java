@@ -22,6 +22,7 @@ import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.client.objects.imp.DiscordClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.GuildsRecord;
 import de.netbeacon.xenia.jooq.tables.records.LicenseTypesRecord;
@@ -196,9 +197,9 @@ public class DataGuildLicense extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
-            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD_LICENSE").put("action", "UPDATE").put("guildId", guildId);
-            getWebsocketProcessor().broadcast(broadcastMessage, client);
+            PrimaryWebsocketProcessor.WsMessage wsMessage = new PrimaryWebsocketProcessor.WsMessage();
+            wsMessage.get().put("type", "GUILD_LICENSE").put("action", "UPDATE").put("guildId", guildId);
+            getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataGuildLicense#PUT ", e);

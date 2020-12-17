@@ -27,6 +27,7 @@ import de.netbeacon.xenia.backend.processor.root.data.guild.license.DataGuildLic
 import de.netbeacon.xenia.backend.processor.root.data.guild.member.DataGuildMember;
 import de.netbeacon.xenia.backend.processor.root.data.guild.misc.DataGuildMisc;
 import de.netbeacon.xenia.backend.processor.root.data.guild.role.DataGuildRole;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.GuildsRecord;
 import io.javalin.http.*;
@@ -168,9 +169,9 @@ public class DataGuild extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
-            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD").put("action", "UPDATE").put("guildId", guildId);
-            getWebsocketProcessor().broadcast(broadcastMessage, client);
+            PrimaryWebsocketProcessor.WsMessage wsMessage = new PrimaryWebsocketProcessor.WsMessage();
+            wsMessage.get().put("type", "GUILD").put("action", "UPDATE").put("guildId", guildId);
+            getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataGuild#PUT ", e);
@@ -210,9 +211,9 @@ public class DataGuild extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
-            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD").put("action", "CREATE").put("guildId", guildId);
-            getWebsocketProcessor().broadcast(broadcastMessage, client);
+            PrimaryWebsocketProcessor.WsMessage wsMessage = new PrimaryWebsocketProcessor.WsMessage();
+            wsMessage.get().put("type", "GUILD").put("action", "CREATE").put("guildId", guildId);
+            getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataGuild#POST ", e);
@@ -238,9 +239,9 @@ public class DataGuild extends RequestProcessor {
             }
             ctx.status(200);
             // send ws notification
-            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD").put("action", "DELETE").put("guildId", guildId);
-            getWebsocketProcessor().broadcast(broadcastMessage, client);
+            PrimaryWebsocketProcessor.WsMessage wsMessage = new PrimaryWebsocketProcessor.WsMessage();
+            wsMessage.get().put("type", "GUILD").put("action", "DELETE").put("guildId", guildId);
+            getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataGuild#DELETE ", e);

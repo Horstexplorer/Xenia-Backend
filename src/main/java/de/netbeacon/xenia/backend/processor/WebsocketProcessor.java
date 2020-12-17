@@ -19,6 +19,7 @@ package de.netbeacon.xenia.backend.processor;
 import de.netbeacon.utils.shutdownhook.IShutdown;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import io.javalin.websocket.WsContext;
+import io.javalin.websocket.WsMessageContext;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -27,21 +28,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class WebsocketProcessor implements IShutdown {
+public abstract class WebsocketProcessor implements IShutdown {
 
+    private final ConcurrentHashMap<Client, WsContext> clientWSContextConcurrentHashMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<WsContext, Client> wsContextClientConcurrentHashMap = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 
     public WebsocketProcessor(){
-        // start heartbeat messages
         scheduledExecutorService.scheduleAtFixedRate(()-> broadcast(getHeartBeatMessage()), 0, 30000, TimeUnit.MILLISECONDS);
     }
 
-    private BroadcastMessage getHeartBeatMessage(){
-        WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-        broadcastMessage.get().put("type", "HEARTBEAT").put("action", "HEARTBEAT").put("timestamp", System.currentTimeMillis());
-        return broadcastMessage;
-    }
+    public abstract WsMessage getHeartBeatMessage();
 
     public void register(WsContext wsConnectContext, Client client){
         if(client == null){
@@ -49,27 +46,46 @@ public class WebsocketProcessor implements IShutdown {
             return;
         }
         wsContextClientConcurrentHashMap.put(wsConnectContext, client);
+        clientWSContextConcurrentHashMap.put(client, wsConnectContext);
     }
 
     public void remove(WsContext wsConnectContext){
-        wsContextClientConcurrentHashMap.remove(wsConnectContext);
+        clientWSContextConcurrentHashMap.remove(wsContextClientConcurrentHashMap.remove(wsConnectContext));
     }
 
-    public void broadcast(BroadcastMessage broadcastMessage){
-        broadcast(broadcastMessage, null);
+    public void onMessage(WsMessageContext wsMessageContext) {}
+
+    public void broadcast(WsMessage wsMessage){
+        broadcast(wsMessage, null);
     }
 
-    public void broadcast(BroadcastMessage broadcastMessage, Client except){
-        for(Map.Entry<WsContext, Client> entry : wsContextClientConcurrentHashMap.entrySet()){
+    public void broadcast(WsMessage wsMessage, Client except){
+        for(Map.Entry<Client, WsContext> entry : clientWSContextConcurrentHashMap.entrySet()){
             try{
-                if(entry.getValue().equals(except)){
+                if(entry.getKey().equals(except)){
                     continue;
                 }
-                entry.getKey().send(broadcastMessage.asString());
+                entry.getValue().send(wsMessage.asString());
             }catch (Exception e){
-                try{entry.getKey().session.disconnect();}catch (Exception ignore){}
+                try{entry.getValue().session.disconnect();}catch (Exception ignore){}
             }
         }
+    }
+
+    public void unicast(WsMessage wsMessage, Client recipient){
+        if(clientWSContextConcurrentHashMap.containsKey(recipient)){
+            try{
+                clientWSContextConcurrentHashMap.get(recipient).send(wsMessage.asString());
+            }catch (Exception e){
+                try{clientWSContextConcurrentHashMap.get(recipient).session.disconnect();}catch (Exception ignore){}
+            }
+        }
+    }
+
+    public Client findClient(long clientId){
+        return wsContextClientConcurrentHashMap.values().stream()
+                .filter(c -> c.getClientId() == clientId)
+                .findFirst().orElse(null);
     }
 
     @Override
@@ -77,7 +93,7 @@ public class WebsocketProcessor implements IShutdown {
         scheduledExecutorService.shutdown();
     }
 
-    public static class BroadcastMessage{
+    public static class WsMessage {
 
         private final JSONObject message = new JSONObject();
 
@@ -89,5 +105,4 @@ public class WebsocketProcessor implements IShutdown {
             return message.toString()+"/n";
         }
     }
-
 }

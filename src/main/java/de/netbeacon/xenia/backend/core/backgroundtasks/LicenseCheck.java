@@ -18,6 +18,7 @@ package de.netbeacon.xenia.backend.core.backgroundtasks;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.GuildsRecord;
 import io.javalin.http.BadRequestResponse;
@@ -56,9 +57,9 @@ public class LicenseCheck extends BackgroundServiceScheduler.Task{
             Result<GuildsRecord> records1 = sqlContext.update(Tables.GUILDS).set(Tables.GUILDS.LICENSE_ID, inline(null, Tables.GUILDS.LICENSE_ID)).where(Tables.GUILDS.GUILD_ID.in(clearForIDs)).returning().fetch();
             for(GuildsRecord guildsRecord : records1){
                 // send ws notification
-                WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-                broadcastMessage.get().put("type", "GUILD_LICENSE").put("action", "UPDATE").put("guildId", guildsRecord.getGuildId());
-                getWebsocketProcessor().broadcast(broadcastMessage);
+                PrimaryWebsocketProcessor.WsMessage wsMessage = new PrimaryWebsocketProcessor.WsMessage();
+                wsMessage.get().put("type", "GUILD_LICENSE").put("action", "UPDATE").put("guildId", guildsRecord.getGuildId());
+                getWebsocketProcessor().broadcast(wsMessage);
             }
         }catch (Exception e){
             logger.warn("An Error Occurred Running LicenseCheck ", e);
