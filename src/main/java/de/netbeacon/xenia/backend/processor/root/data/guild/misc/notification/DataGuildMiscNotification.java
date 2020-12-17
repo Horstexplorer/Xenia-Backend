@@ -167,9 +167,9 @@ public class DataGuildMiscNotification extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
-            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD_MISC_NOTIFICATION").put("action", "UPDATE").put("guildId", guildId).put("notificationId", notificationRecord.getNotificationId());
-            getWebsocketProcessor().broadcast(broadcastMessage, client);
+            WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
+            wsMessage.get().put("type", "GUILD_MISC_NOTIFICATION").put("action", "UPDATE").put("guildId", guildId).put("notificationId", notificationRecord.getNotificationId());
+            getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
             throw e;
         }catch (NullPointerException e){
@@ -207,9 +207,9 @@ public class DataGuildMiscNotification extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
-            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD_MISC_NOTIFICATION").put("action", "CREATE").put("guildId", guildId).put("notificationId", notificationRecord.getNotificationId());
-            getWebsocketProcessor().broadcast(broadcastMessage, client);
+            WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
+            wsMessage.get().put("type", "GUILD_MISC_NOTIFICATION").put("action", "CREATE").put("guildId", guildId).put("notificationId", notificationRecord.getNotificationId());
+            getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
             throw e;
         }catch (NullPointerException e){
@@ -233,9 +233,9 @@ public class DataGuildMiscNotification extends RequestProcessor {
             }
             ctx.status(200);
             // send ws notification
-            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD_MISC_NOTIFICATION").put("action", "DELETE").put("guildId", guildId).put("notificationId", notificationId);
-            getWebsocketProcessor().broadcast(broadcastMessage, client);
+            WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
+            wsMessage.get().put("type", "GUILD_MISC_NOTIFICATION").put("action", "DELETE").put("guildId", guildId).put("notificationId", notificationId);
+            getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
             throw e;
         }catch (NullPointerException e){

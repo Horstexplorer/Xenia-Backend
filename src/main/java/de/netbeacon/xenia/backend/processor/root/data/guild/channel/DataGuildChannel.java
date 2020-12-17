@@ -178,9 +178,9 @@ public class DataGuildChannel extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
-            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD_CHANNEL").put("action", "UPDATE").put("guildId", guildId).put("channelId", channelId);
-            getWebsocketProcessor().broadcast(broadcastMessage, client);
+            WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
+            wsMessage.get().put("type", "GUILD_CHANNEL").put("action", "UPDATE").put("guildId", guildId).put("channelId", channelId);
+            getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataGuildChannel#PUT ", e);
@@ -221,9 +221,9 @@ public class DataGuildChannel extends RequestProcessor {
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
-            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD_CHANNEL").put("action", "CREATE").put("guildId", guildId).put("channelId", channelId);
-            getWebsocketProcessor().broadcast(broadcastMessage, client);
+            WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
+            wsMessage.get().put("type", "GUILD_CHANNEL").put("action", "CREATE").put("guildId", guildId).put("channelId", channelId);
+            getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataGuildChannel#POST ", e);
@@ -250,9 +250,9 @@ public class DataGuildChannel extends RequestProcessor {
             }
             ctx.status(200);
             // send ws notification
-            WebsocketProcessor.BroadcastMessage broadcastMessage = new WebsocketProcessor.BroadcastMessage();
-            broadcastMessage.get().put("type", "GUILD_CHANNEL").put("action", "DELETE").put("guildId", guildId).put("channelId", channelId);
-            getWebsocketProcessor().broadcast(broadcastMessage, client);
+            WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
+            wsMessage.get().put("type", "GUILD_CHANNEL").put("action", "DELETE").put("guildId", guildId).put("channelId", channelId);
+            getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing DataGuildChannel#DELETE ", e);

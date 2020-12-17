@@ -33,6 +33,8 @@ import de.netbeacon.xenia.backend.core.backgroundtasks.RatelimiterCleaner;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.Root;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.SecondaryWebsocketProcessor;
 import de.netbeacon.xenia.backend.security.SecurityManager;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
 import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
@@ -101,17 +103,20 @@ public class Core {
             // add to shutdown hook
             shutdownHook.addShutdownAble(securityManager);
             // prepare websocket connection handler
-            WebsocketProcessor websocketProcessor = new WebsocketProcessor();
+            WebsocketProcessor primaryWebsocketProcessor = new PrimaryWebsocketProcessor();
+            shutdownHook.addShutdownAble(primaryWebsocketProcessor);
+            WebsocketProcessor secondaryWebsocketProcessor = new SecondaryWebsocketProcessor();
+            shutdownHook.addShutdownAble(secondaryWebsocketProcessor);
             // prepare processor
-            RequestProcessor processor = new Root(clientManager, connectionPool, websocketProcessor);
+            RequestProcessor processor = new Root(clientManager, connectionPool, primaryWebsocketProcessor);
             // prepare oAuth handler
             DiscordOAuthHandler.createInstance(config.getLong("discord_client_id"), config.getString("discord_client_secret"),"https://xenia.netbeacon.de/auth/returning");
             // start background tasks
             BackgroundServiceScheduler backgroundServiceScheduler = new BackgroundServiceScheduler();
             shutdownHook.addShutdownAble(backgroundServiceScheduler);
-            backgroundServiceScheduler.schedule(new LicenseCheck(connectionPool, websocketProcessor), 30000, true);
+            backgroundServiceScheduler.schedule(new LicenseCheck(connectionPool, primaryWebsocketProcessor), 30000, true);
             backgroundServiceScheduler.schedule(new RatelimiterCleaner(securityManager), 120000, true);
-            backgroundServiceScheduler.schedule(new OAuthStateCleanup(connectionPool, websocketProcessor), 120000, true);
+            backgroundServiceScheduler.schedule(new OAuthStateCleanup(connectionPool, primaryWebsocketProcessor), 120000, true);
             // prepare javalin
             Javalin javalin = Javalin
                     .create(cnf -> {
@@ -444,10 +449,21 @@ public class Core {
                         path("ws", ()->{
                             ws(wsHandler -> {
                                 wsHandler.onConnect(wsCon->{
-                                    websocketProcessor.register(wsCon, securityManager.authorizeWsConnection(websocketSetting, wsCon));
+                                    primaryWebsocketProcessor.register(wsCon, securityManager.authorizeWsConnection(websocketSetting, wsCon));
                                 });
-                                wsHandler.onClose(websocketProcessor::remove);
-                                wsHandler.onError(websocketProcessor::remove);
+                                wsHandler.onClose(primaryWebsocketProcessor::remove);
+                                wsHandler.onError(primaryWebsocketProcessor::remove);
+                                wsHandler.onMessage(primaryWebsocketProcessor::onMessage);
+                            });
+                            path("secondary", ()->{
+                                ws(wsHandler -> {
+                                    wsHandler.onConnect(wsCon->{
+                                        secondaryWebsocketProcessor.register(wsCon, securityManager.authorizeWsConnection(websocketSetting, wsCon));
+                                    });
+                                    wsHandler.onClose(secondaryWebsocketProcessor::remove);
+                                    wsHandler.onError(secondaryWebsocketProcessor::remove);
+                                    wsHandler.onMessage(secondaryWebsocketProcessor::onMessage);
+                                });
                             });
                         });
                         get("/", ctx -> {
