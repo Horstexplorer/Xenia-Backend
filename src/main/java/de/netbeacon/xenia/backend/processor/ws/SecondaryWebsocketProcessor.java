@@ -155,6 +155,21 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor {
     }
 
     private void localProcessor(JSONObject request, WsContext wsContext){
-
+        try{
+            switch(request.getString("responseMode").toLowerCase()){
+                case "none":
+                case "backend_ack": // we are the backend. this will be sent later
+                    return;
+                case "client_ack":
+                    wsContext.send(getMessage(request.getString("requestId"), "NONE", 0L, System.currentTimeMillis(), "ack", new JSONObject()));
+                    return;
+                case "data":
+                default:
+                    wsContext.send(getMessage(request.getString("requestId"), "NONE", 0L, System.currentTimeMillis(), "error", new JSONObject()));
+                    break;
+            }
+        }catch (Exception e){
+            wsContext.send(getMessage(request.getString("requestId"), "NONE", 0L, System.currentTimeMillis(), "error", new JSONObject()));
+        }
     }
 }
