@@ -40,17 +40,17 @@ public abstract class WebsocketProcessor implements IShutdown {
 
     public abstract WsMessage getHeartBeatMessage();
 
-    public void register(WsContext wsConnectContext, Client client){
+    public void register(WsContext wsContext, Client client){
         if(client == null){
-            try{wsConnectContext.session.disconnect();}catch (Exception ignore){} // should not be needed
+            try{wsContext.session.disconnect();}catch (Exception ignore){} // should not be needed
             return;
         }
-        wsContextClientConcurrentHashMap.put(wsConnectContext, client);
-        clientWSContextConcurrentHashMap.put(client, wsConnectContext);
+        wsContextClientConcurrentHashMap.put(wsContext, client);
+        clientWSContextConcurrentHashMap.put(client, wsContext);
     }
 
-    public void remove(WsContext wsConnectContext){
-        clientWSContextConcurrentHashMap.remove(wsContextClientConcurrentHashMap.remove(wsConnectContext));
+    public void remove(WsContext wsContext){
+        clientWSContextConcurrentHashMap.remove(wsContextClientConcurrentHashMap.remove(wsContext));
     }
 
     public void onMessage(WsMessageContext wsMessageContext) {}
@@ -82,7 +82,7 @@ public abstract class WebsocketProcessor implements IShutdown {
         }
     }
 
-    public Client getSelfClient(WsContext wsContext){
+    public Client getClientOf(WsContext wsContext){
         return wsContextClientConcurrentHashMap.get(wsContext);
     }
 
