@@ -72,13 +72,13 @@ public class FrontendMetaGuilds extends RequestProcessor {
                                 .on(Tables.MEMBERS_ROLES.ROLE_ID.eq(Tables.VROLES.VROLE_ID))
                                 .where(
                                         Tables.MEMBERS_ROLES.USER_ID.eq(client.getClientId())
-                                                .and(bitAnd(DISCORD_USER_PERM_FILTER, Tables.VROLES.VROLE_ID).eq(DISCORD_USER_PERM_FILTER))
+                                        .and(bitAnd(DISCORD_USER_PERM_FILTER, Tables.VROLES.VROLE_ID).eq(DISCORD_USER_PERM_FILTER).orNot(Tables.GUILDS.USE_VPERMS))
                                 )
                                 .groupBy(Tables.MEMBERS_ROLES.GUILD_ID)
                 )).fetch();
                 Result<Record2<Long, Long>> records1 =
                         sqlContext.select(Tables.VROLES.GUILD_ID, Tables.VROLES.VROLE_PERMISSION).from(Tables.VROLES).join(Tables.MEMBERS_ROLES).on(Tables.VROLES.GUILD_ID.eq(Tables.MEMBERS_ROLES.GUILD_ID))
-                        .where(Tables.MEMBERS_ROLES.USER_ID.eq(client.getClientId()).and(bitAnd(1L, Tables.VROLES.VROLE_ID).eq(1L)))
+                        .where(Tables.MEMBERS_ROLES.USER_ID.eq(client.getClientId()).and(bitAnd(1L, Tables.VROLES.VROLE_ID).eq(1L)).orNot(Tables.GUILDS.USE_VPERMS))
                         .fetch();
                 for(Record2<Long, Long> record1 : records1){
                     if(!permMerge.containsKey(record1.value1())){

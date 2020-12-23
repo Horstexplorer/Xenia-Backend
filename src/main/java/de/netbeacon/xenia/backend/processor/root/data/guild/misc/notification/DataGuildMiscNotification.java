@@ -53,9 +53,24 @@ public class DataGuildMiscNotification extends RequestProcessor {
             if(((DiscordClient)client).getInternalRole().equalsIgnoreCase("admin")){
                 return this;
             }
+            long guildId = Long.parseLong(context.pathParam("guildId"));
             try(var con = getSqlConnectionPool().getConnection()) {
                 var sqlContext = getSqlConnectionPool().getContext(con);
-                Result<Record> records = sqlContext.select()
+
+                Result<Record> memberGuildRelations = sqlContext.select()
+                        .from(Tables.MEMBERS)
+                        .join(Tables.GUILDS)
+                        .on(Tables.MEMBERS.GUILD_ID.eq(Tables.GUILDS.GUILD_ID))
+                        .where(Tables.MEMBERS.GUILD_ID.eq(guildId).and(Tables.MEMBERS.USER_ID.eq(client.getClientId())))
+                        .fetch();
+                if(memberGuildRelations.isEmpty()){
+                    throw new BadRequestResponse();
+                }
+                Record memberGuildRelation = memberGuildRelations.get(0);
+                if((!memberGuildRelation.get(Tables.GUILDS.USE_VPERMS) && memberGuildRelation.get(Tables.MEMBERS.META_IS_ADMINISTRATOR)) || memberGuildRelation.get(Tables.MEMBERS.META_IS_OWNER)){
+                    return this;
+                }
+                Result<Record> vpermRecords = sqlContext.select()
                         .from(Tables.MEMBERS_ROLES)
                         .join(Tables.VROLES)
                         .on(Tables.MEMBERS_ROLES.ROLE_ID.eq(Tables.VROLES.VROLE_ID))
@@ -65,7 +80,7 @@ public class DataGuildMiscNotification extends RequestProcessor {
                                         .and(bitAnd(DISCORD_USER_PERM_FILTER, Tables.VROLES.VROLE_ID).eq(DISCORD_USER_PERM_FILTER))
                         )
                         .fetch();
-                if(records.isEmpty()){
+                if(vpermRecords.isEmpty()){
                     throw new ForbiddenResponse();
                 }
             }catch (HttpResponseException e){
