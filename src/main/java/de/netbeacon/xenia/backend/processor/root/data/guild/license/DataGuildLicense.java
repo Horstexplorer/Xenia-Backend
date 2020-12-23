@@ -47,7 +47,7 @@ public class DataGuildLicense extends RequestProcessor {
         super("license", sqlConnectionPool, websocketProcessor);
     }
 
-    private static final long DISCORD_USER_PERM_FILTER = 1342177281; // interact, web_use, guild_owner_ov
+    private static final long DISCORD_USER_PERM_FILTER = 1073741825; // interact, guild_owner_ov
 
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
