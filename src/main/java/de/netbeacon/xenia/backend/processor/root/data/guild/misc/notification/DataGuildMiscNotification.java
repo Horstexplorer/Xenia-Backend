@@ -45,7 +45,7 @@ public class DataGuildMiscNotification extends RequestProcessor {
         super("notifications", sqlConnectionPool, websocketProcessor);
     }
 
-    private static final long DISCORD_USER_PERM_FILTER = 268435489; // interact, web_use, notif_ov
+    private static final long DISCORD_USER_PERM_FILTER = 33; // interact, notif_ov
 
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
