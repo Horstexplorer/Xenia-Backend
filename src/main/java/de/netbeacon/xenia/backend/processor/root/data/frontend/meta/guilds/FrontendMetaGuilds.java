@@ -53,7 +53,7 @@ public class FrontendMetaGuilds extends RequestProcessor {
         return this;
     }
 
-    private static final long DISCORD_USER_PERM_FILTER = 268435457; // interact, web_use
+    private static final long DISCORD_USER_PERM_FILTER = 1; // interact
 
     @Override
     public void get(Client client, Context ctx) {
