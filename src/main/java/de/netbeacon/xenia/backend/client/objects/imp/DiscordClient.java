@@ -52,7 +52,7 @@ public class DiscordClient extends Client {
         try(var con = sqlConnectionPool.getConnection()){
             var sqlContext = getSqlConnectionPool().getContext(con);
             Result<OauthRecord> oauthRecords = sqlContext.selectFrom(Tables.OAUTH).where(Tables.OAUTH.USER_ID.eq(clientId)).fetch();
-            if(!oauthRecords.isEmpty()){
+            if(oauthRecords.isEmpty()){
                 return;
             }
             OauthRecord oauthRecord = oauthRecords.get(0);
