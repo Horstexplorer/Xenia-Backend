@@ -107,9 +107,9 @@ public class FrontendMetaGuilds extends RequestProcessor {
                         .put("guildName", record.get(Tables.GUILDS.META_GUILDNAME))
                         .put("iconUrl", (record.field(Tables.GUILDS.META_ICONURL) != null) ? record.get(Tables.GUILDS.META_ICONURL) : JSONObject.NULL)
                         .put("member", new JSONObject()
-                                .put("isAdmin", (record.field(Tables.MEMBERS.META_IS_ADMINISTRATOR) != null) ? record.get(Tables.MEMBERS.META_IS_ADMINISTRATOR) : false)
-                                .put("isOwner", (record.field(Tables.MEMBERS.META_IS_OWNER) != null) ? record.get(Tables.MEMBERS.META_IS_OWNER) : false)
-                                .put("userPermValue", (permMerge.containsKey(record.get(Tables.GUILDS.GUILD_ID)))? permMerge.get(record.get(Tables.GUILDS.GUILD_ID)): 1)
+                                .put("isAdmin", ((record.field(Tables.MEMBERS.META_IS_ADMINISTRATOR) != null) ? (boolean) record.get(Tables.MEMBERS.META_IS_ADMINISTRATOR) : false))
+                                .put("isOwner", ((record.field(Tables.MEMBERS.META_IS_OWNER) != null) ? (boolean) record.get(Tables.MEMBERS.META_IS_OWNER) : false))
+                                .put("userPermValue", ((permMerge.containsKey(record.get(Tables.GUILDS.GUILD_ID)))? permMerge.get(record.get(Tables.GUILDS.GUILD_ID)): 1))
                         )
                 );
             }
