@@ -61,10 +61,10 @@ public class FrontendMetaGuilds extends RequestProcessor {
             if(((DiscordClient)client).getInternalRole().equalsIgnoreCase("admin")){
                 records = sqlContext.select().from(Tables.GUILDS).fetch();
             }else{
-                // vperms where enabled
+                // vperms where we find em
                 Result<Record2<Long, Long>> vPermsRecords = sqlContext.select(Tables.VROLES.GUILD_ID, Tables.VROLES.VROLE_PERMISSION).from(Tables.VROLES)
                         .join(Tables.MEMBERS_ROLES).on(Tables.VROLES.GUILD_ID.eq(Tables.MEMBERS_ROLES.GUILD_ID))
-                        .where(Tables.MEMBERS_ROLES.USER_ID.eq(client.getClientId()).andNot(Tables.GUILDS.USE_VPERMS)).fetch();
+                        .where(Tables.MEMBERS_ROLES.USER_ID.eq(client.getClientId())).fetch();
                 // guild with shared member and either vperms disabled or enabled and within the set above
                 records= sqlContext.select().from(Tables.GUILDS)
                         .join(Tables.MEMBERS).on(Tables.GUILDS.GUILD_ID.eq(Tables.MEMBERS.GUILD_ID))
