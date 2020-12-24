@@ -68,7 +68,7 @@ public class FrontendMetaGuilds extends RequestProcessor {
                 // guild with shared member and either vperms disabled or enabled and within the set above
                 records= sqlContext.select().from(Tables.GUILDS)
                         .join(Tables.MEMBERS).on(Tables.GUILDS.GUILD_ID.eq(Tables.MEMBERS.GUILD_ID))
-                        .where(Tables.MEMBERS.USER_ID.eq(client.getClientId()).and(Tables.GUILDS.GUILD_ID.in(vPermsRecords.field(Tables.VROLES.GUILD_ID))).orNot(Tables.GUILDS.USE_VPERMS)).fetch();
+                        .where(Tables.MEMBERS.USER_ID.eq(client.getClientId()).and(Tables.GUILDS.GUILD_ID.in(vPermsRecords)).orNot(Tables.GUILDS.USE_VPERMS)).fetch();
 
                 for(Record2<Long, Long> record33 : vPermsRecords){
                     if(!permMerge.containsKey(record33.value1())){
