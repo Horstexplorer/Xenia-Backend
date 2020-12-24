@@ -58,24 +58,23 @@ public class FrontendMetaGuilds extends RequestProcessor {
             // select all guilds the user is able to interact with
             Result<Record> records;
             Map<Long, Long> permMerge = new HashMap<>();
+            boolean adminOverride = false;
             if(((DiscordClient)client).getInternalRole().equalsIgnoreCase("admin")){
+                // get all guilds. max perms
                 records = sqlContext.select().from(Tables.GUILDS).fetch();
+                adminOverride = true;
             }else{
+                // get all guild where we are a member
+                records = sqlContext.select().from(Tables.GUILDS)
+                        .join(Tables.MEMBERS).on(Tables.GUILDS.GUILD_ID.eq(Tables.MEMBERS.GUILD_ID))
+                        .where(Tables.MEMBERS.USER_ID.eq(client.getClientId())).fetch();
                 // vperms where we find em
                 Result<Record2<Long, Long>> vPermsRecords = sqlContext.select(Tables.VROLES.GUILD_ID, Tables.VROLES.VROLE_PERMISSION).from(Tables.VROLES)
                         .join(Tables.MEMBERS_ROLES).on(Tables.VROLES.GUILD_ID.eq(Tables.MEMBERS_ROLES.GUILD_ID))
                         .where(Tables.MEMBERS_ROLES.USER_ID.eq(client.getClientId())).fetch();
-                // guild with shared member and either vperms disabled or enabled and within the set above
-                records= sqlContext.select().from(Tables.GUILDS)
-                        .join(Tables.MEMBERS).on(Tables.GUILDS.GUILD_ID.eq(Tables.MEMBERS.GUILD_ID))
-                        .where(Tables.MEMBERS.USER_ID.eq(client.getClientId()).and(Tables.GUILDS.GUILD_ID.in(vPermsRecords)).orNot(Tables.GUILDS.USE_VPERMS)).fetch();
-
                 for(Record2<Long, Long> record33 : vPermsRecords){
-                    if(!permMerge.containsKey(record33.value1())){
-                        permMerge.put(record33.value1(), record33.value2());
-                    }else{
-                        permMerge.put(record33.value1(), permMerge.get(record33.value2()) | record33.value2());
-                    }
+                    if( !permMerge.containsKey(record33.value1())){ permMerge.put(record33.value1(), record33.value2());}
+                    else{ permMerge.put(record33.value1(), permMerge.get(record33.value2()) | record33.value2());}
                 }
             }
 
@@ -87,9 +86,9 @@ public class FrontendMetaGuilds extends RequestProcessor {
                         .put("guildName", record.get(Tables.GUILDS.META_GUILDNAME))
                         .put("iconUrl", (record.field(Tables.GUILDS.META_ICONURL) != null) ? record.get(Tables.GUILDS.META_ICONURL) : JSONObject.NULL)
                         .put("member", new JSONObject()
-                                .put("isAdmin", ((record.field(Tables.MEMBERS.META_IS_ADMINISTRATOR) != null) ? (boolean) record.get(Tables.MEMBERS.META_IS_ADMINISTRATOR) : false))
-                                .put("isOwner", ((record.field(Tables.MEMBERS.META_IS_OWNER) != null) ? (boolean) record.get(Tables.MEMBERS.META_IS_OWNER) : false))
-                                .put("userPermValue", ((permMerge.containsKey(record.get(Tables.GUILDS.GUILD_ID)))? permMerge.get(record.get(Tables.GUILDS.GUILD_ID)): 1))
+                                .put("isAdmin", ((record.field(Tables.MEMBERS.META_IS_ADMINISTRATOR) != null) ? (boolean) record.get(Tables.MEMBERS.META_IS_ADMINISTRATOR) : (adminOverride) ? true : false))
+                                .put("isOwner", ((record.field(Tables.MEMBERS.META_IS_OWNER) != null) ? (boolean) record.get(Tables.MEMBERS.META_IS_OWNER) : (adminOverride) ? true : false))
+                                .put("userPermValue", (permMerge.getOrDefault(record.get(Tables.GUILDS.GUILD_ID), (adminOverride) ? Long.MAX_VALUE : 0L)))
                         )
                 );
             }
