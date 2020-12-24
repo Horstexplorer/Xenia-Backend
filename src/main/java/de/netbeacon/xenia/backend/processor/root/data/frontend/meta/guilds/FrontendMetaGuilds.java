@@ -35,8 +35,6 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.jooq.impl.DSL.bitAnd;
-
 public class FrontendMetaGuilds extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(FrontendMetaGuilds.class);
@@ -53,8 +51,6 @@ public class FrontendMetaGuilds extends RequestProcessor {
         return this;
     }
 
-    private static final long DISCORD_USER_PERM_FILTER = 1; // interact
-
     @Override
     public void get(Client client, Context ctx) {
         try(var con = getSqlConnectionPool().getConnection()) {
@@ -65,32 +61,16 @@ public class FrontendMetaGuilds extends RequestProcessor {
             if(((DiscordClient)client).getInternalRole().equalsIgnoreCase("admin")){
                 records = sqlContext.select().from(Tables.GUILDS).fetch();
             }else{
-                // shared member but no vperms enabled
-                Result<Record> record1 = sqlContext.select().from(Tables.GUILDS)
-                        .join(Tables.MEMBERS).on(Tables.GUILDS.GUILD_ID.eq(Tables.MEMBERS.GUILD_ID))
-                        .where(Tables.MEMBERS.USER_ID.eq(client.getClientId()).andNot(Tables.GUILDS.USE_VPERMS)).fetch();
-                // shared member with vperms
-                Result<Record> record2 = sqlContext.select().from(Tables.GUILDS)
-                        .join(Tables.VROLES).on(Tables.GUILDS.GUILD_ID.eq(Tables.VROLES.GUILD_ID))
-                        .join(Tables.MEMBERS_ROLES).on(Tables.GUILDS.GUILD_ID.eq(Tables.MEMBERS_ROLES.GUILD_ID))
-                        .where(
-                                Tables.MEMBERS_ROLES.USER_ID.eq(client.getClientId())
-                                .and(bitAnd(DISCORD_USER_PERM_FILTER, Tables.VROLES.VROLE_ID).eq(DISCORD_USER_PERM_FILTER))
-                                .andNot(Tables.GUILDS.USE_VPERMS)
-                        )
-                        .groupBy(Tables.GUILDS.GUILD_ID)
-                        .fetch();
-                record1.addAll(record2);
-                records = record1;
-                // vperms
-                Result<Record2<Long, Long>> records3 = sqlContext.select(Tables.VROLES.GUILD_ID, Tables.VROLES.VROLE_PERMISSION).from(Tables.VROLES)
+                // vperms where enabled
+                Result<Record2<Long, Long>> vPermsRecords = sqlContext.select(Tables.VROLES.GUILD_ID, Tables.VROLES.VROLE_PERMISSION).from(Tables.VROLES)
                         .join(Tables.MEMBERS_ROLES).on(Tables.VROLES.GUILD_ID.eq(Tables.MEMBERS_ROLES.GUILD_ID))
-                        .where(
-                                Tables.MEMBERS_ROLES.USER_ID.eq(client.getClientId())
-                                .and(bitAnd(1L, Tables.VROLES.VROLE_ID).eq(1L))
-                                .andNot(Tables.GUILDS.USE_VPERMS)
-                        ).fetch();
-                for(Record2<Long, Long> record33 : records3){
+                        .where(Tables.MEMBERS_ROLES.USER_ID.eq(client.getClientId()).andNot(Tables.GUILDS.USE_VPERMS)).fetch();
+                // guild with shared member and either vperms disabled or enabled and within the set above
+                records= sqlContext.select().from(Tables.GUILDS)
+                        .join(Tables.MEMBERS).on(Tables.GUILDS.GUILD_ID.eq(Tables.MEMBERS.GUILD_ID))
+                        .where(Tables.MEMBERS.USER_ID.eq(client.getClientId()).and(Tables.GUILDS.GUILD_ID.in(vPermsRecords.field(Tables.VROLES.GUILD_ID))).orNot(Tables.GUILDS.USE_VPERMS)).fetch();
+
+                for(Record2<Long, Long> record33 : vPermsRecords){
                     if(!permMerge.containsKey(record33.value1())){
                         permMerge.put(record33.value1(), record33.value2());
                     }else{
