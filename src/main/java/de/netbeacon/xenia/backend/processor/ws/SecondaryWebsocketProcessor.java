@@ -18,6 +18,7 @@ package de.netbeacon.xenia.backend.processor.ws;
 
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.processor.WSProcessorCore;
 import io.javalin.websocket.WsContext;
 import io.javalin.websocket.WsMessageContext;
 import org.json.JSONObject;
@@ -29,7 +30,13 @@ import java.util.Base64;
 
 public class SecondaryWebsocketProcessor extends WebsocketProcessor {
 
+    private final WSProcessorCore wsProcessorCore;
     private final Logger logger = LoggerFactory.getLogger(SecondaryWebsocketProcessor.class);
+
+    public SecondaryWebsocketProcessor(WSProcessorCore wsProcessorCore){
+        this.wsProcessorCore = wsProcessorCore;
+        this.wsProcessorCore.setWSP(this);
+    }
 
     @Override
     public WsMessage getConnectedMessage() {
@@ -82,28 +89,37 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor {
             if(jsonObject.getString("requestMode").equalsIgnoreCase("response")){
                 // get client to send to
                 Client recipient = findClient(jsonObject.getLong("recipient"));
-                if(recipient == null){
+                if(recipient == null && jsonObject.getLong("recipient") != 0L){ // filter requests to the backend
                     return;
                 }
                 // prepare message
                 WsMessage wsMessage = new WsMessage(getMessage(jsonObject.getString("requestId"), "RESPONSE", null, getClientOf(wsMessageContext).getClientId(), jsonObject.getString("action"), (jsonObject.has("payload") ? jsonObject.getJSONObject("payload") : null)));
                 // send back
-                unicast(wsMessage, recipient);
+                if(jsonObject.getLong("recipient") != 0L){
+                    unicast(wsMessage, recipient);
+                }else{
+                    wsProcessorCore.handle(wsMessage.get()); // this is meant for the backend
+                }
             }else if(jsonObject.getString("requestMode").equalsIgnoreCase("unicast")){
                 // get client to send to
                 Client recipient = findClient(jsonObject.getLong("recipient"));
-                if(recipient == null){
-                    return;
+                if(recipient == null && jsonObject.getLong("recipient") != 0L){ // filter requests to the backend
+                    return; // the other things arent interesting to us
                 }
                 // prepare message
                 WsMessage wsMessage = new WsMessage(getMessage(jsonObject.getString("requestId"), "UNICAST", null, getClientOf(wsMessageContext).getClientId(), jsonObject.getString("action"), (jsonObject.has("payload") ? jsonObject.getJSONObject("payload") : null)));
                 // send back
-                unicast(wsMessage, recipient);
+                if(jsonObject.getLong("recipient") != 0L){
+                    unicast(wsMessage, recipient);
+                }else{
+                    wsProcessorCore.handle(wsMessage.get()); // this is meant for the backend
+                }
             }else if(jsonObject.getString("requestMode").equalsIgnoreCase("broadcast")){
                 // prepare message
                 WsMessage wsMessage = new WsMessage(getMessage(jsonObject.getString("requestId"), "BROADCAST", null, getClientOf(wsMessageContext).getClientId(), jsonObject.getString("action"), (jsonObject.has("payload") ? jsonObject.getJSONObject("payload") : null)));
                 // send back
                 broadcast(wsMessage, getClientOf(wsMessageContext));
+                wsProcessorCore.handle(wsMessage.get()); // send to backend as this might be contacted via broadcasts aswell
             }
         }catch (Exception e){
             logger.error("Something Went Wrong Handling An Incoming Message: "+wsMessageContext.message()+" ", e);
@@ -128,4 +144,9 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor {
                 .put("payload", payload);
     }
 
+    @Override
+    public void onShutdown() throws Exception {
+        super.onShutdown();
+        wsProcessorCore.onShutdown();
+    }
 }
