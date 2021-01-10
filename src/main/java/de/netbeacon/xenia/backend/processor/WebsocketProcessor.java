@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class WebsocketProcessor implements IShutdown {
 
+    private final ConcurrentHashMap<Long, Client> clientIdClientConcurrentHashMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Client, WsContext> clientWSContextConcurrentHashMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<WsContext, Client> wsContextClientConcurrentHashMap = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -47,10 +48,13 @@ public abstract class WebsocketProcessor implements IShutdown {
         }
         wsContextClientConcurrentHashMap.put(wsContext, client);
         clientWSContextConcurrentHashMap.put(client, wsContext);
+        clientIdClientConcurrentHashMap.put(client.getClientId(), client);
     }
 
     public void remove(WsContext wsContext){
-        clientWSContextConcurrentHashMap.remove(wsContextClientConcurrentHashMap.remove(wsContext));
+        Client client = wsContextClientConcurrentHashMap.remove(wsContext);
+        clientWSContextConcurrentHashMap.remove(client);
+        clientIdClientConcurrentHashMap.remove(client.getClientId());
     }
 
     public void onMessage(WsMessageContext wsMessageContext) {}
@@ -87,9 +91,7 @@ public abstract class WebsocketProcessor implements IShutdown {
     }
 
     public Client findClient(long clientId){
-        return wsContextClientConcurrentHashMap.values().stream()
-                .filter(c -> c.getClientId() == clientId)
-                .findFirst().orElse(null);
+        return clientIdClientConcurrentHashMap.get(clientId);
     }
 
     @Override

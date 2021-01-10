@@ -16,7 +16,6 @@
 
 package de.netbeacon.xenia.backend.processor.ws;
 
-import de.netbeacon.utils.tuples.Pair;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import io.javalin.websocket.WsContext;
@@ -25,13 +24,12 @@ import org.json.JSONObject;
 
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.List;
 
 public class SecondaryWebsocketProcessor extends WebsocketProcessor {
 
     @Override
     public WsMessage getHeartBeatMessage() {
-        return getMessage(getRandomId(), "NONE", 0, System.currentTimeMillis(), "heartbeat", new JSONObject());
+        return new WsMessage(getMessage(getRandomId(), "BROADCAST", null, 0L, "heartbeat", null));
     }
 
     /**
@@ -40,99 +38,72 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor {
      * requestMode:
      *  UNICAST
      *  BROADCAST
-     * responseMode:
-     *  NONE
-     *  BACKEND_ACK
-     *  CLIENT_ACK
-     *  DATA
-     * recipient: (removed by backend)
+     *  RESPONSE
+     * recipient: (removed by backend; ignored for BROADCAST)
      *  Long
      * sender: (set by backend)
      *  Long
-     * timestamp: (optional)
-     *  Long
-     * timeout: (optional)
-     *  Long
-     * dataHint: (optional)
+     * action: (missing on response)
      *  String
-     * data: (optional)
+     * payload: (optional)
      *  JSONObject
      */
 
     @Override
     public void register(WsContext wsContext, Client client){
         super.register(wsContext, client);
-        broadcast(getMessage(getRandomId(), "NONE", getClientOf(wsContext).getClientId(), System.currentTimeMillis(), "client_join", new JSONObject()), getClientOf(wsContext));
+        // send join
+        broadcast(new WsMessage(getMessage(getRandomId(), "BROADCAST", null, 0L, "join", new JSONObject().put("clientId", client.getClientId()))), client);
     }
 
 
     @Override
     public void remove(WsContext wsContext){
-        broadcast(getMessage(getRandomId(), "NONE", getClientOf(wsContext).getClientId(), System.currentTimeMillis(), "client_leave", new JSONObject()), getClientOf(wsContext));
+        // send leave
+        broadcast(new WsMessage(getMessage(getRandomId(), "BROADCAST", null, 0L, "leave", new JSONObject().put("clientId", getClientOf(wsContext).getClientId()))), getClientOf(wsContext));
         super.remove(wsContext);
     }
 
 
-    private static final List<Pair<String, ?>> optionals = List.of(
-            new Pair<>("timestamp", Long.class),
-            new Pair<>("timeout", Long.class),
-            new Pair<>("dataHint", String.class),
-            new Pair<>("data", JSONObject.class)
-    );
-
     @Override
     public void onMessage(WsMessageContext wsMessageContext) {
         try{
-            JSONObject messageIn = new JSONObject(wsMessageContext.message());
-            if(!(messageIn.get("requestId") instanceof String)){
-                return; // we cant handle processing the request
+            JSONObject jsonObject = new JSONObject(wsMessageContext.message());
+            // redirect responses
+            if(jsonObject.getString("requestMode").equalsIgnoreCase("response")){
+                // get client to send to
+                Client recipient = findClient(jsonObject.getLong("recipient"));
+                if(recipient == null){
+                    return;
+                }
+                // prepare message
+                WsMessage wsMessage = new WsMessage(getMessage(jsonObject.getString("requestId"), "RESPONSE", null, getClientOf(wsMessageContext).getClientId(), jsonObject.getString("action"), (jsonObject.has("payload") ? jsonObject.getJSONObject("payload") : null)));
+                // send back
+                unicast(wsMessage, recipient);
+            }else if(jsonObject.getString("requestMode").equalsIgnoreCase("unicast")){
+                // get client to send to
+                Client recipient = findClient(jsonObject.getLong("recipient"));
+                if(recipient == null){
+                    return;
+                }
+                // prepare message
+                WsMessage wsMessage = new WsMessage(getMessage(jsonObject.getString("requestId"), "UNICAST", null, getClientOf(wsMessageContext).getClientId(), jsonObject.getString("action"), (jsonObject.has("payload") ? jsonObject.getJSONObject("payload") : null)));
+                // send back
+                unicast(wsMessage, recipient);
+            }else if(jsonObject.getString("requestMode").equalsIgnoreCase("broadcast")){
+                // get client to send to
+                Client recipient = findClient(jsonObject.getLong("recipient"));
+                if(recipient == null){
+                    return;
+                }
+                // prepare message
+                WsMessage wsMessage = new WsMessage(getMessage(jsonObject.getString("requestId"), "BROADCAST", null, getClientOf(wsMessageContext).getClientId(), jsonObject.getString("action"), (jsonObject.has("payload") ? jsonObject.getJSONObject("payload") : null)));
+                // send back
+                broadcast(wsMessage, getClientOf(wsMessageContext));
             }
-            try{
-                // put the things in we already can copy
-                JSONObject messageOut = new JSONObject()
-                        .put("requestId", messageIn.getString("requestId"))
-                        .put("sender", getClientOf(wsMessageContext).getClientId());
-                // add optionals
-                for(Pair<String, ?> pair : optionals){
-                    if(messageIn.has(pair.getValue1()) && (messageIn.get(pair.getValue1()).getClass().equals(pair.getValue2()))){
-                        messageOut.put(pair.getValue1(), messageIn.get(pair.getValue1()));
-                    }
-                }
-                // set response mode
-                switch(messageIn.getString("responseMode").toLowerCase()){
-                    case "none":
-                    case "client_ack":
-                    case "data":
-                        messageOut.put("responseMode", messageIn.getString("responseMode"));
-                        break;
-                    case "backend_ack":
-                    default:
-                        messageOut.put("responseMode", "NONE");
-                        break;
-                }
-                // send data
-                switch(messageIn.getString("requestMode").toLowerCase()){
-                    case "unicast":
-                        if(messageOut.getLong("recipient") == 0){
-                            localProcessor(messageOut, wsMessageContext);
-                        }else{
-                            unicast(new WsMessage(messageOut), findClient(messageIn.getLong("recipient")));
-                        }
-                        break;
-                    case "broadcast":
-                    default:
-                        broadcast(new WsMessage(messageOut), getClientOf(wsMessageContext));
-                        localProcessor(messageOut, wsMessageContext);
-                        break;
-                }
-                // send backend ack if needed
-                if(messageIn.getString("responseMode").equalsIgnoreCase("backend_ack")){
-                    unicast(getMessage(messageIn.getString("requestId"), "NONE", 0L, System.currentTimeMillis(), "ack", new JSONObject()), getClientOf(wsMessageContext));
-                }
-            }catch (Exception e){
-                try{ unicast(getMessage(messageIn.getString("requestId"), "NONE", 0L, System.currentTimeMillis(), "error", new JSONObject()), getClientOf(wsMessageContext)); }catch (Exception ignore){}
-            }
-        }catch (Exception ignore){}
+        }catch (Exception e){
+
+        }
     }
 
     private final SecureRandom secureRandom = new SecureRandom();
@@ -143,33 +114,14 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor {
         return Base64.getEncoder().encodeToString(bytes);
     }
 
-    private WsMessage getMessage(String requestId, String responseMode, long sender, long timestamp, String dataHint, JSONObject data){
-        return new WsMessage(new JSONObject()
-                .put("requestId", requestId)
-                .put("responseMode", responseMode)
+    public JSONObject getMessage(String id, String requestMode, Long recipient, Long sender, String action, JSONObject payload){
+        return new JSONObject()
+                .put("requestId", id)
+                .put("requestMode", requestMode)
+                .put("recipient", recipient)
                 .put("sender", sender)
-                .put("timestamp", timestamp)
-                .put("dataHint", dataHint)
-                .put("data", data)
-        );
+                .put("action", action)
+                .put("payload", payload);
     }
 
-    private void localProcessor(JSONObject request, WsContext wsContext){
-        try{
-            switch(request.getString("responseMode").toLowerCase()){
-                case "none":
-                case "backend_ack": // we are the backend. this will be sent later
-                    return;
-                case "client_ack":
-                    wsContext.send(getMessage(request.getString("requestId"), "NONE", 0L, System.currentTimeMillis(), "ack", new JSONObject()));
-                    return;
-                case "data":
-                default:
-                    wsContext.send(getMessage(request.getString("requestId"), "NONE", 0L, System.currentTimeMillis(), "error", new JSONObject()));
-                    break;
-            }
-        }catch (Exception e){
-            wsContext.send(getMessage(request.getString("requestId"), "NONE", 0L, System.currentTimeMillis(), "error", new JSONObject()));
-        }
-    }
 }
