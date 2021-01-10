@@ -449,7 +449,7 @@ public class Core {
                         path("ws", ()->{
                             ws(wsHandler -> {
                                 wsHandler.onConnect(wsCon->{
-                                    primaryWebsocketProcessor.register(wsCon, securityManager.authorizeWsConnection(websocketSetting, wsCon));
+                                    primaryWebsocketProcessor.register(wsCon, securityManager.authorizeWsConnection(websocketSetting, wsCon, primaryWebsocketProcessor));
                                 });
                                 wsHandler.onClose(primaryWebsocketProcessor::remove);
                                 wsHandler.onError(primaryWebsocketProcessor::remove);
@@ -458,7 +458,7 @@ public class Core {
                             path("secondary", ()->{
                                 ws(wsHandler -> {
                                     wsHandler.onConnect(wsCon->{
-                                        secondaryWebsocketProcessor.register(wsCon, securityManager.authorizeWsConnection(websocketSetting, wsCon));
+                                        secondaryWebsocketProcessor.register(wsCon, securityManager.authorizeWsConnection(websocketSetting, wsCon, secondaryWebsocketProcessor));
                                     });
                                     wsHandler.onClose(secondaryWebsocketProcessor::remove);
                                     wsHandler.onError(secondaryWebsocketProcessor::remove);

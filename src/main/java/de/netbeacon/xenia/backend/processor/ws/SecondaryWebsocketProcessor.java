@@ -28,6 +28,11 @@ import java.util.Base64;
 public class SecondaryWebsocketProcessor extends WebsocketProcessor {
 
     @Override
+    public WsMessage getConnectedMessage() {
+        return new WsMessage(getMessage(getRandomId(), "BROADCAST", null,0L, "connected", null));
+    }
+
+    @Override
     public WsMessage getHeartBeatMessage() {
         return new WsMessage(getMessage(getRandomId(), "BROADCAST", null, 0L, "heartbeat", null));
     }

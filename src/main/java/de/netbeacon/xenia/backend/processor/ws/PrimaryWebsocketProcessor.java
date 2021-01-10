@@ -23,6 +23,13 @@ public class PrimaryWebsocketProcessor extends de.netbeacon.xenia.backend.proces
     }
 
     @Override
+    public WsMessage getConnectedMessage() {
+        WsMessage wsMessage = new WsMessage();
+        wsMessage.get().put("type", "status").put("action", "CONNECTED");
+        return wsMessage;
+    }
+
+    @Override
     public WsMessage getHeartBeatMessage(){
         WsMessage wsMessage = new WsMessage();
         wsMessage.get().put("type", "HEARTBEAT").put("action", "HEARTBEAT").put("timestamp", System.currentTimeMillis());

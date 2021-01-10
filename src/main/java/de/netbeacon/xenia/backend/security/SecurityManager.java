@@ -22,6 +22,7 @@ import de.netbeacon.utils.tuples.Triplet;
 import de.netbeacon.xenia.backend.client.ClientManager;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
+import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.HttpResponseException;
@@ -143,7 +144,7 @@ public class SecurityManager implements IShutdown {
         }
     }
 
-    public Client authorizeWsConnection(SecuritySettings securitySettings, WsContext ctx) {
+    public Client authorizeWsConnection(SecuritySettings securitySettings, WsContext ctx, WebsocketProcessor websocketProcessor) {
         // check if running behind proxy and we should use the sent ip
         String clientIP = ctx.header("X-Real-IP");
         if(clientIP == null || clientIP.isBlank()){
@@ -171,7 +172,7 @@ public class SecurityManager implements IShutdown {
                     throw new ForbiddenResponse();
                 }
             }
-            ctx.send("{\"type\":\"status\", \"action\":\"connected\"}"); // send something which can be parsed by the client to check if the auth succeeded
+            ctx.send(websocketProcessor.getConnectedMessage().get().toString()); // send something which can be parsed by the client to check if the auth succeeded
             return client;
         }catch (HttpResponseException e){
             if(!noAuthRateLimiterMap.containsKey(clientIP)){
