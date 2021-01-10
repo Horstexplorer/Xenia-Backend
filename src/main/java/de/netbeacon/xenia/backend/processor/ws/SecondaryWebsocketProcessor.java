@@ -34,18 +34,23 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor {
     private final Logger logger = LoggerFactory.getLogger(SecondaryWebsocketProcessor.class);
 
     public SecondaryWebsocketProcessor(WSProcessorCore wsProcessorCore){
+        super();
         this.wsProcessorCore = wsProcessorCore;
         this.wsProcessorCore.setWSP(this);
     }
 
+    private static final WsMessage CONNECTED_MESSAGE = new WsMessage(getMessage("0", "BROADCAST", null,0L, "connected", null));
+
     @Override
     public WsMessage getConnectedMessage() {
-        return new WsMessage(getMessage(getRandomId(), "BROADCAST", null,0L, "connected", null));
+        return CONNECTED_MESSAGE;
     }
+
+    private static final WsMessage HEARTBEAT_MESSAGE = new WsMessage(getMessage("0", "BROADCAST", null, 0L, "heartbeat", null));
 
     @Override
     public WsMessage getHeartBeatMessage() {
-        return new WsMessage(getMessage(getRandomId(), "BROADCAST", null, 0L, "heartbeat", null));
+        return HEARTBEAT_MESSAGE;
     }
 
     /**
@@ -138,7 +143,7 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor {
         return Base64.getEncoder().encodeToString(bytes);
     }
 
-    public JSONObject getMessage(String id, String requestMode, Long recipient, Long sender, String action, JSONObject payload){
+    public static JSONObject getMessage(String id, String requestMode, Long recipient, Long sender, String action, JSONObject payload){
         return new JSONObject()
                 .put("requestId", id)
                 .put("requestMode", requestMode)
