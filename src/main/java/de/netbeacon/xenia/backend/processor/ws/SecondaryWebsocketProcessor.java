@@ -96,11 +96,6 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor {
                 // send back
                 unicast(wsMessage, recipient);
             }else if(jsonObject.getString("requestMode").equalsIgnoreCase("broadcast")){
-                // get client to send to
-                Client recipient = findClient(jsonObject.getLong("recipient"));
-                if(recipient == null){
-                    return;
-                }
                 // prepare message
                 WsMessage wsMessage = new WsMessage(getMessage(jsonObject.getString("requestId"), "BROADCAST", null, getClientOf(wsMessageContext).getClientId(), jsonObject.getString("action"), (jsonObject.has("payload") ? jsonObject.getJSONObject("payload") : null)));
                 // send back
