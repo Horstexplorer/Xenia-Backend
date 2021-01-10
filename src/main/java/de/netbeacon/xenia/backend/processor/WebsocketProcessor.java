@@ -41,6 +41,8 @@ public abstract class WebsocketProcessor implements IShutdown {
 
     public abstract WsMessage getHeartBeatMessage();
 
+    public abstract WsMessage getConnectedMessage();
+
     public void register(WsContext wsContext, Client client){
         if(client == null){
             try{wsContext.session.disconnect();}catch (Exception ignore){} // should not be needed
