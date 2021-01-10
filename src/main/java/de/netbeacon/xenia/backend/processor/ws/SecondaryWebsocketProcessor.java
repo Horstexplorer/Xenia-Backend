@@ -75,8 +75,12 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor {
 
     @Override
     public void remove(WsContext wsContext){
+        Client client = getClientOf(wsContext);
+        if(client == null){
+            return;
+        }
         // send leave
-        broadcast(new WsMessage(getMessage(getRandomId(), "BROADCAST", null, 0L, "leave", new JSONObject().put("clientId", getClientOf(wsContext).getClientId()))), getClientOf(wsContext));
+        broadcast(new WsMessage(getMessage(getRandomId(), "BROADCAST", null, 0L, "leave", new JSONObject().put("clientId", client.getClientId()))), client);
         super.remove(wsContext);
     }
 
