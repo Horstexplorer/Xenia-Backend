@@ -21,11 +21,15 @@ import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import io.javalin.websocket.WsContext;
 import io.javalin.websocket.WsMessageContext;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.security.SecureRandom;
 import java.util.Base64;
 
 public class SecondaryWebsocketProcessor extends WebsocketProcessor {
+
+    private final Logger logger = LoggerFactory.getLogger(SecondaryWebsocketProcessor.class);
 
     @Override
     public WsMessage getConnectedMessage() {
@@ -102,7 +106,7 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor {
                 broadcast(wsMessage, getClientOf(wsMessageContext));
             }
         }catch (Exception e){
-
+            logger.error("Something Went Wrong Handling An Incoming Message: "+wsMessageContext.message()+" ", e);
         }
     }
 
