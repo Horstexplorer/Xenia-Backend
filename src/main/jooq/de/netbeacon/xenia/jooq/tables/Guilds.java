@@ -73,6 +73,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
      */
     public final TableField<GuildsRecord, String> META_ICONURL = createField(DSL.name("meta_iconurl"), SQLDataType.CLOB, this, "");
 
+    /**
+     * The column <code>public.guilds.guild_prefix</code>.
+     */
+    public final TableField<GuildsRecord, String> GUILD_PREFIX = createField(DSL.name("guild_prefix"), SQLDataType.VARCHAR(4).nullable(false).defaultValue(DSL.field("'~'::character varying", SQLDataType.VARCHAR)), this, "");
+
     private Guilds(Name alias, Table<GuildsRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -157,11 +162,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, LocalDateTime, String, Integer, Boolean, String, String> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Long, LocalDateTime, String, Integer, Boolean, String, String, String> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }
