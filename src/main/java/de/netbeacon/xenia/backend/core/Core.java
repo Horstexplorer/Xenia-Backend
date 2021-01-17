@@ -38,6 +38,7 @@ import de.netbeacon.xenia.backend.processor.ws.SecondaryWebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.ws.processor.WSProcessorCore;
 import de.netbeacon.xenia.backend.processor.ws.processor.imp.HeartbeatProcessor;
 import de.netbeacon.xenia.backend.processor.ws.processor.imp.IdentifyProcessor;
+import de.netbeacon.xenia.backend.processor.ws.processor.imp.StatisticsProcessor;
 import de.netbeacon.xenia.backend.security.SecurityManager;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
 import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
@@ -111,7 +112,8 @@ public class Core {
             WSProcessorCore wsProcessorCore = new WSProcessorCore()
                     .registerProcessors(
                             new HeartbeatProcessor(),
-                            new IdentifyProcessor()
+                            new IdentifyProcessor(),
+                            new StatisticsProcessor()
                     );
             WebsocketProcessor secondaryWebsocketProcessor = new SecondaryWebsocketProcessor(wsProcessorCore);
             shutdownHook.addShutdownAble(secondaryWebsocketProcessor);
