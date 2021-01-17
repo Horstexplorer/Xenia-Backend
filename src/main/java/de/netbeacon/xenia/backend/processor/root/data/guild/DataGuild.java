@@ -125,6 +125,7 @@ public class DataGuild extends RequestProcessor {
                     .put("guildId", guildsRecord.getGuildId())
                     .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage())
+                    .put("prefix", guildsRecord.getGuildPrefix())
                     .put("useVPerms", guildsRecord.getUseVperms())
                     .put("meta", new JSONObject()
                             .put("name", guildsRecord.getMetaGuildname())
@@ -163,6 +164,7 @@ public class DataGuild extends RequestProcessor {
             // update data
             guildsRecord.setPreferredLanguage(newData.getString("preferredLanguage"));
             guildsRecord.setUseVperms(newData.getBoolean("useVPerms"));
+            guildsRecord.setGuildPrefix(newData.getString("prefix"));
             JSONObject metaData = newData.getJSONObject("meta");
             guildsRecord.setMetaGuildname(metaData.getString("name"));
             guildsRecord.setMetaIconurl(metaData.get("iconUrl") != JSONObject.NULL ? metaData.getString("iconUrl") : null);
@@ -173,6 +175,7 @@ public class DataGuild extends RequestProcessor {
                     .put("guildId", guildsRecord.getGuildId())
                     .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage())
+                    .put("prefix", guildsRecord.getGuildPrefix())
                     .put("useVPerms", guildsRecord.getUseVperms())
                     .put("meta", new JSONObject()
                             .put("name", guildsRecord.getMetaGuildname())
@@ -215,6 +218,7 @@ public class DataGuild extends RequestProcessor {
                     .put("guildId", guildsRecord.getGuildId())
                     .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage())
+                    .put("prefix", guildsRecord.getGuildPrefix())
                     .put("useVPerms", guildsRecord.getUseVperms())
                     .put("meta", new JSONObject()
                             .put("name", guildsRecord.getMetaGuildname())
