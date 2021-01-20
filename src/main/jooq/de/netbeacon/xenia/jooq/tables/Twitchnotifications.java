@@ -49,19 +49,24 @@ public class Twitchnotifications extends TableImpl<TwitchnotificationsRecord> {
     public final TableField<TwitchnotificationsRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
-     * The column <code>public.twitchnotifications.twitchnotification_discord_channel_id</code>.
+     * The column <code>public.twitchnotifications.guild_id</code>.
      */
-    public final TableField<TwitchnotificationsRecord, Long> TWITCHNOTIFICATION_DISCORD_CHANNEL_ID = createField(DSL.name("twitchnotification_discord_channel_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<TwitchnotificationsRecord, Long> GUILD_ID = createField(DSL.name("guild_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.twitchnotifications.twitchnotification_twitch_channel_id</code>.
+     * The column <code>public.twitchnotifications.channel_id</code>.
      */
-    public final TableField<TwitchnotificationsRecord, Long> TWITCHNOTIFICATION_TWITCH_CHANNEL_ID = createField(DSL.name("twitchnotification_twitch_channel_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<TwitchnotificationsRecord, Long> CHANNEL_ID = createField(DSL.name("channel_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.twitchnotifications.twitchnotification_twitch_channel_name</code>.
      */
     public final TableField<TwitchnotificationsRecord, String> TWITCHNOTIFICATION_TWITCH_CHANNEL_NAME = createField(DSL.name("twitchnotification_twitch_channel_name"), SQLDataType.VARCHAR(25).nullable(false), this, "");
+
+    /**
+     * The column <code>public.twitchnotifications.twitchnotification_twitch_channel_id</code>.
+     */
+    public final TableField<TwitchnotificationsRecord, Long> TWITCHNOTIFICATION_TWITCH_CHANNEL_ID = createField(DSL.name("twitchnotification_twitch_channel_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.twitchnotifications.twitchnotification_custom_message</code>.
@@ -123,11 +128,15 @@ public class Twitchnotifications extends TableImpl<TwitchnotificationsRecord> {
 
     @Override
     public List<ForeignKey<TwitchnotificationsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<TwitchnotificationsRecord, ?>>asList(Keys.TWITCHNOTIFICATIONS__TWITCHNOTIFICATIONS_TWITCHNOTIFICATION_DISCORD_CHANNEL_ID_FKEY);
+        return Arrays.<ForeignKey<TwitchnotificationsRecord, ?>>asList(Keys.TWITCHNOTIFICATIONS__TWITCHNOTIFICATIONS_GUILD_ID_FKEY, Keys.TWITCHNOTIFICATIONS__TWITCHNOTIFICATIONS_CHANNEL_ID_FKEY);
+    }
+
+    public Guilds guilds() {
+        return new Guilds(this, Keys.TWITCHNOTIFICATIONS__TWITCHNOTIFICATIONS_GUILD_ID_FKEY);
     }
 
     public Channels channels() {
-        return new Channels(this, Keys.TWITCHNOTIFICATIONS__TWITCHNOTIFICATIONS_TWITCHNOTIFICATION_DISCORD_CHANNEL_ID_FKEY);
+        return new Channels(this, Keys.TWITCHNOTIFICATIONS__TWITCHNOTIFICATIONS_CHANNEL_ID_FKEY);
     }
 
     @Override
@@ -157,11 +166,11 @@ public class Twitchnotifications extends TableImpl<TwitchnotificationsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, LocalDateTime, Long, Long, String, String> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Integer, LocalDateTime, Long, Long, String, Long, String> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }
