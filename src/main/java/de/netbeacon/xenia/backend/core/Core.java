@@ -114,7 +114,7 @@ public class Core {
                             new HeartbeatProcessor(),
                             new IdentifyProcessor(),
                             new StatisticsProcessor(),
-                            new TwitchNotificationAccelerator(connectionPool, twitchWrap)
+                            new TwitchNotificationAccelerator(connectionPool, primaryWebsocketProcessor, twitchWrap)
                     );
             SecondaryWebsocketProcessor secondaryWebsocketProcessor = new SecondaryWebsocketProcessor(wsProcessorCore);
             shutdownHook.addShutdownAble(secondaryWebsocketProcessor);
