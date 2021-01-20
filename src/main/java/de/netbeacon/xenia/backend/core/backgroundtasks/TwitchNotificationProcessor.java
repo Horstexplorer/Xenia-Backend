@@ -17,7 +17,6 @@
 package de.netbeacon.xenia.backend.core.backgroundtasks;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.ws.SecondaryWebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.ws.processor.WSRequest;
@@ -118,7 +117,7 @@ public class TwitchNotificationProcessor extends BackgroundServiceScheduler.Task
                     .payload(jsonObject)
                     .build();
             // as we dont know where it belongs we broadcast it
-            getSecondaryWebsocketProcessor().broadcast(new WebsocketProcessor.WsMessage(wsRequest.asJSON()));
+            getSecondaryWebsocketProcessor().getWsProcessorCore().process(wsRequest);
         }
     }
 }
