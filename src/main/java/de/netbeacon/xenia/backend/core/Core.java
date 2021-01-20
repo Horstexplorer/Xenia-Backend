@@ -105,7 +105,7 @@ public class Core {
             // add to shutdown hook
             shutdownHook.addShutdownAble(securityManager);
             // prepare twitch wrap
-            TwitchWrap twitchWrap = new TwitchWrap(config.getString("twitchUserId"), config.getString("twitchUserSecret"));
+            TwitchWrap twitchWrap = new TwitchWrap(config.getString("twitch_user_id"), config.getString("twitch_user_secret"));
             // prepare websocket connection handler
             PrimaryWebsocketProcessor primaryWebsocketProcessor = new PrimaryWebsocketProcessor();
             shutdownHook.addShutdownAble(primaryWebsocketProcessor);
