@@ -41,7 +41,7 @@ public class Twitchnotifications extends TableImpl<TwitchnotificationsRecord> {
     /**
      * The column <code>public.twitchnotifications.twitchnotification_id</code>.
      */
-    public final TableField<TwitchnotificationsRecord, Integer> TWITCHNOTIFICATION_ID = createField(DSL.name("twitchnotification_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<TwitchnotificationsRecord, Long> TWITCHNOTIFICATION_ID = createField(DSL.name("twitchnotification_id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.twitchnotifications.creation_timestamp</code>.
@@ -112,8 +112,8 @@ public class Twitchnotifications extends TableImpl<TwitchnotificationsRecord> {
     }
 
     @Override
-    public Identity<TwitchnotificationsRecord, Integer> getIdentity() {
-        return (Identity<TwitchnotificationsRecord, Integer>) super.getIdentity();
+    public Identity<TwitchnotificationsRecord, Long> getIdentity() {
+        return (Identity<TwitchnotificationsRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -170,7 +170,7 @@ public class Twitchnotifications extends TableImpl<TwitchnotificationsRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, LocalDateTime, Long, Long, String, Long, String> fieldsRow() {
+    public Row7<Long, LocalDateTime, Long, Long, String, Long, String> fieldsRow() {
         return (Row7) super.fieldsRow();
     }
 }
