@@ -35,9 +35,11 @@ import de.netbeacon.xenia.backend.processor.ws.processor.WSProcessorCore;
 import de.netbeacon.xenia.backend.processor.ws.processor.imp.HeartbeatProcessor;
 import de.netbeacon.xenia.backend.processor.ws.processor.imp.IdentifyProcessor;
 import de.netbeacon.xenia.backend.processor.ws.processor.imp.StatisticsProcessor;
+import de.netbeacon.xenia.backend.processor.ws.processor.imp.TwitchNotificationAccelerator;
 import de.netbeacon.xenia.backend.security.SecurityManager;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
 import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
+import de.netbeacon.xenia.backend.utils.twitch.TwitchWrap;
 import io.javalin.Javalin;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
@@ -102,6 +104,8 @@ public class Core {
             SecuritySettings websocketSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.INTERNAL);
             // add to shutdown hook
             shutdownHook.addShutdownAble(securityManager);
+            // prepare twitch wrap
+            TwitchWrap twitchWrap = new TwitchWrap(config.getString("twitchUserId"), config.getString("twitchUserSecret"));
             // prepare websocket connection handler
             PrimaryWebsocketProcessor primaryWebsocketProcessor = new PrimaryWebsocketProcessor();
             shutdownHook.addShutdownAble(primaryWebsocketProcessor);
@@ -109,7 +113,8 @@ public class Core {
                     .registerProcessors(
                             new HeartbeatProcessor(),
                             new IdentifyProcessor(),
-                            new StatisticsProcessor()
+                            new StatisticsProcessor(),
+                            new TwitchNotificationAccelerator(connectionPool, twitchWrap)
                     );
             SecondaryWebsocketProcessor secondaryWebsocketProcessor = new SecondaryWebsocketProcessor(wsProcessorCore);
             shutdownHook.addShutdownAble(secondaryWebsocketProcessor);
@@ -123,7 +128,7 @@ public class Core {
             backgroundServiceScheduler.schedule(new LicenseCheck(connectionPool, primaryWebsocketProcessor), 30000, true);
             backgroundServiceScheduler.schedule(new RatelimiterCleaner(securityManager), 120000, true);
             backgroundServiceScheduler.schedule(new OAuthStateCleanup(connectionPool, primaryWebsocketProcessor), 120000, true);
-            backgroundServiceScheduler.schedule(new TwitchNotificationProcessor(connectionPool, primaryWebsocketProcessor, secondaryWebsocketProcessor), 300000, true);
+            backgroundServiceScheduler.schedule(new TwitchNotificationProcessor(connectionPool, primaryWebsocketProcessor, secondaryWebsocketProcessor, twitchWrap), 300000, true);
             // prepare javalin
             Javalin javalin = Javalin
                     .create(cnf -> {

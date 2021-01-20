@@ -183,7 +183,7 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
             ctx.result(jsonObject.toString());
             // send ws notification
             WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
-            wsMessage.get().put("type", "GUILD_MISC_TWITCHNOTIFICATION").put("action", "UPDATE").put("guildId", guildId).put("notificationId", twitchnotificationsRecord.getTwitchnotificationId());
+            wsMessage.get().put("type", "GUILD_MISC_TWITCHNOTIFICATION").put("action", "UPDATE").put("guildId", guildId).put("twitchNotificationId", twitchnotificationsRecord.getTwitchnotificationId());
             getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
@@ -209,7 +209,7 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
             // insert
             Result<TwitchnotificationsRecord> twitchnotificationsRecords = sqlContext
                     .insertInto(Tables.TWITCHNOTIFICATIONS, Tables.TWITCHNOTIFICATIONS.GUILD_ID, Tables.TWITCHNOTIFICATIONS.CHANNEL_ID, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_TWITCH_CHANNEL_ID, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_TWITCH_CHANNEL_NAME, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_CUSTOM_MESSAGE)
-                    .values(guildId, initData.getLong("channelId"), initData.getLong("twitchChannelId"), initData.getString("twitchChannelName"), initData.getString("notificationMessage"))
+                    .values(guildId, initData.getLong("channelId"), initData.getLong("twitchChannelId"), initData.getString("twitchNotificationId"), initData.getString("notificationMessage"))
                     .returning()
                     .fetch();
             if(twitchnotificationsRecords.isEmpty()){
@@ -230,7 +230,7 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
             ctx.result(jsonObject.toString());
             // send ws notification
             WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
-            wsMessage.get().put("type", "GUILD_MISC_TWITCHNOTIFICATION").put("action", "CREATE").put("guildId", guildId).put("notificationId", twitchnotificationsRecord.getTwitchnotificationId());
+            wsMessage.get().put("type", "GUILD_MISC_TWITCHNOTIFICATION").put("action", "CREATE").put("guildId", guildId).put("twitchNotificationId", twitchnotificationsRecord.getTwitchnotificationId());
             getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
@@ -258,7 +258,7 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
             ctx.status(200);
             // send ws notification
             WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
-            wsMessage.get().put("type", "GUILD_MISC_TWITCHNOTIFICATION").put("action", "DELETE").put("guildId", guildId).put("notificationId", notificationId);
+            wsMessage.get().put("type", "GUILD_MISC_TWITCHNOTIFICATION").put("action", "DELETE").put("guildId", guildId).put("twitchNotificationId", notificationId);
             getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
             throw e;
