@@ -79,6 +79,11 @@ public class Tables {
     public static final Tags TAGS = Tags.TAGS;
 
     /**
+     * The table <code>public.twitchnotifications</code>.
+     */
+    public static final Twitchnotifications TWITCHNOTIFICATIONS = Twitchnotifications.TWITCHNOTIFICATIONS;
+
+    /**
      * The table <code>public.users</code>.
      */
     public static final Users USERS = Users.USERS;

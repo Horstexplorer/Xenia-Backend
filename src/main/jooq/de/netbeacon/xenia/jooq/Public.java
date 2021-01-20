@@ -93,6 +93,11 @@ public class Public extends SchemaImpl {
     public final Tags TAGS = Tags.TAGS;
 
     /**
+     * The table <code>public.twitchnotifications</code>.
+     */
+    public final Twitchnotifications TWITCHNOTIFICATIONS = Twitchnotifications.TWITCHNOTIFICATIONS;
+
+    /**
      * The table <code>public.users</code>.
      */
     public final Users USERS = Users.USERS;
@@ -121,7 +126,8 @@ public class Public extends SchemaImpl {
             Sequences.LICENSES_LICENSE_ID_SEQ,
             Sequences.NOTIFICATION_NOTIFICATION_ID_SEQ,
             Sequences.OAUTH_STATES_STATE_ID_SEQ,
-            Sequences.ROLES_ROLE_ID_SEQ);
+            Sequences.ROLES_ROLE_ID_SEQ,
+            Sequences.TWITCHNOTIFICATIONS_TWITCHNOTIFICATION_ID_SEQ);
     }
 
     @Override
@@ -140,6 +146,7 @@ public class Public extends SchemaImpl {
             Oauth.OAUTH,
             OauthStates.OAUTH_STATES,
             Tags.TAGS,
+            Twitchnotifications.TWITCHNOTIFICATIONS,
             Users.USERS,
             Vroles.VROLES);
     }

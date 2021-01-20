@@ -72,6 +72,11 @@ public class LicenseTypes extends TableImpl<LicenseTypesRecord> {
      */
     public final TableField<LicenseTypesRecord, Integer> PERK_MISC_NOTIFICATIONS_C = createField(DSL.name("perk_misc_notifications_c"), SQLDataType.INTEGER.nullable(false), this, "");
 
+    /**
+     * The column <code>public.license_types.perk_misc_twitchnotifications_c</code>.
+     */
+    public final TableField<LicenseTypesRecord, Integer> PERK_MISC_TWITCHNOTIFICATIONS_C = createField(DSL.name("perk_misc_twitchnotifications_c"), SQLDataType.INTEGER.nullable(false), this, "");
+
     private LicenseTypes(Name alias, Table<LicenseTypesRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -147,11 +152,11 @@ public class LicenseTypes extends TableImpl<LicenseTypesRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, String, String, Integer, Integer, Integer, Integer> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Integer, String, String, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }
