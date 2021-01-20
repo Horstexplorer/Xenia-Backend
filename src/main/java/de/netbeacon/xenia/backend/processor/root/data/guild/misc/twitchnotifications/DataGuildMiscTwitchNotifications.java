@@ -208,8 +208,8 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
             JSONObject initData = new JSONObject(ctx.body());
             // insert
             Result<TwitchnotificationsRecord> twitchnotificationsRecords = sqlContext
-                    .insertInto(Tables.TWITCHNOTIFICATIONS, Tables.TWITCHNOTIFICATIONS.GUILD_ID, Tables.TWITCHNOTIFICATIONS.CHANNEL_ID, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_TWITCH_CHANNEL_ID, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_TWITCH_CHANNEL_NAME, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_CUSTOM_MESSAGE)
-                    .values(guildId, initData.getLong("channelId"), initData.getLong("twitchChannelId"), initData.getString("twitchNotificationId"), initData.getString("notificationMessage"))
+                    .insertInto(Tables.TWITCHNOTIFICATIONS, Tables.TWITCHNOTIFICATIONS.GUILD_ID, Tables.TWITCHNOTIFICATIONS.CHANNEL_ID, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_TWITCH_CHANNEL_NAME, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_CUSTOM_MESSAGE)
+                    .values(guildId, initData.getLong("channelId"), initData.getString("twitchNotificationId"), initData.getString("notificationMessage"))
                     .returning()
                     .fetch();
             if(twitchnotificationsRecords.isEmpty()){
