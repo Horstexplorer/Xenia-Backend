@@ -66,7 +66,7 @@ public class Twitchnotifications extends TableImpl<TwitchnotificationsRecord> {
     /**
      * The column <code>public.twitchnotifications.twitchnotification_twitch_channel_id</code>.
      */
-    public final TableField<TwitchnotificationsRecord, Long> TWITCHNOTIFICATION_TWITCH_CHANNEL_ID = createField(DSL.name("twitchnotification_twitch_channel_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<TwitchnotificationsRecord, Long> TWITCHNOTIFICATION_TWITCH_CHANNEL_ID = createField(DSL.name("twitchnotification_twitch_channel_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.twitchnotifications.twitchnotification_custom_message</code>.
