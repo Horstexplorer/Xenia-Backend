@@ -4,6 +4,7 @@
 package de.netbeacon.xenia.jooq.tables;
 
 
+import de.netbeacon.xenia.jooq.Keys;
 import de.netbeacon.xenia.jooq.Public;
 import de.netbeacon.xenia.jooq.tables.records.TwitchnotificationsRecord;
 import org.jooq.*;
@@ -12,6 +13,8 @@ import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -106,6 +109,25 @@ public class Twitchnotifications extends TableImpl<TwitchnotificationsRecord> {
     @Override
     public Identity<TwitchnotificationsRecord, Integer> getIdentity() {
         return (Identity<TwitchnotificationsRecord, Integer>) super.getIdentity();
+    }
+
+    @Override
+    public UniqueKey<TwitchnotificationsRecord> getPrimaryKey() {
+        return Keys.TWITCHNOTIFICATIONS_TWITCHNOTIFICATION_ID;
+    }
+
+    @Override
+    public List<UniqueKey<TwitchnotificationsRecord>> getKeys() {
+        return Arrays.<UniqueKey<TwitchnotificationsRecord>>asList(Keys.TWITCHNOTIFICATIONS_TWITCHNOTIFICATION_ID);
+    }
+
+    @Override
+    public List<ForeignKey<TwitchnotificationsRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<TwitchnotificationsRecord, ?>>asList(Keys.TWITCHNOTIFICATIONS__TWITCHNOTIFICATIONS_TWITCHNOTIFICATION_DISCORD_CHANNEL_ID_FKEY);
+    }
+
+    public Channels channels() {
+        return new Channels(this, Keys.TWITCHNOTIFICATIONS__TWITCHNOTIFICATIONS_TWITCHNOTIFICATION_DISCORD_CHANNEL_ID_FKEY);
     }
 
     @Override
