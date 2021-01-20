@@ -59,9 +59,9 @@ public class Tables {
     public static final Messages MESSAGES = Messages.MESSAGES;
 
     /**
-     * The table <code>public.notification</code>.
+     * The table <code>public.notifications</code>.
      */
-    public static final Notification NOTIFICATION = Notification.NOTIFICATION;
+    public static final Notifications NOTIFICATIONS = Notifications.NOTIFICATIONS;
 
     /**
      * The table <code>public.oauth</code>.
@@ -77,6 +77,11 @@ public class Tables {
      * The table <code>public.tags</code>.
      */
     public static final Tags TAGS = Tags.TAGS;
+
+    /**
+     * The table <code>public.twitchnotifications</code>.
+     */
+    public static final Twitchnotifications TWITCHNOTIFICATIONS = Twitchnotifications.TWITCHNOTIFICATIONS;
 
     /**
      * The table <code>public.users</code>.

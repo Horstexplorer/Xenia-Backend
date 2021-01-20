@@ -26,12 +26,8 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPoolSettings;
 import de.netbeacon.xenia.backend.client.ClientManager;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
-import de.netbeacon.xenia.backend.core.backgroundtasks.BackgroundServiceScheduler;
-import de.netbeacon.xenia.backend.core.backgroundtasks.LicenseCheck;
-import de.netbeacon.xenia.backend.core.backgroundtasks.OAuthStateCleanup;
-import de.netbeacon.xenia.backend.core.backgroundtasks.RatelimiterCleaner;
+import de.netbeacon.xenia.backend.core.backgroundtasks.*;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.Root;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.ws.SecondaryWebsocketProcessor;
@@ -39,9 +35,11 @@ import de.netbeacon.xenia.backend.processor.ws.processor.WSProcessorCore;
 import de.netbeacon.xenia.backend.processor.ws.processor.imp.HeartbeatProcessor;
 import de.netbeacon.xenia.backend.processor.ws.processor.imp.IdentifyProcessor;
 import de.netbeacon.xenia.backend.processor.ws.processor.imp.StatisticsProcessor;
+import de.netbeacon.xenia.backend.processor.ws.processor.imp.TwitchNotificationAccelerator;
 import de.netbeacon.xenia.backend.security.SecurityManager;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
 import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
+import de.netbeacon.xenia.backend.utils.twitch.TwitchWrap;
 import io.javalin.Javalin;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
@@ -106,16 +104,19 @@ public class Core {
             SecuritySettings websocketSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.INTERNAL);
             // add to shutdown hook
             shutdownHook.addShutdownAble(securityManager);
+            // prepare twitch wrap
+            TwitchWrap twitchWrap = new TwitchWrap(config.getString("twitch_user_id"), config.getString("twitch_user_secret"));
             // prepare websocket connection handler
-            WebsocketProcessor primaryWebsocketProcessor = new PrimaryWebsocketProcessor();
+            PrimaryWebsocketProcessor primaryWebsocketProcessor = new PrimaryWebsocketProcessor();
             shutdownHook.addShutdownAble(primaryWebsocketProcessor);
             WSProcessorCore wsProcessorCore = new WSProcessorCore()
                     .registerProcessors(
                             new HeartbeatProcessor(),
                             new IdentifyProcessor(),
-                            new StatisticsProcessor()
+                            new StatisticsProcessor(),
+                            new TwitchNotificationAccelerator(connectionPool, primaryWebsocketProcessor, twitchWrap)
                     );
-            WebsocketProcessor secondaryWebsocketProcessor = new SecondaryWebsocketProcessor(wsProcessorCore);
+            SecondaryWebsocketProcessor secondaryWebsocketProcessor = new SecondaryWebsocketProcessor(wsProcessorCore);
             shutdownHook.addShutdownAble(secondaryWebsocketProcessor);
             // prepare processor
             RequestProcessor processor = new Root(clientManager, connectionPool, primaryWebsocketProcessor);
@@ -127,6 +128,7 @@ public class Core {
             backgroundServiceScheduler.schedule(new LicenseCheck(connectionPool, primaryWebsocketProcessor), 30000, true);
             backgroundServiceScheduler.schedule(new RatelimiterCleaner(securityManager), 120000, true);
             backgroundServiceScheduler.schedule(new OAuthStateCleanup(connectionPool, primaryWebsocketProcessor), 120000, true);
+            backgroundServiceScheduler.schedule(new TwitchNotificationProcessor(connectionPool, primaryWebsocketProcessor, secondaryWebsocketProcessor, twitchWrap), 300000, true);
             // prepare javalin
             Javalin javalin = Javalin
                     .create(cnf -> {
@@ -369,6 +371,30 @@ public class Core {
                                             get(ctx -> {
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("misc").next("notifications").preProcessor(client, ctx).get(client, ctx); // get full notification data
+                                            });
+                                        });
+                                        path("twitchnotifications", ()->{
+                                            path(":notificationId", ()->{
+                                                get(ctx -> {
+                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                    processor.next("data").next("guild").next("misc").next("twitchnotifications").preProcessor(client, ctx).get(client, ctx); // get notification data
+                                                });
+                                                put(ctx -> {
+                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                    processor.next("data").next("guild").next("misc").next("twitchnotifications").preProcessor(client, ctx).put(client, ctx); // edit notification
+                                                });
+                                                post(ctx -> {
+                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                    processor.next("data").next("guild").next("misc").next("twitchnotifications").preProcessor(client, ctx).post(client, ctx); // create notification
+                                                });
+                                                delete(ctx -> {
+                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                    processor.next("data").next("guild").next("misc").next("twitchnotifications").preProcessor(client, ctx).delete(client, ctx); // delete notification
+                                                });
+                                            });
+                                            get(ctx -> {
+                                                Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                processor.next("data").next("guild").next("misc").next("twitchnotifications").preProcessor(client, ctx).get(client, ctx); // get full notification data
                                             });
                                         });
                                     });

@@ -22,7 +22,7 @@ public class RatelimiterCleaner extends BackgroundServiceScheduler.Task{
 
     private final SecurityManager securityManager;
     public RatelimiterCleaner(SecurityManager securityManager) {
-        super(null, null);
+        super(null, null, null);
         this.securityManager = securityManager;
     }
 

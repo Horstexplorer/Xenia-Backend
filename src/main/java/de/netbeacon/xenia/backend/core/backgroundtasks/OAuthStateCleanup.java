@@ -17,7 +17,7 @@
 package de.netbeacon.xenia.backend.core.backgroundtasks;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import io.javalin.http.BadRequestResponse;
 import org.slf4j.Logger;
@@ -29,8 +29,8 @@ public class OAuthStateCleanup extends BackgroundServiceScheduler.Task{
 
     private final Logger logger = LoggerFactory.getLogger(OAuthStateCleanup.class);
 
-    public OAuthStateCleanup(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super(sqlConnectionPool, websocketProcessor);
+    public OAuthStateCleanup(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor) {
+        super(sqlConnectionPool, primaryWebsocketProcessor, null);
     }
 
     @Override

@@ -120,7 +120,12 @@ public class DataGuildChannel extends RequestProcessor {
                             .put("channelMode", channelsRecord.getChannelMode())
                             .put("channelType", channelsRecord.getChannelType())
                             .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
-                            .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId()));
+                            .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId())
+                            .put("meta", new JSONObject()
+                                    .put("name", channelsRecord.getMetaChannelname())
+                                    .put("topic", channelsRecord.getMetaChanneltopic())
+                            )
+                    );
                 }
             }else{
                 long channelId = Long.parseLong(ctx.pathParam("channelId"));
@@ -137,7 +142,11 @@ public class DataGuildChannel extends RequestProcessor {
                         .put("channelMode", channelsRecord.getChannelMode())
                         .put("channelType", channelsRecord.getChannelType())
                         .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
-                        .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId());
+                        .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId())
+                        .put("meta", new JSONObject()
+                                .put("name", channelsRecord.getMetaChannelname())
+                                .put("topic", channelsRecord.getMetaChanneltopic())
+                        );
             }
             // respond
             ctx.status(200);
@@ -176,6 +185,9 @@ public class DataGuildChannel extends RequestProcessor {
             channelsRecord.setChannelMode(newData.getString("channelMode"));
             channelsRecord.setChannelType(newData.getString("channelType"));
             channelsRecord.setTmpLoggingActive(newData.getBoolean("tmpLoggingActive"));
+            JSONObject meta = newData.getJSONObject("meta");
+            channelsRecord.setMetaChannelname(meta.getString("name"));
+            channelsRecord.setMetaChanneltopic(meta.getString("topic"));
             // update with db
             sqlContext.executeUpdate(channelsRecord);
             // json
@@ -187,7 +199,11 @@ public class DataGuildChannel extends RequestProcessor {
                     .put("channelMode", channelsRecord.getChannelMode())
                     .put("channelType", channelsRecord.getChannelType())
                     .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
-                    .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId());
+                    .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId())
+                    .put("meta", new JSONObject()
+                            .put("name", channelsRecord.getMetaChannelname())
+                            .put("topic", channelsRecord.getMetaChanneltopic())
+                    );
             // result
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
@@ -230,7 +246,11 @@ public class DataGuildChannel extends RequestProcessor {
                     .put("channelMode", channelsRecord.getChannelMode())
                     .put("channelType", channelsRecord.getChannelType())
                     .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
-                    .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId());
+                    .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId())
+                    .put("meta", new JSONObject()
+                            .put("name", channelsRecord.getMetaChannelname())
+                            .put("topic", channelsRecord.getMetaChanneltopic())
+                    );
             // result
             ctx.status(202);
             ctx.header("Content-Type", "application/json");

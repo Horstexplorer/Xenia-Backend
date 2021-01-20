@@ -78,6 +78,16 @@ public class Channels extends TableImpl<ChannelsRecord> {
      */
     public final TableField<ChannelsRecord, Long> TMP_LOGGING_CHANNEL_ID = createField(DSL.name("tmp_logging_channel_id"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("'-1'::bigint", SQLDataType.BIGINT)), this, "");
 
+    /**
+     * The column <code>public.channels.meta_channelname</code>.
+     */
+    public final TableField<ChannelsRecord, String> META_CHANNELNAME = createField(DSL.name("meta_channelname"), SQLDataType.CLOB.nullable(false).defaultValue(DSL.field("'Unknown channel'::text", SQLDataType.CLOB)), this, "");
+
+    /**
+     * The column <code>public.channels.meta_channeltopic</code>.
+     */
+    public final TableField<ChannelsRecord, String> META_CHANNELTOPIC = createField(DSL.name("meta_channeltopic"), SQLDataType.VARCHAR(1024).nullable(false).defaultValue(DSL.field("'Unknown topic'::character varying", SQLDataType.VARCHAR)), this, "");
+
     private Channels(Name alias, Table<ChannelsRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -162,11 +172,11 @@ public class Channels extends TableImpl<ChannelsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Long, Long, LocalDateTime, Boolean, String, String, Boolean, Long> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row10<Long, Long, LocalDateTime, Boolean, String, String, Boolean, Long, String, String> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }

@@ -1,5 +1,5 @@
 /*
- *     Copyright 2020 Horstexplorer @ https://www.netbeacon.de
+ *     Copyright 2021 Horstexplorer @ https://www.netbeacon.de
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.netbeacon.xenia.backend.processor.root.data.guild.misc.notification;
+package de.netbeacon.xenia.backend.processor.root.data.guild.misc.twitchnotifications;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
@@ -23,7 +23,7 @@ import de.netbeacon.xenia.backend.client.objects.imp.DiscordClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
-import de.netbeacon.xenia.jooq.tables.records.NotificationsRecord;
+import de.netbeacon.xenia.jooq.tables.records.TwitchnotificationsRecord;
 import io.javalin.http.*;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -32,20 +32,19 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Instant;
 import java.time.ZoneOffset;
 
 import static org.jooq.impl.DSL.bitAnd;
 
-public class DataGuildMiscNotification extends RequestProcessor {
+public class DataGuildMiscTwitchNotifications extends RequestProcessor {
 
-    private final Logger logger = LoggerFactory.getLogger(DataGuildMiscNotification.class);
+    private final Logger logger = LoggerFactory.getLogger(DataGuildMiscTwitchNotifications.class);
 
-    public DataGuildMiscNotification(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("notifications", sqlConnectionPool, websocketProcessor);
+    public DataGuildMiscTwitchNotifications(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("twitchnotifications", sqlConnectionPool, websocketProcessor);
     }
 
-    private static final long DISCORD_USER_PERM_FILTER = 33; // interact, notif_ov
+    private static final long DISCORD_USER_PERM_FILTER = 513; // interact, twitch_manage
 
     @Override
     public RequestProcessor preProcessor(Client client, Context context) {
@@ -105,47 +104,49 @@ public class DataGuildMiscNotification extends RequestProcessor {
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             JSONObject jsonObject = new JSONObject();
             if(!ctx.pathParamMap().containsKey("notificationId")){
-                Result<NotificationsRecord> notificationRecords = sqlContext.selectFrom(Tables.NOTIFICATIONS).where(Tables.NOTIFICATIONS.GUILD_ID.eq(guildId)).fetch();
                 JSONArray jsonArray = new JSONArray();
-                jsonObject.put("notifications", jsonArray);
-                for(NotificationsRecord notificationRecord : notificationRecords){
+                jsonObject.put("twitchNotifications", jsonArray);
+                Result<TwitchnotificationsRecord> twitchRecords = sqlContext.selectFrom(Tables.TWITCHNOTIFICATIONS).where(Tables.TWITCHNOTIFICATIONS.GUILD_ID.eq(guildId)).fetch();
+                for(TwitchnotificationsRecord twitchRecord : twitchRecords){
                     jsonArray.put(new JSONObject()
-                            .put("notificationId", notificationRecord.getNotificationId())
-                            .put("creationTimestamp", notificationRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
-                            .put("guildId", notificationRecord.getGuildId())
-                            .put("channelId", notificationRecord.getChannelId())
-                            .put("userId", notificationRecord.getUserId())
-                            .put("notificationTarget", notificationRecord.getNotificationTarget().toInstant(ZoneOffset.UTC).toEpochMilli())
-                            .put("notificationMessage", notificationRecord.getNotificationMessage())
+                            .put("twitchNotificationId", twitchRecord.getTwitchnotificationId())
+                            .put("creationTimestamp", twitchRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
+                            .put("guildId", twitchRecord.getGuildId())
+                            .put("channelId", twitchRecord.getChannelId())
+                            .put("twitchChannelId", twitchRecord.getTwitchnotificationTwitchChannelId())
+                            .put("twitchChannelName", twitchRecord.getTwitchnotificationTwitchChannelName())
+                            .put("notificationMessage", twitchRecord.getTwitchnotificationCustomMessage())
                     );
                 }
             }else{
                 long notificationId = Long.parseLong(ctx.pathParam("notificationId"));
-                Result<NotificationsRecord> notificationRecords = sqlContext.selectFrom(Tables.NOTIFICATIONS).where(Tables.NOTIFICATIONS.GUILD_ID.eq(guildId).and(Tables.NOTIFICATIONS.NOTIFICATION_ID.eq(notificationId))).fetch();
-                if(notificationRecords.isEmpty()){
+                Result<TwitchnotificationsRecord> twitchnotificationsRecords = sqlContext.selectFrom(Tables.TWITCHNOTIFICATIONS.where(Tables.TWITCHNOTIFICATIONS.GUILD_ID.eq(guildId).and(Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_ID.eq(notificationId)))).fetch();
+                if(twitchnotificationsRecords.isEmpty()){
                     throw new NotFoundResponse();
                 }
-                NotificationsRecord notificationRecord = notificationRecords.get(0);
+                TwitchnotificationsRecord twitchnotificationsRecord = twitchnotificationsRecords.get(0);
                 jsonObject
-                        .put("notificationId", notificationRecord.getNotificationId())
-                        .put("creationTimestamp", notificationRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
-                        .put("guildId", notificationRecord.getGuildId())
-                        .put("channelId", notificationRecord.getChannelId())
-                        .put("userId", notificationRecord.getUserId())
-                        .put("notificationTarget", notificationRecord.getNotificationTarget().toInstant(ZoneOffset.UTC).toEpochMilli())
-                        .put("notificationMessage", notificationRecord.getNotificationMessage());
+                        .put("twitchNotificationId", twitchnotificationsRecord.getTwitchnotificationId())
+                        .put("creationTimestamp", twitchnotificationsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
+                        .put("guildId", twitchnotificationsRecord.getGuildId())
+                        .put("channelId", twitchnotificationsRecord.getChannelId())
+                        .put("twitchChannelId", twitchnotificationsRecord.getTwitchnotificationTwitchChannelId())
+                        .put("twitchChannelName", twitchnotificationsRecord.getTwitchnotificationTwitchChannelName())
+                        .put("notificationMessage", twitchnotificationsRecord.getTwitchnotificationCustomMessage());
             }
             // respond
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildMiscTwitchNotification#GET ", e);
+            }
             throw e;
         }catch (NullPointerException e){
-            // dont log
             throw new BadRequestResponse();
         }catch (Exception e){
-            logger.warn("An Error Occurred Processing DataGuildMiscNotification#GET ", e);
+            logger.warn("An Error Occurred Processing DataGuildMiscTwitchNotification#GET ", e);
             throw new BadRequestResponse();
         }
     }
@@ -156,42 +157,43 @@ public class DataGuildMiscNotification extends RequestProcessor {
             var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long notificationId = Long.parseLong(ctx.pathParam("notificationId"));
-            Result<NotificationsRecord> notificationRecords = sqlContext.selectFrom(Tables.NOTIFICATIONS).where(Tables.NOTIFICATIONS.GUILD_ID.eq(guildId).and(Tables.NOTIFICATIONS.NOTIFICATION_ID.eq(notificationId))).fetch();
-            if(notificationRecords.isEmpty()){
+            // get data
+            JSONObject newData = new JSONObject(ctx.body());
+            Result<TwitchnotificationsRecord> twitchnotificationsRecords = sqlContext.selectFrom(Tables.TWITCHNOTIFICATIONS.where(Tables.TWITCHNOTIFICATIONS.GUILD_ID.eq(guildId).and(Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_ID.eq(notificationId)))).fetch();
+            if(twitchnotificationsRecords.isEmpty()){
                 throw new NotFoundResponse();
             }
-            NotificationsRecord notificationRecord = notificationRecords.get(0);
-            // get new data
-            JSONObject newData = new JSONObject(ctx.body());
+            TwitchnotificationsRecord twitchnotificationsRecord = twitchnotificationsRecords.get(0);
             // update values
-            notificationRecord.setNotificationTarget(Instant.ofEpochMilli(newData.getLong("notificationTarget")).atOffset(ZoneOffset.UTC).toLocalDateTime());
-            notificationRecord.setNotificationMessage(newData.getString("notificationMessage"));
+            twitchnotificationsRecord.setTwitchnotificationCustomMessage(newData.getString("notificationMessage"));
             // update db
-            sqlContext.executeUpdate(notificationRecord);
-
+            sqlContext.executeUpdate(twitchnotificationsRecord);
+            // return values
             JSONObject jsonObject = new JSONObject()
-                    .put("notificationId", notificationRecord.getNotificationId())
-                    .put("creationTimestamp", notificationRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
-                    .put("guildId", notificationRecord.getGuildId())
-                    .put("channelId", notificationRecord.getChannelId())
-                    .put("userId", notificationRecord.getUserId())
-                    .put("notificationTarget", notificationRecord.getNotificationTarget().toInstant(ZoneOffset.UTC).toEpochMilli())
-                    .put("notificationMessage", notificationRecord.getNotificationMessage());
+                    .put("twitchNotificationId", twitchnotificationsRecord.getTwitchnotificationId())
+                    .put("creationTimestamp", twitchnotificationsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
+                    .put("guildId", twitchnotificationsRecord.getGuildId())
+                    .put("channelId", twitchnotificationsRecord.getChannelId())
+                    .put("twitchChannelId", twitchnotificationsRecord.getTwitchnotificationTwitchChannelId())
+                    .put("twitchChannelName", twitchnotificationsRecord.getTwitchnotificationTwitchChannelName())
+                    .put("notificationMessage", twitchnotificationsRecord.getTwitchnotificationCustomMessage());
             // respond
             ctx.status(200);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
             WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
-            wsMessage.get().put("type", "GUILD_MISC_NOTIFICATION").put("action", "UPDATE").put("guildId", guildId).put("notificationId", notificationRecord.getNotificationId());
+            wsMessage.get().put("type", "GUILD_MISC_TWITCHNOTIFICATION").put("action", "UPDATE").put("guildId", guildId).put("twitchNotificationId", twitchnotificationsRecord.getTwitchnotificationId());
             getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildMiscTwitchNotification#POST ", e);
+            }
             throw e;
         }catch (NullPointerException e){
-            // dont log
             throw new BadRequestResponse();
         }catch (Exception e){
-            logger.warn("An Error Occurred Processing DataGuildMiscNotification#PUT ", e);
+            logger.warn("An Error Occurred Processing DataGuildMiscTwitchNotification#POST ", e);
             throw new BadRequestResponse();
         }
     }
@@ -201,37 +203,44 @@ public class DataGuildMiscNotification extends RequestProcessor {
         try(var con = getSqlConnectionPool().getConnection()){
             var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
-            // get new data
-            JSONObject newData = new JSONObject(ctx.body());
-            // create new object
-            Result<NotificationsRecord> notificationRecords = sqlContext.insertInto(Tables.NOTIFICATIONS, Tables.NOTIFICATIONS.GUILD_ID, Tables.NOTIFICATIONS.CHANNEL_ID, Tables.NOTIFICATIONS.USER_ID, Tables.NOTIFICATIONS.NOTIFICATION_TARGET, Tables.NOTIFICATIONS.NOTIFICATION_MESSAGE).values(guildId, newData.getLong("channelId"), newData.getLong("userId"), Instant.ofEpochMilli(newData.getLong("notificationTarget")).atOffset(ZoneOffset.UTC).toLocalDateTime(), newData.getString("notificationMessage")).returning().fetch();
-            if(notificationRecords.isEmpty()){
-                throw new InternalServerErrorResponse();
+            //long notificationId = Long.parseLong(ctx.pathParam("notificationId")); set by the backend
+            // get data
+            JSONObject initData = new JSONObject(ctx.body());
+            // insert
+            Result<TwitchnotificationsRecord> twitchnotificationsRecords = sqlContext
+                    .insertInto(Tables.TWITCHNOTIFICATIONS, Tables.TWITCHNOTIFICATIONS.GUILD_ID, Tables.TWITCHNOTIFICATIONS.CHANNEL_ID, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_TWITCH_CHANNEL_ID, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_TWITCH_CHANNEL_NAME, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_CUSTOM_MESSAGE)
+                    .values(guildId, initData.getLong("channelId"), initData.getLong("twitchChannelId"), initData.getString("twitchNotificationId"), initData.getString("notificationMessage"))
+                    .returning()
+                    .fetch();
+            if(twitchnotificationsRecords.isEmpty()){
+                throw new NotFoundResponse();
             }
-            NotificationsRecord notificationRecord = notificationRecords.get(0);
+            TwitchnotificationsRecord twitchnotificationsRecord = twitchnotificationsRecords.get(0);
             JSONObject jsonObject = new JSONObject()
-                    .put("notificationId", notificationRecord.getNotificationId())
-                    .put("creationTimestamp", notificationRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
-                    .put("guildId", notificationRecord.getGuildId())
-                    .put("channelId", notificationRecord.getChannelId())
-                    .put("userId", notificationRecord.getUserId())
-                    .put("notificationTarget", notificationRecord.getNotificationTarget().toInstant(ZoneOffset.UTC).toEpochMilli())
-                    .put("notificationMessage", notificationRecord.getNotificationMessage());
+                    .put("twitchNotificationId", twitchnotificationsRecord.getTwitchnotificationId())
+                    .put("creationTimestamp", twitchnotificationsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
+                    .put("guildId", twitchnotificationsRecord.getGuildId())
+                    .put("channelId", twitchnotificationsRecord.getChannelId())
+                    .put("twitchChannelId", twitchnotificationsRecord.getTwitchnotificationTwitchChannelId())
+                    .put("twitchChannelName", twitchnotificationsRecord.getTwitchnotificationTwitchChannelName())
+                    .put("notificationMessage", twitchnotificationsRecord.getTwitchnotificationCustomMessage());
             // respond
-            ctx.status(202);
+            ctx.status(200);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
             WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
-            wsMessage.get().put("type", "GUILD_MISC_NOTIFICATION").put("action", "CREATE").put("guildId", guildId).put("notificationId", notificationRecord.getNotificationId());
+            wsMessage.get().put("type", "GUILD_MISC_TWITCHNOTIFICATION").put("action", "CREATE").put("guildId", guildId).put("twitchNotificationId", twitchnotificationsRecord.getTwitchnotificationId());
             getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
+            if(e instanceof InternalServerErrorResponse){
+                logger.error("An Error Occurred Processing DataGuildMiscTwitchNotification#POST ", e);
+            }
             throw e;
         }catch (NullPointerException e){
-            // dont log
             throw new BadRequestResponse();
         }catch (Exception e){
-            logger.warn("An Error Occurred Processing DataGuildMiscNotification#POST ", e);
+            logger.warn("An Error Occurred Processing DataGuildMiscTwitchNotification#POST ", e);
             throw new BadRequestResponse();
         }
     }
@@ -242,14 +251,14 @@ public class DataGuildMiscNotification extends RequestProcessor {
             var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long notificationId = Long.parseLong(ctx.pathParam("notificationId"));
-            int mod = sqlContext.deleteFrom(Tables.NOTIFICATIONS).where(Tables.NOTIFICATIONS.GUILD_ID.eq(guildId).and(Tables.NOTIFICATIONS.NOTIFICATION_ID.eq(notificationId))).execute();
+            int mod = sqlContext.deleteFrom(Tables.TWITCHNOTIFICATIONS).where(Tables.TWITCHNOTIFICATIONS.GUILD_ID.eq(guildId).and(Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_ID.eq(notificationId))).execute();
             if(mod == 0){
                 throw new NotFoundResponse();
             }
             ctx.status(200);
             // send ws notification
             WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
-            wsMessage.get().put("type", "GUILD_MISC_NOTIFICATION").put("action", "DELETE").put("guildId", guildId).put("notificationId", notificationId);
+            wsMessage.get().put("type", "GUILD_MISC_TWITCHNOTIFICATION").put("action", "DELETE").put("guildId", guildId).put("twitchNotificationId", notificationId);
             getWebsocketProcessor().broadcast(wsMessage, client);
         }catch (HttpResponseException e){
             throw e;
@@ -257,7 +266,7 @@ public class DataGuildMiscNotification extends RequestProcessor {
             // dont log
             throw new BadRequestResponse();
         }catch (Exception e){
-            logger.warn("An Error Occurred Processing DataGuildMiscNotification#DELETE ", e);
+            logger.warn("An Error Occurred Processing DataGuildMiscTwitchNotification#DELETE ", e);
             throw new BadRequestResponse();
         }
     }
