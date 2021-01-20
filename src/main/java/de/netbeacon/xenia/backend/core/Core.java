@@ -371,6 +371,30 @@ public class Core {
                                                 processor.next("data").next("guild").next("misc").next("notifications").preProcessor(client, ctx).get(client, ctx); // get full notification data
                                             });
                                         });
+                                        path("twitchnotifications", ()->{
+                                            path(":notificationId", ()->{
+                                                get(ctx -> {
+                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                    processor.next("data").next("guild").next("misc").next("twitchnotifications").preProcessor(client, ctx).get(client, ctx); // get notification data
+                                                });
+                                                put(ctx -> {
+                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                    processor.next("data").next("guild").next("misc").next("twitchnotifications").preProcessor(client, ctx).put(client, ctx); // edit notification
+                                                });
+                                                post(ctx -> {
+                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                    processor.next("data").next("guild").next("misc").next("twitchnotifications").preProcessor(client, ctx).post(client, ctx); // create notification
+                                                });
+                                                delete(ctx -> {
+                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                    processor.next("data").next("guild").next("misc").next("twitchnotifications").preProcessor(client, ctx).delete(client, ctx); // delete notification
+                                                });
+                                            });
+                                            get(ctx -> {
+                                                Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                processor.next("data").next("guild").next("misc").next("twitchnotifications").preProcessor(client, ctx).get(client, ctx); // get full notification data
+                                            });
+                                        });
                                     });
                                     // guild
                                     get(ctx -> {
