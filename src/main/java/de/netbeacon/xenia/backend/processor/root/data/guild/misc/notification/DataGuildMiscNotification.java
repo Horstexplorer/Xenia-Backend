@@ -23,7 +23,7 @@ import de.netbeacon.xenia.backend.client.objects.imp.DiscordClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
-import de.netbeacon.xenia.jooq.tables.records.NotificationRecord;
+import de.netbeacon.xenia.jooq.tables.records.NotificationsRecord;
 import io.javalin.http.*;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -105,10 +105,10 @@ public class DataGuildMiscNotification extends RequestProcessor {
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             JSONObject jsonObject = new JSONObject();
             if(!ctx.pathParamMap().containsKey("notificationId")){
-                Result<NotificationRecord> notificationRecords = sqlContext.selectFrom(Tables.NOTIFICATION).where(Tables.NOTIFICATION.GUILD_ID.eq(guildId)).fetch();
+                Result<NotificationsRecord> notificationRecords = sqlContext.selectFrom(Tables.NOTIFICATIONS).where(Tables.NOTIFICATIONS.GUILD_ID.eq(guildId)).fetch();
                 JSONArray jsonArray = new JSONArray();
                 jsonObject.put("notifications", jsonArray);
-                for(NotificationRecord notificationRecord : notificationRecords){
+                for(NotificationsRecord notificationRecord : notificationRecords){
                     jsonArray.put(new JSONObject()
                             .put("notificationId", notificationRecord.getNotificationId())
                             .put("creationTimestamp", notificationRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
@@ -121,11 +121,11 @@ public class DataGuildMiscNotification extends RequestProcessor {
                 }
             }else{
                 long notificationId = Long.parseLong(ctx.pathParam("notificationId"));
-                Result<NotificationRecord> notificationRecords = sqlContext.selectFrom(Tables.NOTIFICATION).where(Tables.NOTIFICATION.GUILD_ID.eq(guildId).and(Tables.NOTIFICATION.NOTIFICATION_ID.eq(notificationId))).fetch();
+                Result<NotificationsRecord> notificationRecords = sqlContext.selectFrom(Tables.NOTIFICATIONS).where(Tables.NOTIFICATIONS.GUILD_ID.eq(guildId).and(Tables.NOTIFICATIONS.NOTIFICATION_ID.eq(notificationId))).fetch();
                 if(notificationRecords.isEmpty()){
                     throw new NotFoundResponse();
                 }
-                NotificationRecord notificationRecord = notificationRecords.get(0);
+                NotificationsRecord notificationRecord = notificationRecords.get(0);
                 jsonObject
                         .put("notificationId", notificationRecord.getNotificationId())
                         .put("creationTimestamp", notificationRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
@@ -156,11 +156,11 @@ public class DataGuildMiscNotification extends RequestProcessor {
             var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long notificationId = Long.parseLong(ctx.pathParam("notificationId"));
-            Result<NotificationRecord> notificationRecords = sqlContext.selectFrom(Tables.NOTIFICATION).where(Tables.NOTIFICATION.GUILD_ID.eq(guildId).and(Tables.NOTIFICATION.NOTIFICATION_ID.eq(notificationId))).fetch();
+            Result<NotificationsRecord> notificationRecords = sqlContext.selectFrom(Tables.NOTIFICATIONS).where(Tables.NOTIFICATIONS.GUILD_ID.eq(guildId).and(Tables.NOTIFICATIONS.NOTIFICATION_ID.eq(notificationId))).fetch();
             if(notificationRecords.isEmpty()){
                 throw new NotFoundResponse();
             }
-            NotificationRecord notificationRecord = notificationRecords.get(0);
+            NotificationsRecord notificationRecord = notificationRecords.get(0);
             // get new data
             JSONObject newData = new JSONObject(ctx.body());
             // update values
@@ -204,11 +204,11 @@ public class DataGuildMiscNotification extends RequestProcessor {
             // get new data
             JSONObject newData = new JSONObject(ctx.body());
             // create new object
-            Result<NotificationRecord> notificationRecords = sqlContext.insertInto(Tables.NOTIFICATION, Tables.NOTIFICATION.GUILD_ID, Tables.NOTIFICATION.CHANNEL_ID, Tables.NOTIFICATION.USER_ID, Tables.NOTIFICATION.NOTIFICATION_TARGET, Tables.NOTIFICATION.NOTIFICATION_MESSAGE).values(guildId, newData.getLong("channelId"), newData.getLong("userId"), Instant.ofEpochMilli(newData.getLong("notificationTarget")).atOffset(ZoneOffset.UTC).toLocalDateTime(), newData.getString("notificationMessage")).returning().fetch();
+            Result<NotificationsRecord> notificationRecords = sqlContext.insertInto(Tables.NOTIFICATIONS, Tables.NOTIFICATIONS.GUILD_ID, Tables.NOTIFICATIONS.CHANNEL_ID, Tables.NOTIFICATIONS.USER_ID, Tables.NOTIFICATIONS.NOTIFICATION_TARGET, Tables.NOTIFICATIONS.NOTIFICATION_MESSAGE).values(guildId, newData.getLong("channelId"), newData.getLong("userId"), Instant.ofEpochMilli(newData.getLong("notificationTarget")).atOffset(ZoneOffset.UTC).toLocalDateTime(), newData.getString("notificationMessage")).returning().fetch();
             if(notificationRecords.isEmpty()){
                 throw new InternalServerErrorResponse();
             }
-            NotificationRecord notificationRecord = notificationRecords.get(0);
+            NotificationsRecord notificationRecord = notificationRecords.get(0);
             JSONObject jsonObject = new JSONObject()
                     .put("notificationId", notificationRecord.getNotificationId())
                     .put("creationTimestamp", notificationRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
@@ -242,7 +242,7 @@ public class DataGuildMiscNotification extends RequestProcessor {
             var sqlContext = getSqlConnectionPool().getContext(con);
             long guildId = Long.parseLong(ctx.pathParam("guildId"));
             long notificationId = Long.parseLong(ctx.pathParam("notificationId"));
-            int mod = sqlContext.deleteFrom(Tables.NOTIFICATION).where(Tables.NOTIFICATION.GUILD_ID.eq(guildId).and(Tables.NOTIFICATION.NOTIFICATION_ID.eq(notificationId))).execute();
+            int mod = sqlContext.deleteFrom(Tables.NOTIFICATIONS).where(Tables.NOTIFICATIONS.GUILD_ID.eq(guildId).and(Tables.NOTIFICATIONS.NOTIFICATION_ID.eq(notificationId))).execute();
             if(mod == 0){
                 throw new NotFoundResponse();
             }

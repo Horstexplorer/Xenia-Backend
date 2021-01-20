@@ -73,9 +73,9 @@ public class Public extends SchemaImpl {
     public final Messages MESSAGES = Messages.MESSAGES;
 
     /**
-     * The table <code>public.notification</code>.
+     * The table <code>public.notifications</code>.
      */
-    public final Notification NOTIFICATION = Notification.NOTIFICATION;
+    public final Notifications NOTIFICATIONS = Notifications.NOTIFICATIONS;
 
     /**
      * The table <code>public.oauth</code>.
@@ -142,7 +142,7 @@ public class Public extends SchemaImpl {
             Members.MEMBERS,
             MembersRoles.MEMBERS_ROLES,
             Messages.MESSAGES,
-            Notification.NOTIFICATION,
+            Notifications.NOTIFICATIONS,
             Oauth.OAUTH,
             OauthStates.OAUTH_STATES,
             Tags.TAGS,
