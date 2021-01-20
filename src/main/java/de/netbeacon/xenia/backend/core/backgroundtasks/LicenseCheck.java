@@ -18,6 +18,7 @@ package de.netbeacon.xenia.backend.core.backgroundtasks;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.GuildsRecord;
 import io.javalin.http.BadRequestResponse;
@@ -36,8 +37,8 @@ public class LicenseCheck extends BackgroundServiceScheduler.Task{
 
     private final Logger logger = LoggerFactory.getLogger(LicenseCheck.class);
 
-    public LicenseCheck(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super(sqlConnectionPool, websocketProcessor);
+    public LicenseCheck(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor) {
+        super(sqlConnectionPool, primaryWebsocketProcessor, null);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class LicenseCheck extends BackgroundServiceScheduler.Task{
                 // send ws notification
                 WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
                 wsMessage.get().put("type", "GUILD_LICENSE").put("action", "UPDATE").put("guildId", guildsRecord.getGuildId());
-                getWebsocketProcessor().broadcast(wsMessage);
+                getPrimaryWebsocketProcessor().broadcast(wsMessage);
             }
         }catch (Exception e){
             logger.warn("An Error Occurred Running LicenseCheck ", e);

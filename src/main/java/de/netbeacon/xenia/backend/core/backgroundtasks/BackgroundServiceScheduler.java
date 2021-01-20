@@ -18,7 +18,8 @@ package de.netbeacon.xenia.backend.core.backgroundtasks;
 
 import de.netbeacon.utils.shutdownhook.IShutdown;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.SecondaryWebsocketProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,20 +47,26 @@ public class BackgroundServiceScheduler implements IShutdown {
     public abstract static class Task {
 
         private final SQLConnectionPool sqlConnectionPool;
-        private final WebsocketProcessor websocketProcessor;
+        private final PrimaryWebsocketProcessor primaryWebsocketProcessor;
+        private final SecondaryWebsocketProcessor secondaryWebsocketProcessor;
         private final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-        public Task(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor){
+        public Task(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor, SecondaryWebsocketProcessor secondaryWebsocketProcessor){
             this.sqlConnectionPool = sqlConnectionPool;
-            this.websocketProcessor = websocketProcessor;
+            this.primaryWebsocketProcessor = primaryWebsocketProcessor;
+            this.secondaryWebsocketProcessor = secondaryWebsocketProcessor;
         }
 
         protected SQLConnectionPool getSqlConnectionPool(){
             return sqlConnectionPool;
         }
 
-        protected WebsocketProcessor getWebsocketProcessor(){
-            return websocketProcessor;
+        protected PrimaryWebsocketProcessor getPrimaryWebsocketProcessor(){
+            return primaryWebsocketProcessor;
+        }
+
+        protected SecondaryWebsocketProcessor getSecondaryWebsocketProcessor(){
+            return secondaryWebsocketProcessor;
         }
 
         void execute(){
