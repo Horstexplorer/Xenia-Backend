@@ -63,6 +63,9 @@ public class TwitchNotificationAccelerator extends WSProcessor {
                 // fetch name
                 try{
                     TwitchWrapQOL.UserResponse userResponse = TwitchWrapQOL.getUserOf(twitchnotificationsRecord.getTwitchnotificationTwitchChannelName(), twitchWrap);
+                    if(userResponse.getUserID() == -1){
+                        throw new RuntimeException("Something Went Wrong");
+                    }
                     // update and send notification
                     twitchnotificationsRecord.setTwitchnotificationTwitchChannelId(userResponse.getUserID());
                     sqlContext.executeUpdate(twitchnotificationsRecord);
