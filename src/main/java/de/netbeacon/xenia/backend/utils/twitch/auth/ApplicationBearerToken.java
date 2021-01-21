@@ -88,7 +88,7 @@ public class ApplicationBearerToken {
                         if(responseBody == null){
                             throw new Exception("Unexpected Response: No Data Received");
                         }
-                        JSONObject jsonObject = new JSONObject(new String(responseBody.bytes()));
+                        JSONObject jsonObject = new JSONObject(responseBody.string());
                         bearerToken = jsonObject.getString("access_token");
                         recieved = true;
                         break;
@@ -171,14 +171,15 @@ public class ApplicationBearerToken {
                         .url("https://id.twitch.tv/oauth2/validate")
                         .addHeader("Authorization", "OAuth "+bearerToken)
                         .build();
-                Response response = twitchWrap.getOKHTTPClient().newCall(request).execute();
-                int code = response.code();
-                if(code == 200){ // token is valid
-                    return true;
-                }else if(code == 401){ // token is invalid
-                    return false;
-                }else{ // we dont know
-                    throw new Exception("Unexpected Response Code: "+code);
+                try(Response response = twitchWrap.getOKHTTPClient().newCall(request).execute()){
+                    int code = response.code();
+                    if(code == 200){ // token is valid
+                        return true;
+                    }else if(code == 401){ // token is invalid
+                        return false;
+                    }else{ // we dont know
+                        throw new Exception("Unexpected Response Code: "+code);
+                    }
                 }
             }catch (Exception e){
                 logger.warn("An Error Occurred While Trying To Verify The Bearer Token: "+e.getMessage());

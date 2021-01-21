@@ -225,7 +225,7 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
                     .put("twitchChannelName", twitchnotificationsRecord.getTwitchnotificationTwitchChannelName() != null ? twitchnotificationsRecord.getTwitchnotificationTwitchChannelName() : JSONObject.NULL)
                     .put("notificationMessage", twitchnotificationsRecord.getTwitchnotificationCustomMessage());
             // respond
-            ctx.status(200);
+            ctx.status(202);
             ctx.header("Content-Type", "application/json");
             ctx.result(jsonObject.toString());
             // send ws notification
