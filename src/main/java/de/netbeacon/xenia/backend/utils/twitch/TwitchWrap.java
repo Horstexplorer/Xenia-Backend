@@ -104,11 +104,12 @@ public class TwitchWrap implements IShutdown{
             try(Response response = okHttpClient.newCall(request).execute()){
                 int code = response.code();
                 if(code == 200){
-                    ResponseBody responseBody = response.body();
-                    if(responseBody == null){
-                        throw new Exception("Unexpected Response: No Data Received");
+                    try(ResponseBody responseBody = response.body()){
+                        if(responseBody == null){
+                            throw new Exception("Unexpected Response: No Data Received");
+                        }
+                        return new JSONObject(new String(responseBody.bytes()));
                     }
-                    return new JSONObject(new String(responseBody.bytes()));
                 }else{
                     throw new Exception("Unexpected Response Code: "+code);
                 }

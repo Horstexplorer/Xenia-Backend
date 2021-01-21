@@ -79,22 +79,20 @@ public class ApplicationBearerToken {
                         .post(RequestBody.create(new byte[]{}, null))
                         .url("https://id.twitch.tv/oauth2/token?client_id="+clientID+"&client_secret="+clientSecret+"&grant_type=client_credentials")
                         .build();
-                Response response = twitchWrap.getOKHTTPClient().newCall(request).execute();
-                int code = response.code();
-                if(code != 200){
-                    response.close();
-                    throw new Exception("Unexpected Response Code: "+code);
+                try(Response response = twitchWrap.getOKHTTPClient().newCall(request).execute()){
+                    int code = response.code();
+                    if(code != 200){
+                        throw new Exception("Unexpected Response Code: "+code);
+                    }
+                    ResponseBody responseBody = response.body();
+                    if(responseBody == null){
+                        throw new Exception("Unexpected Response: No Data Received");
+                    }
+                    JSONObject jsonObject = new JSONObject(new String(responseBody.bytes()));
+                    bearerToken = jsonObject.getString("access_token");
+                    recieved = true;
+                    break;
                 }
-                ResponseBody responseBody = response.body();
-                if(responseBody == null){
-                    response.close();
-                    throw new Exception("Unexpected Response: No Data Received");
-                }
-                JSONObject jsonObject = new JSONObject(new String(responseBody.bytes()));
-                response.close();
-                bearerToken = jsonObject.getString("access_token");
-                recieved = true;
-                break;
             }catch (Exception e){
                 logger.warn("An Error Occurred While Trying To Revoke The Bearer Token");
             }
@@ -119,14 +117,14 @@ public class ApplicationBearerToken {
                         .post(RequestBody.create(new byte[]{}, null))
                         .url("https://id.twitch.tv/oauth2/revoke?client_id="+clientID+"&token="+bearerToken)
                         .build();
-                Response response = twitchWrap.getOKHTTPClient().newCall(request).execute();
-                int code = response.code();
-                response.close();
-                if(code != 200 && code != 400){ // we dont care if it failed to invalidate (then it is invalid already)
-                    throw new Exception("Unexpected Response Code: "+code);
+                try(Response response = twitchWrap.getOKHTTPClient().newCall(request).execute()){
+                    int code = response.code();
+                    if(code != 200 && code != 400){ // we dont care if it failed to invalidate (then it is invalid already)
+                        throw new Exception("Unexpected Response Code: "+code);
+                    }
+                    revoked = true;
+                    break;
                 }
-                revoked = true;
-                break;
             }catch (Exception e){
                 logger.warn("An Error Occurred While Trying To Revoke The Bearer Token");
             }
