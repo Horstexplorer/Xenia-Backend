@@ -88,7 +88,7 @@ public class ApplicationBearerToken {
                         if(responseBody == null){
                             throw new Exception("Unexpected Response: No Data Received");
                         }
-                        JSONObject jsonObject = new JSONObject(new String(responseBody.bytes()));
+                        JSONObject jsonObject = new JSONObject(responseBody.string());
                         bearerToken = jsonObject.getString("access_token");
                         recieved = true;
                         break;
