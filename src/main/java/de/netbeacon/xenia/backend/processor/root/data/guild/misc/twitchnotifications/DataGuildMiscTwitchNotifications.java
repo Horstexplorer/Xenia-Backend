@@ -113,7 +113,7 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
                             .put("creationTimestamp", twitchRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                             .put("guildId", twitchRecord.getGuildId())
                             .put("channelId", twitchRecord.getChannelId())
-                            .put("twitchChannelId", twitchRecord.getTwitchnotificationTwitchChannelId() != null ? twitchRecord.getTwitchnotificationTwitchChannelName() : JSONObject.NULL)
+                            .put("twitchChannelId", twitchRecord.getTwitchnotificationTwitchChannelId() != null ?twitchRecord.getTwitchnotificationTwitchChannelId() : JSONObject.NULL)
                             .put("twitchChannelName", twitchRecord.getTwitchnotificationTwitchChannelName())
                             .put("notificationMessage", twitchRecord.getTwitchnotificationCustomMessage())
                     );
@@ -130,7 +130,7 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
                         .put("creationTimestamp", twitchnotificationsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                         .put("guildId", twitchnotificationsRecord.getGuildId())
                         .put("channelId", twitchnotificationsRecord.getChannelId())
-                        .put("twitchChannelId", twitchnotificationsRecord.getTwitchnotificationTwitchChannelId() != null ? twitchnotificationsRecord.getTwitchnotificationTwitchChannelName() : JSONObject.NULL)
+                        .put("twitchChannelId", twitchnotificationsRecord.getTwitchnotificationTwitchChannelId() != null ? twitchnotificationsRecord.getTwitchnotificationTwitchChannelId() : JSONObject.NULL)
                         .put("twitchChannelName", twitchnotificationsRecord.getTwitchnotificationTwitchChannelName())
                         .put("notificationMessage", twitchnotificationsRecord.getTwitchnotificationCustomMessage());
             }
@@ -174,7 +174,7 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
                     .put("creationTimestamp", twitchnotificationsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("guildId", twitchnotificationsRecord.getGuildId())
                     .put("channelId", twitchnotificationsRecord.getChannelId())
-                    .put("twitchChannelId", twitchnotificationsRecord.getTwitchnotificationTwitchChannelId() != null ? twitchnotificationsRecord.getTwitchnotificationTwitchChannelName() : JSONObject.NULL)
+                    .put("twitchChannelId", twitchnotificationsRecord.getTwitchnotificationTwitchChannelId() != null ? twitchnotificationsRecord.getTwitchnotificationTwitchChannelId() : JSONObject.NULL)
                     .put("twitchChannelName", twitchnotificationsRecord.getTwitchnotificationTwitchChannelName())
                     .put("notificationMessage", twitchnotificationsRecord.getTwitchnotificationCustomMessage());
             // respond
@@ -221,7 +221,7 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
                     .put("creationTimestamp", twitchnotificationsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("guildId", twitchnotificationsRecord.getGuildId())
                     .put("channelId", twitchnotificationsRecord.getChannelId())
-                    .put("twitchChannelId", twitchnotificationsRecord.getTwitchnotificationTwitchChannelId() != null ? twitchnotificationsRecord.getTwitchnotificationTwitchChannelName() : JSONObject.NULL)
+                    .put("twitchChannelId", twitchnotificationsRecord.getTwitchnotificationTwitchChannelId() != null ? twitchnotificationsRecord.getTwitchnotificationTwitchChannelId() : JSONObject.NULL)
                     .put("twitchChannelName", twitchnotificationsRecord.getTwitchnotificationTwitchChannelName())
                     .put("notificationMessage", twitchnotificationsRecord.getTwitchnotificationCustomMessage());
             // respond
