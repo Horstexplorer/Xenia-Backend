@@ -38,7 +38,7 @@ public class TwitchWrapQOL {
             if(data.isEmpty()){
                 throw new RuntimeException("Data Is Empty");
             }
-            return new UserResponse(response);
+            return new UserResponse(data.getJSONObject(0));
         }finally {
             lock.unlock();
         }
