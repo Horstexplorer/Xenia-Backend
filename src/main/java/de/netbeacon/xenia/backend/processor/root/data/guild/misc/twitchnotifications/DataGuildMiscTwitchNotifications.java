@@ -114,7 +114,7 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
                             .put("guildId", twitchRecord.getGuildId())
                             .put("channelId", twitchRecord.getChannelId())
                             .put("twitchChannelId", twitchRecord.getTwitchnotificationTwitchChannelId())
-                            .put("twitchChannelName", twitchRecord.getTwitchnotificationTwitchChannelName())
+                            .put("twitchChannelName", twitchRecord.getTwitchnotificationTwitchChannelName() != null ? twitchRecord.getTwitchnotificationTwitchChannelName() : JSONObject.NULL)
                             .put("notificationMessage", twitchRecord.getTwitchnotificationCustomMessage())
                     );
                 }
@@ -131,7 +131,7 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
                         .put("guildId", twitchnotificationsRecord.getGuildId())
                         .put("channelId", twitchnotificationsRecord.getChannelId())
                         .put("twitchChannelId", twitchnotificationsRecord.getTwitchnotificationTwitchChannelId())
-                        .put("twitchChannelName", twitchnotificationsRecord.getTwitchnotificationTwitchChannelName())
+                        .put("twitchChannelName", twitchnotificationsRecord.getTwitchnotificationTwitchChannelName() != null ? twitchnotificationsRecord.getTwitchnotificationTwitchChannelName() : JSONObject.NULL)
                         .put("notificationMessage", twitchnotificationsRecord.getTwitchnotificationCustomMessage());
             }
             // respond
@@ -175,7 +175,7 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
                     .put("guildId", twitchnotificationsRecord.getGuildId())
                     .put("channelId", twitchnotificationsRecord.getChannelId())
                     .put("twitchChannelId", twitchnotificationsRecord.getTwitchnotificationTwitchChannelId())
-                    .put("twitchChannelName", twitchnotificationsRecord.getTwitchnotificationTwitchChannelName())
+                    .put("twitchChannelName", twitchnotificationsRecord.getTwitchnotificationTwitchChannelName() != null ? twitchnotificationsRecord.getTwitchnotificationTwitchChannelName() : JSONObject.NULL)
                     .put("notificationMessage", twitchnotificationsRecord.getTwitchnotificationCustomMessage());
             // respond
             ctx.status(200);
@@ -208,8 +208,8 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
             JSONObject initData = new JSONObject(ctx.body());
             // insert
             Result<TwitchnotificationsRecord> twitchnotificationsRecords = sqlContext
-                    .insertInto(Tables.TWITCHNOTIFICATIONS, Tables.TWITCHNOTIFICATIONS.GUILD_ID, Tables.TWITCHNOTIFICATIONS.CHANNEL_ID, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_TWITCH_CHANNEL_ID, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_TWITCH_CHANNEL_NAME, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_CUSTOM_MESSAGE)
-                    .values(guildId, initData.getLong("channelId"), initData.getLong("twitchChannelId"), initData.getString("twitchNotificationId"), initData.getString("notificationMessage"))
+                    .insertInto(Tables.TWITCHNOTIFICATIONS, Tables.TWITCHNOTIFICATIONS.GUILD_ID, Tables.TWITCHNOTIFICATIONS.CHANNEL_ID, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_TWITCH_CHANNEL_NAME, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_CUSTOM_MESSAGE)
+                    .values(guildId, initData.getLong("channelId"), initData.getString("twitchNotificationId"), initData.getString("notificationMessage"))
                     .returning()
                     .fetch();
             if(twitchnotificationsRecords.isEmpty()){
@@ -222,7 +222,7 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
                     .put("guildId", twitchnotificationsRecord.getGuildId())
                     .put("channelId", twitchnotificationsRecord.getChannelId())
                     .put("twitchChannelId", twitchnotificationsRecord.getTwitchnotificationTwitchChannelId())
-                    .put("twitchChannelName", twitchnotificationsRecord.getTwitchnotificationTwitchChannelName())
+                    .put("twitchChannelName", twitchnotificationsRecord.getTwitchnotificationTwitchChannelName() != null ? twitchnotificationsRecord.getTwitchnotificationTwitchChannelName() : JSONObject.NULL)
                     .put("notificationMessage", twitchnotificationsRecord.getTwitchnotificationCustomMessage());
             // respond
             ctx.status(200);

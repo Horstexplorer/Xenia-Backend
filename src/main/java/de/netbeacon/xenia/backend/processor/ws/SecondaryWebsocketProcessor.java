@@ -153,6 +153,10 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor {
                 .put("payload", payload);
     }
 
+    public WSProcessorCore getWsProcessorCore() {
+        return wsProcessorCore;
+    }
+
     @Override
     public void onShutdown() throws Exception {
         super.onShutdown();
