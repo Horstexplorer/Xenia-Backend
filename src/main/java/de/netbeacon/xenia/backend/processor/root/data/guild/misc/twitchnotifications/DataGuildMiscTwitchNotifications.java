@@ -209,7 +209,7 @@ public class DataGuildMiscTwitchNotifications extends RequestProcessor {
             // insert
             Result<TwitchnotificationsRecord> twitchnotificationsRecords = sqlContext
                     .insertInto(Tables.TWITCHNOTIFICATIONS, Tables.TWITCHNOTIFICATIONS.GUILD_ID, Tables.TWITCHNOTIFICATIONS.CHANNEL_ID, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_TWITCH_CHANNEL_NAME, Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_CUSTOM_MESSAGE)
-                    .values(guildId, initData.getLong("channelId"), initData.getString("twitchNotificationId"), initData.getString("notificationMessage"))
+                    .values(guildId, initData.getLong("channelId"), initData.getString("twitchChannelName"), initData.getString("notificationMessage"))
                     .returning()
                     .fetch();
             if(twitchnotificationsRecords.isEmpty()){

@@ -84,14 +84,15 @@ public class ApplicationBearerToken {
                     if(code != 200){
                         throw new Exception("Unexpected Response Code: "+code);
                     }
-                    ResponseBody responseBody = response.body();
-                    if(responseBody == null){
-                        throw new Exception("Unexpected Response: No Data Received");
+                    try(ResponseBody responseBody = response.body()){
+                        if(responseBody == null){
+                            throw new Exception("Unexpected Response: No Data Received");
+                        }
+                        JSONObject jsonObject = new JSONObject(new String(responseBody.bytes()));
+                        bearerToken = jsonObject.getString("access_token");
+                        recieved = true;
+                        break;
                     }
-                    JSONObject jsonObject = new JSONObject(new String(responseBody.bytes()));
-                    bearerToken = jsonObject.getString("access_token");
-                    recieved = true;
-                    break;
                 }
             }catch (Exception e){
                 logger.warn("An Error Occurred While Trying To Revoke The Bearer Token");
