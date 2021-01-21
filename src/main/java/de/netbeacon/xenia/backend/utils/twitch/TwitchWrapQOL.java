@@ -140,7 +140,7 @@ public class TwitchWrapQOL {
             channelName = response.has("user_name") ? response.getString("user_name") : "-- No User --";
             isOnline = response.has("type") && response.getString("type").equalsIgnoreCase("live");
             streamTitle = response.has("title") ? response.getString("title") : "-- No Title --";
-            game = response.has("game") ? response.getString("game") : "-- No Game --";
+            game = response.has("game_name") ? response.getString("game_name") : "-- No Game --";
         }
 
         public long getChannelId() {
