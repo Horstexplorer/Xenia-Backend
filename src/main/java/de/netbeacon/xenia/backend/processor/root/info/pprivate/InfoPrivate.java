@@ -58,7 +58,7 @@ public class InfoPrivate extends RequestProcessor {
             int channels = sqlContext.fetchCount(Tables.CHANNELS);
             // get number of messages
             int messages = sqlContext.fetchCount(Tables.MESSAGES);
-            int forbidden = sqlContext.selectCount().from(Tables.CHANNELS).where(Tables.CHANNELS.ACCESS_RESTRICTION.eq(true)).execute();
+            int forbidden = sqlContext.selectCount().from(Tables.CHANNELS).where(Tables.CHANNELS.ACCESS_MODE.bitAnd(1).eq(1).or(Tables.CHANNELS.ACCESS_MODE.bitAnd(2).eq(2))).execute();
             // build json
             JSONObject jsonObject = new JSONObject()
                     .put("version", AppInfo.get("buildVersion")+"_"+ AppInfo.get("buildNumber"))

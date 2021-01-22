@@ -116,9 +116,9 @@ public class DataGuildChannel extends RequestProcessor {
                             .put("guildId", channelsRecord.getGuildId())
                             .put("channelId", channelsRecord.getChannelId())
                             .put("creationTimestamp", channelsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
-                            .put("accessRestriction", channelsRecord.getAccessRestriction())
-                            .put("channelMode", channelsRecord.getChannelMode())
-                            .put("channelType", channelsRecord.getChannelType())
+                            .put("accessMode", channelsRecord.getAccessMode())
+                            .put("channelFlags", channelsRecord.getChannelFlags())
+                            .put("channelSettings", channelsRecord.getChannelSettings())
                             .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
                             .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId())
                             .put("meta", new JSONObject()
@@ -138,9 +138,9 @@ public class DataGuildChannel extends RequestProcessor {
                         .put("guildId", channelsRecord.getGuildId())
                         .put("channelId", channelsRecord.getChannelId())
                         .put("creationTimestamp", channelsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
-                        .put("accessRestriction", channelsRecord.getAccessRestriction())
-                        .put("channelMode", channelsRecord.getChannelMode())
-                        .put("channelType", channelsRecord.getChannelType())
+                        .put("accessMode", channelsRecord.getAccessMode())
+                        .put("channelFlags", channelsRecord.getChannelFlags())
+                        .put("channelSettings", channelsRecord.getChannelSettings())
                         .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
                         .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId())
                         .put("meta", new JSONObject()
@@ -181,9 +181,9 @@ public class DataGuildChannel extends RequestProcessor {
             // get new data
             JSONObject newData = new JSONObject(ctx.body());
             // update data
-            channelsRecord.setAccessRestriction(newData.getBoolean("accessRestriction"));
-            channelsRecord.setChannelMode(newData.getString("channelMode"));
-            channelsRecord.setChannelType(newData.getString("channelType"));
+            channelsRecord.setAccessMode(newData.getInt("accessMode"));
+            channelsRecord.setChannelFlags(newData.getInt("channelFlags"));
+            channelsRecord.setChannelSettings(newData.getInt("channelSettings"));
             channelsRecord.setTmpLoggingActive(newData.getBoolean("tmpLoggingActive"));
             JSONObject meta = newData.getJSONObject("meta");
             channelsRecord.setMetaChannelname(meta.getString("name"));
@@ -195,9 +195,9 @@ public class DataGuildChannel extends RequestProcessor {
                     .put("guildId", channelsRecord.getGuildId())
                     .put("channelId", channelsRecord.getChannelId())
                     .put("creationTimestamp", channelsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
-                    .put("accessRestriction", channelsRecord.getAccessRestriction())
-                    .put("channelMode", channelsRecord.getChannelMode())
-                    .put("channelType", channelsRecord.getChannelType())
+                    .put("accessMode", channelsRecord.getAccessMode())
+                    .put("channelFlags", channelsRecord.getChannelFlags())
+                    .put("channelSettings", channelsRecord.getChannelSettings())
                     .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
                     .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId())
                     .put("meta", new JSONObject()
@@ -242,9 +242,9 @@ public class DataGuildChannel extends RequestProcessor {
                     .put("guildId", channelsRecord.getGuildId())
                     .put("channelId", channelsRecord.getChannelId())
                     .put("creationTimestamp", channelsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
-                    .put("accessRestriction", channelsRecord.getAccessRestriction())
-                    .put("channelMode", channelsRecord.getChannelMode())
-                    .put("channelType", channelsRecord.getChannelType())
+                    .put("accessMode", channelsRecord.getAccessMode())
+                    .put("channelFlags", channelsRecord.getChannelFlags())
+                    .put("channelSettings", channelsRecord.getChannelSettings())
                     .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
                     .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId())
                     .put("meta", new JSONObject()

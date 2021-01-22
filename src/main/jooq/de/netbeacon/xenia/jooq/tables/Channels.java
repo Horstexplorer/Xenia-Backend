@@ -54,21 +54,6 @@ public class Channels extends TableImpl<ChannelsRecord> {
     public final TableField<ChannelsRecord, LocalDateTime> CREATION_TIMESTAMP = createField(DSL.name("creation_timestamp"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
-     * The column <code>public.channels.access_restriction</code>.
-     */
-    public final TableField<ChannelsRecord, Boolean> ACCESS_RESTRICTION = createField(DSL.name("access_restriction"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
-
-    /**
-     * The column <code>public.channels.channel_type</code>.
-     */
-    public final TableField<ChannelsRecord, String> CHANNEL_TYPE = createField(DSL.name("channel_type"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("'default'::character varying", SQLDataType.VARCHAR)), this, "");
-
-    /**
-     * The column <code>public.channels.channel_mode</code>.
-     */
-    public final TableField<ChannelsRecord, String> CHANNEL_MODE = createField(DSL.name("channel_mode"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field("'default'::character varying", SQLDataType.VARCHAR)), this, "");
-
-    /**
      * The column <code>public.channels.tmp_logging_active</code>.
      */
     public final TableField<ChannelsRecord, Boolean> TMP_LOGGING_ACTIVE = createField(DSL.name("tmp_logging_active"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
@@ -87,6 +72,21 @@ public class Channels extends TableImpl<ChannelsRecord> {
      * The column <code>public.channels.meta_channeltopic</code>.
      */
     public final TableField<ChannelsRecord, String> META_CHANNELTOPIC = createField(DSL.name("meta_channeltopic"), SQLDataType.VARCHAR(1024).nullable(false).defaultValue(DSL.field("'Unknown topic'::character varying", SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>public.channels.access_mode</code>.
+     */
+    public final TableField<ChannelsRecord, Integer> ACCESS_MODE = createField(DSL.name("access_mode"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.channels.channel_flags</code>.
+     */
+    public final TableField<ChannelsRecord, Integer> CHANNEL_FLAGS = createField(DSL.name("channel_flags"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.channels.channel_settings</code>.
+     */
+    public final TableField<ChannelsRecord, Integer> CHANNEL_SETTINGS = createField(DSL.name("channel_settings"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     private Channels(Name alias, Table<ChannelsRecord> aliased) {
         this(alias, aliased, null);
@@ -176,7 +176,7 @@ public class Channels extends TableImpl<ChannelsRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, Long, LocalDateTime, Boolean, String, String, Boolean, Long, String, String> fieldsRow() {
+    public Row10<Long, Long, LocalDateTime, Boolean, Long, String, String, Integer, Integer, Integer> fieldsRow() {
         return (Row10) super.fieldsRow();
     }
 }
