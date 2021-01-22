@@ -113,7 +113,7 @@ public class Members extends TableImpl<MembersRecord> {
 
     @Override
     public List<UniqueKey<MembersRecord>> getKeys() {
-        return Arrays.<UniqueKey<MembersRecord>>asList(Keys.MEMBERS_GUILD_ID_USER_ID, Keys.MEMBERS_GUILD_ID_USER_ID_UNIQUE);
+        return Arrays.<UniqueKey<MembersRecord>>asList(Keys.MEMBERS_GUILD_ID_USER_ID);
     }
 
     @Override
