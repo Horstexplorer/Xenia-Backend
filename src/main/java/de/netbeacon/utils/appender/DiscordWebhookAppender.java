@@ -66,7 +66,7 @@ public class DiscordWebhookAppender extends AppenderSkeleton {
                 LogContainer logContainer = eventCache.remove();
                 WebhookEmbedBuilder webhookEmbedBuilder = new WebhookEmbedBuilder()
                         .setColor(logContainer.getLevel() == Level.WARN ? Color.ORANGE.getRGB() : logContainer.getLevel() == Level.ERROR ? Color.RED.getRGB() : Color.BLACK.getRGB())
-                        .setTitle(new WebhookEmbed.EmbedTitle(logContainer.getLogger().substring(logContainer.getLogger().lastIndexOf(".")), null))
+                        .setTitle(new WebhookEmbed.EmbedTitle(logContainer.getLogger().substring(logContainer.getLogger().lastIndexOf(".")+1), null))
                         .addField(new WebhookEmbed.EmbedField(false, "Message", logContainer.getMessage()))
                         .addField(new WebhookEmbed.EmbedField(true, "Level", logContainer.getLevel().toString()))
                         .addField(new WebhookEmbed.EmbedField(true, "Timestamp", String.valueOf(logContainer.getTimestamp())))
