@@ -66,11 +66,12 @@ public class DiscordWebhookAppender extends AppenderSkeleton {
                 LogContainer logContainer = eventCache.remove();
                 WebhookEmbedBuilder webhookEmbedBuilder = new WebhookEmbedBuilder()
                         .setColor(logContainer.getLevel() == Level.WARN ? Color.ORANGE.getRGB() : logContainer.getLevel() == Level.ERROR ? Color.RED.getRGB() : Color.BLACK.getRGB())
-                        .setTitle(new WebhookEmbed.EmbedTitle(logContainer.getLogger(), null))
-                        .addField(new WebhookEmbed.EmbedField(true, "Message", logContainer.getMessage()))
+                        .setTitle(new WebhookEmbed.EmbedTitle(logContainer.getLogger().substring(logContainer.getLogger().lastIndexOf(".")), null))
+                        .addField(new WebhookEmbed.EmbedField(false, "Message", logContainer.getMessage()))
                         .addField(new WebhookEmbed.EmbedField(true, "Level", logContainer.getLevel().toString()))
                         .addField(new WebhookEmbed.EmbedField(true, "Timestamp", String.valueOf(logContainer.getTimestamp())))
-                        .setFooter(new WebhookEmbed.EmbedFooter("Additional errors cached: "+eventCache.size(), null));
+                        .addField(new WebhookEmbed.EmbedField(true, "Logger", logContainer.getLogger()))
+                        .setFooter(new WebhookEmbed.EmbedFooter("Additional logs cached: "+eventCache.size(), null));
                 if(logContainer.getStacktrace() != null){
                     var st = logContainer.getStacktrace();
                     webhookEmbedBuilder.setDescription(st.substring(0, Math.min(st.length(), 1950))+".....");
