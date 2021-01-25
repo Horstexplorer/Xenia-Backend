@@ -36,7 +36,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ApplicationBearerToken {
 
-    private static final int maxRetries = 10;
+    private static final int MAX_RETRIES = 10;
 
     private final String clientID;
     private final String clientSecret;
@@ -72,7 +72,7 @@ public class ApplicationBearerToken {
      */
     public void request(){
         boolean recieved = false;
-        for(int i = 0; i < maxRetries; i++){
+        for(int i = 0; i < MAX_RETRIES; i++){
             try{
                 logger.debug("Requesting New Bearer Token");
                 Request request = new Request.Builder()
@@ -97,7 +97,7 @@ public class ApplicationBearerToken {
             }catch (Exception e){
                 logger.warn("An Error Occurred While Trying To Revoke The Bearer Token");
             }
-            try{TimeUnit.MILLISECONDS.sleep(new Random().nextInt(70)+50); }catch (Exception ignore){}
+            try{TimeUnit.MILLISECONDS.sleep(new Random().nextInt(300)+100); }catch (Exception ignore){}
         }
         if(!recieved){
             logger.error("Failed To Request Bearer Token");
@@ -111,7 +111,7 @@ public class ApplicationBearerToken {
      */
     public void revoke(){
         boolean revoked = false;
-        for(int i = 0; i < maxRetries; i++){
+        for(int i = 0; i < MAX_RETRIES; i++){
             try{
                 logger.debug("Revoking Bearer Token");
                 Request request = new Request.Builder()
@@ -129,7 +129,7 @@ public class ApplicationBearerToken {
             }catch (Exception e){
                 logger.warn("An Error Occurred While Trying To Revoke The Bearer Token");
             }
-            try{TimeUnit.MILLISECONDS.sleep(new Random().nextInt(70)+50); }catch (Exception ignore){}
+            try{TimeUnit.MILLISECONDS.sleep(new Random().nextInt(300)+100); }catch (Exception ignore){}
         }
         if(!revoked){
             logger.error("Failed To Revoke Bearer Token");
@@ -160,10 +160,10 @@ public class ApplicationBearerToken {
 
     /**
      * Can be used to check if the bearer is valid
-     * @return
+     * @return token is valid
      */
     public boolean isValid(){
-        for(int i = 0; i < maxRetries; i++){
+        for(int i = 0; i < MAX_RETRIES; i++){
             try{
                 logger.debug("Verifying Bearer Token");
                 Request request = new Request.Builder()
@@ -185,8 +185,7 @@ public class ApplicationBearerToken {
                 logger.warn("An Error Occurred While Trying To Verify The Bearer Token: "+e.getMessage());
             }
             // wait some time before next retry
-            try{
-                TimeUnit.MILLISECONDS.sleep(new Random().nextInt(70)+50); }catch (Exception ignore){}
+            try{TimeUnit.MILLISECONDS.sleep(new Random().nextInt(300)+100); }catch (Exception ignore){}
         }
         logger.error("Failed To Verify Bearer Token");
         throw new AuthException("Failed To Verify Bearer Token");
