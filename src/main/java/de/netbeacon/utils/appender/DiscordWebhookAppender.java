@@ -65,7 +65,7 @@ public class DiscordWebhookAppender extends AppenderSkeleton {
             while(i++ < 10 && !eventCache.isEmpty()){
                 LogContainer logContainer = eventCache.remove();
                 WebhookEmbedBuilder webhookEmbedBuilder = new WebhookEmbedBuilder()
-                        .setColor(logContainer.getLevel() == Level.WARN ? Color.ORANGE.getRGB() : logContainer.getLevel() == Level.ERROR ? Color.RED.getRGB() : Color.BLACK.getRGB())
+                        .setColor(logContainer.getLevel() == Level.INFO ? Color.WHITE.getRGB() : (logContainer.getLevel() == Level.WARN ? Color.ORANGE.getRGB() : logContainer.getLevel() == Level.ERROR ? Color.RED.getRGB() : Color.BLACK.getRGB()))
                         .setTitle(new WebhookEmbed.EmbedTitle(logContainer.getLogger().substring(logContainer.getLogger().lastIndexOf(".")+1), null))
                         .addField(new WebhookEmbed.EmbedField(false, "Message", logContainer.getMessage()))
                         .addField(new WebhookEmbed.EmbedField(true, "Level", logContainer.getLevel().toString()))
@@ -84,7 +84,7 @@ public class DiscordWebhookAppender extends AppenderSkeleton {
 
     @Override
     protected void append(LoggingEvent event) {
-        if(event.getLevel().equals(Level.WARN) || event.getLevel().equals(Level.ERROR) || event.getLevel().equals(Level.FATAL)){
+        if(event.getLevel().equals(Level.INFO) || event.getLevel().equals(Level.WARN) || event.getLevel().equals(Level.ERROR) || event.getLevel().equals(Level.FATAL)){
             eventCache.add(new LogContainer(event));
         }
     }

@@ -76,7 +76,7 @@ public class Channels extends TableImpl<ChannelsRecord> {
     /**
      * The column <code>public.channels.access_mode</code>.
      */
-    public final TableField<ChannelsRecord, Integer> ACCESS_MODE = createField(DSL.name("access_mode"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+    public final TableField<ChannelsRecord, Integer> ACCESS_MODE = createField(DSL.name("access_mode"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("1", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.channels.channel_flags</code>.

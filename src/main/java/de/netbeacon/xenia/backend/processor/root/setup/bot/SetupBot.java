@@ -77,7 +77,8 @@ public class SetupBot extends RequestProcessor {
                     .put("cryptHash", internalBotData.getMessageCryptHash())
                     .put("shards", new JSONObject()
                             .put("total", (!shards.isEmpty()) ? shardsTotal : 0)
-                            .put("use", shards));
+                            .put("use", shards))
+                    .put("clientLocation", internalBotData.getClientLocation());
             // return
             ctx.status(200);
             ctx.header("Content-Type", "application/json");

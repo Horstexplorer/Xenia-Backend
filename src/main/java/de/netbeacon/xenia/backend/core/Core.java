@@ -64,7 +64,7 @@ public class Core {
                 "\\/   \\/\\___|_| |_|_|\\__,_|      \\____/ \\__,_|\\___|_|\\_\\___|_| |_|\\__,_|\n" +
                 "                                                                       ");
         try{
-            logger.warn("! Starting Backend !");
+            logger.info("! Starting Backend !");
             // register shutdown hook
             ShutdownHook shutdownHook = new ShutdownHook();
             // prepare config
@@ -130,6 +130,7 @@ public class Core {
             backgroundServiceScheduler.schedule(new OAuthStateCleanup(connectionPool, primaryWebsocketProcessor), 120000, true);
             backgroundServiceScheduler.schedule(new TwitchNotificationProcessor(connectionPool, primaryWebsocketProcessor, secondaryWebsocketProcessor, twitchWrap), 300000, true);
             backgroundServiceScheduler.schedule(new TwitchNotificationCleanup(connectionPool, primaryWebsocketProcessor), 300000, true);
+            backgroundServiceScheduler.schedule(new MessageCleanup(connectionPool, primaryWebsocketProcessor), 1800000, true);
             // prepare javalin
             Javalin javalin = Javalin
                     .create(cnf -> {
@@ -527,7 +528,7 @@ public class Core {
             // add to shutdown hook
             shutdownHook.addShutdownAble(new JavalinWrap(javalin));
             // ok
-            logger.warn("! Backend Running !");
+            logger.info("! Backend Running !");
         }catch (Exception e){
             logger.error("! An Error Occurred Starting The Backend !", e);
             System.exit(-1);
