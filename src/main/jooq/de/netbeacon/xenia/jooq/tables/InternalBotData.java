@@ -62,6 +62,11 @@ public class InternalBotData extends TableImpl<InternalBotDataRecord> {
      */
     public final TableField<InternalBotDataRecord, String> MESSAGE_CRYPT_HASH = createField(DSL.name("message_crypt_hash"), SQLDataType.CLOB.nullable(false).defaultValue(DSL.field("''::text", SQLDataType.CLOB)), this, "");
 
+    /**
+     * The column <code>public.internal_bot_data.client_location</code>.
+     */
+    public final TableField<InternalBotDataRecord, String> CLIENT_LOCATION = createField(DSL.name("client_location"), SQLDataType.VARCHAR(8).nullable(false).defaultValue(DSL.field("'UNKNOWN'::character varying", SQLDataType.VARCHAR)), this, "");
+
     private InternalBotData(Name alias, Table<InternalBotDataRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -137,11 +142,11 @@ public class InternalBotData extends TableImpl<InternalBotDataRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, String, String, String, String> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, String, String, String, String, String> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }
