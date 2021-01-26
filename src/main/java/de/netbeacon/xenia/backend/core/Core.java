@@ -130,6 +130,7 @@ public class Core {
             backgroundServiceScheduler.schedule(new OAuthStateCleanup(connectionPool, primaryWebsocketProcessor), 120000, true);
             backgroundServiceScheduler.schedule(new TwitchNotificationProcessor(connectionPool, primaryWebsocketProcessor, secondaryWebsocketProcessor, twitchWrap), 300000, true);
             backgroundServiceScheduler.schedule(new TwitchNotificationCleanup(connectionPool, primaryWebsocketProcessor), 300000, true);
+            backgroundServiceScheduler.schedule(new MessageCleanup(connectionPool, primaryWebsocketProcessor), 1800000, true);
             // prepare javalin
             Javalin javalin = Javalin
                     .create(cnf -> {
