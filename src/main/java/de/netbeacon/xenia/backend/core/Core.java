@@ -32,6 +32,7 @@ import de.netbeacon.xenia.backend.processor.root.Root;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.ws.SecondaryWebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.ws.processor.WSProcessorCore;
+import de.netbeacon.xenia.backend.processor.ws.processor.WSRequest;
 import de.netbeacon.xenia.backend.processor.ws.processor.imp.HeartbeatProcessor;
 import de.netbeacon.xenia.backend.processor.ws.processor.imp.IdentifyProcessor;
 import de.netbeacon.xenia.backend.processor.ws.processor.imp.StatisticsProcessor;
@@ -42,6 +43,7 @@ import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
 import de.netbeacon.xenia.backend.utils.twitch.TwitchWrap;
 import io.javalin.Javalin;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -527,6 +529,35 @@ public class Core {
             javalin.start(config.getInt("web_port"));
             // add to shutdown hook
             shutdownHook.addShutdownAble(new JavalinWrap(javalin));
+            // prepare client notify in case the backend shuts down
+            class ShutdownIRQ implements IShutdown {
+                private final long initialDelay = 5*1000;
+                private final long delay = 10*60*1000;
+                private final SecondaryWebsocketProcessor secondaryWebsocketProcessor;
+
+                public ShutdownIRQ(SecondaryWebsocketProcessor secondaryWebsocketProcessor){
+                    this.secondaryWebsocketProcessor = secondaryWebsocketProcessor;
+                }
+
+                @Override
+                public void onShutdown() throws Exception {
+                    WSRequest wsRequest = new WSRequest.Builder()
+                            .mode(WSRequest.Mode.BROADCAST)
+                            .recipient(0)
+                            .action("irq")
+                            .payload(new JSONObject()
+                                    .put("state", "idle")
+                                    .put("stateDescription", "Backend COM Offline")
+                                    .put("initialDelay", initialDelay)
+                                    .put("delay", delay)
+                            )
+                            .exitOn(WSRequest.ExitOn.INSTANT)
+                            .build();
+                    secondaryWebsocketProcessor.getWsProcessorCore().process(wsRequest);
+                    // sleep for the initial delay and a bit more to make sure that the clients have enough time to finish what they are doing
+                    TimeUnit.MILLISECONDS.sleep(initialDelay+(initialDelay/2));
+                }
+            }
             // ok
             logger.info("! Backend Running !");
         }catch (Exception e){
