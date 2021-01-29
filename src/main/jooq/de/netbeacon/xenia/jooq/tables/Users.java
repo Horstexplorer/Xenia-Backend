@@ -56,7 +56,7 @@ public class Users extends TableImpl<UsersRecord> {
     /**
      * The column <code>public.users.preferred_language</code>.
      */
-    public final TableField<UsersRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), SQLDataType.VARCHAR(16).nullable(false).defaultValue(DSL.field("'undefined'::character varying", SQLDataType.VARCHAR)), this, "");
+    public final TableField<UsersRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.field("'en_US'::character varying", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.users.meta_username</code>.
@@ -114,6 +114,15 @@ public class Users extends TableImpl<UsersRecord> {
     @Override
     public List<UniqueKey<UsersRecord>> getKeys() {
         return Arrays.<UniqueKey<UsersRecord>>asList(Keys.USERS_USER_ID);
+    }
+
+    @Override
+    public List<ForeignKey<UsersRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<UsersRecord, ?>>asList(Keys.USERS__USERS_PREFERRED_LANGUAGE_FKEY);
+    }
+
+    public TranslationLanguages translationLanguages() {
+        return new TranslationLanguages(this, Keys.USERS__USERS_PREFERRED_LANGUAGE_FKEY);
     }
 
     @Override
