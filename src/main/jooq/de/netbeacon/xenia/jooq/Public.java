@@ -93,6 +93,11 @@ public class Public extends SchemaImpl {
     public final Tags TAGS = Tags.TAGS;
 
     /**
+     * The table <code>public.translations</code>.
+     */
+    public final Translations TRANSLATIONS = Translations.TRANSLATIONS;
+
+    /**
      * The table <code>public.twitchnotifications</code>.
      */
     public final Twitchnotifications TWITCHNOTIFICATIONS = Twitchnotifications.TWITCHNOTIFICATIONS;
@@ -146,6 +151,7 @@ public class Public extends SchemaImpl {
             Oauth.OAUTH,
             OauthStates.OAUTH_STATES,
             Tags.TAGS,
+            Translations.TRANSLATIONS,
             Twitchnotifications.TWITCHNOTIFICATIONS,
             Users.USERS,
             Vroles.VROLES);
