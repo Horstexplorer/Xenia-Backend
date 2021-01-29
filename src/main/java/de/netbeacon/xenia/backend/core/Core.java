@@ -421,18 +421,34 @@ public class Core {
                                     });
                                 });
                             });
-                            path("frontend", ()->{
-                                path("me", ()->{
-                                    get(ctx -> {
-                                        Client client = securityManager.authorizeConnection(frontendQoLSetting, ctx);
-                                        processor.next("data").next("frontend").next("me").preProcessor(client, ctx).get(client, ctx);
+                            path("client", ()->{
+                                path("discordbot", ()->{
+                                    path("languagepacks", ()->{
+                                        path(":language", ()->{
+                                            get(ctx -> {
+                                                Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                                processor.next("data").next("client").next("discordbot").next("languagepack").preProcessor(client, ctx).get(client, ctx); // list of language keys
+                                            });
+                                        });
+                                        get(ctx -> {
+                                            Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+                                            processor.next("data").next("client").next("discordbot").next("languagepack").preProcessor(client, ctx).get(client, ctx); // list of languages
+                                        });
                                     });
                                 });
-                                path("meta", ()->{
-                                    path("guilds", ()->{
+                                path("frontend", ()->{
+                                    path("me", ()->{
                                         get(ctx -> {
                                             Client client = securityManager.authorizeConnection(frontendQoLSetting, ctx);
-                                            processor.next("data").next("frontend").next("meta_guilds").preProcessor(client, ctx).get(client, ctx);
+                                            processor.next("data").next("client").next("frontend").next("me").preProcessor(client, ctx).get(client, ctx);
+                                        });
+                                    });
+                                    path("meta", ()->{
+                                        path("guilds", ()->{
+                                            get(ctx -> {
+                                                Client client = securityManager.authorizeConnection(frontendQoLSetting, ctx);
+                                                processor.next("data").next("client").next("frontend").next("meta_guilds").preProcessor(client, ctx).get(client, ctx);
+                                            });
                                         });
                                     });
                                 });

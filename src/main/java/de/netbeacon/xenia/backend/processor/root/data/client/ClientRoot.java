@@ -1,5 +1,5 @@
 /*
- *     Copyright 2020 Horstexplorer @ https://www.netbeacon.de
+ *     Copyright 2021 Horstexplorer @ https://www.netbeacon.de
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package de.netbeacon.xenia.backend.processor.root.data.frontend;
+package de.netbeacon.xenia.backend.processor.root.data.client;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.backend.processor.root.data.frontend.me.FrontendMe;
-import de.netbeacon.xenia.backend.processor.root.data.frontend.meta.guilds.FrontendMetaGuilds;
+import de.netbeacon.xenia.backend.processor.root.data.client.discordbot.DiscordBotRoot;
+import de.netbeacon.xenia.backend.processor.root.data.client.frontend.FrontendRoot;
 
-public class FrontendRoot extends RequestProcessor {
-
-    public FrontendRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("frontend", sqlConnectionPool, websocketProcessor,
-                new FrontendMe(sqlConnectionPool, websocketProcessor),
-                new FrontendMetaGuilds(sqlConnectionPool, websocketProcessor)
-        );
+public class ClientRoot extends RequestProcessor {
+    public ClientRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("client", sqlConnectionPool, websocketProcessor,
+                new FrontendRoot(sqlConnectionPool, websocketProcessor),
+                new DiscordBotRoot(sqlConnectionPool, websocketProcessor)
+       );
     }
-
 }

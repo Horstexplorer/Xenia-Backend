@@ -1,5 +1,5 @@
 /*
- *     Copyright 2020 Horstexplorer @ https://www.netbeacon.de
+ *     Copyright 2021 Horstexplorer @ https://www.netbeacon.de
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package de.netbeacon.xenia.backend.processor.root.data;
+package de.netbeacon.xenia.backend.processor.root.data.client.discordbot;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.backend.processor.root.data.client.ClientRoot;
-import de.netbeacon.xenia.backend.processor.root.data.guild.DataGuild;
-import de.netbeacon.xenia.backend.processor.root.data.user.DataUser;
+import de.netbeacon.xenia.backend.processor.root.data.client.discordbot.languagepack.DiscordBotLanguagePack;
 
-public class DataRoot extends RequestProcessor {
-
-    public DataRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("data", sqlConnectionPool, websocketProcessor,
-                new DataGuild(sqlConnectionPool, websocketProcessor),
-                new DataUser(sqlConnectionPool, websocketProcessor),
-                new ClientRoot(sqlConnectionPool, websocketProcessor)
+public class DiscordBotRoot extends RequestProcessor {
+    public DiscordBotRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+        super("discordbot", sqlConnectionPool, websocketProcessor,
+                new DiscordBotLanguagePack(sqlConnectionPool, websocketProcessor)
         );
     }
-
 }
