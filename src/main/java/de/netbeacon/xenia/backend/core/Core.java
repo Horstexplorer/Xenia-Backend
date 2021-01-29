@@ -545,6 +545,7 @@ public class Core {
 
                 @Override
                 public void onShutdown() throws Exception {
+                    logger.info("! Sending Shutdown IRQ !");
                     WSRequest wsRequest = new WSRequest.Builder()
                             .mode(WSRequest.Mode.BROADCAST)
                             .recipient(0)
@@ -557,6 +558,7 @@ public class Core {
                     secondaryWebsocketProcessor.getWsProcessorCore().process(wsRequest);
                     // sleep for the initial delay and a bit more to make sure that the clients have enough time to finish what they are doing
                     TimeUnit.MILLISECONDS.sleep(delay+(delay/2));
+                    logger.info("! Sending Shutdown IRQ Finished !");
                 }
             }
             shutdownHook.addShutdownAble(new ShutdownIRQ(secondaryWebsocketProcessor));
