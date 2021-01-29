@@ -473,6 +473,11 @@ public class Core {
                             });
                         });
                         path("info", ()->{
+                            path("ping", ()->{
+                                // we might receive invalid auth data so we dont even check for this here
+                                head(ctx -> ctx.status(200));
+                                get(ctx -> ctx.status(200));
+                            });
                             path("public", ()->{
                                 get(ctx -> {
                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
@@ -531,8 +536,7 @@ public class Core {
             shutdownHook.addShutdownAble(new JavalinWrap(javalin));
             // prepare client notify in case the backend shuts down
             class ShutdownIRQ implements IShutdown {
-                private final long initialDelay = 5*1000;
-                private final long delay = 10*60*1000;
+                private final long delay = 5*1000;
                 private final SecondaryWebsocketProcessor secondaryWebsocketProcessor;
 
                 public ShutdownIRQ(SecondaryWebsocketProcessor secondaryWebsocketProcessor){
@@ -544,18 +548,15 @@ public class Core {
                     WSRequest wsRequest = new WSRequest.Builder()
                             .mode(WSRequest.Mode.BROADCAST)
                             .recipient(0)
-                            .action("irq")
+                            .action("shutdownirq")
                             .payload(new JSONObject()
-                                    .put("state", "idle")
-                                    .put("stateDescription", "Backend COM Offline")
-                                    .put("initialDelay", initialDelay)
-                                    .put("delay", delay)
+                                    .put("at", System.currentTimeMillis()+delay)
                             )
                             .exitOn(WSRequest.ExitOn.INSTANT)
                             .build();
                     secondaryWebsocketProcessor.getWsProcessorCore().process(wsRequest);
                     // sleep for the initial delay and a bit more to make sure that the clients have enough time to finish what they are doing
-                    TimeUnit.MILLISECONDS.sleep(initialDelay+(initialDelay/2));
+                    TimeUnit.MILLISECONDS.sleep(delay+(delay/2));
                 }
             }
             // ok
