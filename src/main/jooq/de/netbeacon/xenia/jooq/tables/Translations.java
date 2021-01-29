@@ -4,12 +4,16 @@
 package de.netbeacon.xenia.jooq.tables;
 
 
+import de.netbeacon.xenia.jooq.Keys;
 import de.netbeacon.xenia.jooq.Public;
 import de.netbeacon.xenia.jooq.tables.records.TranslationsRecord;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -34,19 +38,19 @@ public class Translations extends TableImpl<TranslationsRecord> {
     }
 
     /**
-     * The column <code>public.translations.translation_id</code>.
+     * The column <code>public.translations.translation_internal_id</code>.
      */
-    public final TableField<TranslationsRecord, Long> TRANSLATION_ID = createField(DSL.name("translation_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<TranslationsRecord, Integer> TRANSLATION_INTERNAL_ID = createField(DSL.name("translation_internal_id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.translations.translation_identifier</code>.
+     * The column <code>public.translations.translation_language_id</code>.
      */
-    public final TableField<TranslationsRecord, String> TRANSLATION_IDENTIFIER = createField(DSL.name("translation_identifier"), SQLDataType.VARCHAR(64).nullable(false), this, "");
+    public final TableField<TranslationsRecord, String> TRANSLATION_LANGUAGE_ID = createField(DSL.name("translation_language_id"), SQLDataType.VARCHAR(64).nullable(false), this, "");
 
     /**
-     * The column <code>public.translations.translation_language</code>.
+     * The column <code>public.translations.translation_key</code>.
      */
-    public final TableField<TranslationsRecord, String> TRANSLATION_LANGUAGE = createField(DSL.name("translation_language"), SQLDataType.VARCHAR(64).nullable(false), this, "");
+    public final TableField<TranslationsRecord, String> TRANSLATION_KEY = createField(DSL.name("translation_key"), SQLDataType.VARCHAR(64).nullable(false), this, "");
 
     /**
      * The column <code>public.translations.translation</code>.
@@ -92,6 +96,30 @@ public class Translations extends TableImpl<TranslationsRecord> {
     }
 
     @Override
+    public Identity<TranslationsRecord, Integer> getIdentity() {
+        return (Identity<TranslationsRecord, Integer>) super.getIdentity();
+    }
+
+    @Override
+    public UniqueKey<TranslationsRecord> getPrimaryKey() {
+        return Keys.TRANSLATIONS_TRANSLATION_INTERNAL_ID;
+    }
+
+    @Override
+    public List<UniqueKey<TranslationsRecord>> getKeys() {
+        return Arrays.<UniqueKey<TranslationsRecord>>asList(Keys.TRANSLATIONS_TRANSLATION_INTERNAL_ID);
+    }
+
+    @Override
+    public List<ForeignKey<TranslationsRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<TranslationsRecord, ?>>asList(Keys.TRANSLATIONS__TRANSLATIONS_TRANSLATION_LANGUAGE_ID_FKEY);
+    }
+
+    public TranslationLanguages translationLanguages() {
+        return new TranslationLanguages(this, Keys.TRANSLATIONS__TRANSLATIONS_TRANSLATION_LANGUAGE_ID_FKEY);
+    }
+
+    @Override
     public Translations as(String alias) {
         return new Translations(DSL.name(alias), this);
     }
@@ -122,7 +150,7 @@ public class Translations extends TableImpl<TranslationsRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, String, String, String> fieldsRow() {
+    public Row4<Integer, String, String, String> fieldsRow() {
         return (Row4) super.fieldsRow();
     }
 }

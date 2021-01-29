@@ -51,7 +51,7 @@ public class Guilds extends TableImpl<GuildsRecord> {
     /**
      * The column <code>public.guilds.preferred_language</code>.
      */
-    public final TableField<GuildsRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), SQLDataType.VARCHAR(16).nullable(false).defaultValue(DSL.field("'undefined'::character varying", SQLDataType.VARCHAR)), this, "");
+    public final TableField<GuildsRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.field("'en_US'::character varying", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.guilds.license_id</code>.
@@ -128,7 +128,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
 
     @Override
     public List<ForeignKey<GuildsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<GuildsRecord, ?>>asList(Keys.GUILDS__GUILDS_LICENSE_ID_FKEY);
+        return Arrays.<ForeignKey<GuildsRecord, ?>>asList(Keys.GUILDS__GUILDS_PREFERRED_LANGUAGE_FKEY, Keys.GUILDS__GUILDS_LICENSE_ID_FKEY);
+    }
+
+    public TranslationLanguages translationLanguages() {
+        return new TranslationLanguages(this, Keys.GUILDS__GUILDS_PREFERRED_LANGUAGE_FKEY);
     }
 
     public Licenses licenses() {

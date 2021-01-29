@@ -79,6 +79,11 @@ public class Tables {
     public static final Tags TAGS = Tags.TAGS;
 
     /**
+     * The table <code>public.translation_languages</code>.
+     */
+    public static final TranslationLanguages TRANSLATION_LANGUAGES = TranslationLanguages.TRANSLATION_LANGUAGES;
+
+    /**
      * The table <code>public.translations</code>.
      */
     public static final Translations TRANSLATIONS = Translations.TRANSLATIONS;
