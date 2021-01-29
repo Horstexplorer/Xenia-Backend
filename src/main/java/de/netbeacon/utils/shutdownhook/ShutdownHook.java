@@ -36,7 +36,7 @@ public class ShutdownHook {
         Runtime.getRuntime().addShutdownHook(new Thread(()->{
             logger.warn("! Shutdown Hook Executed !");
             while(!shutdownDeque.isEmpty()){
-                IShutdown iShutdown = shutdownDeque.remove();
+                IShutdown iShutdown = shutdownDeque.removeLast();
                 try{
                     iShutdown.onShutdown();
                 }catch (Exception e){
