@@ -70,10 +70,6 @@ public class SecurityManager implements IShutdown {
             if(blockedIPs.contains(clientIP)){
                 throw new ForbiddenResponse();
             }
-            // check request types
-            if(!(ctx.method().equalsIgnoreCase("get") || ctx.method().equalsIgnoreCase("put") || ctx.method().equalsIgnoreCase("post") || ctx.method().equalsIgnoreCase("delete"))){
-                throw new ForbiddenResponse();
-            }
             // check auth if specified
             Client client = null;
             AuthHeaderContent authHeaderContent = AuthHeaderContent.parseHeader(ctx.header("authorization"));
