@@ -32,6 +32,7 @@ import de.netbeacon.xenia.backend.processor.root.Root;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.ws.SecondaryWebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.ws.processor.WSProcessorCore;
+import de.netbeacon.xenia.backend.processor.ws.processor.WSRequest;
 import de.netbeacon.xenia.backend.processor.ws.processor.imp.HeartbeatProcessor;
 import de.netbeacon.xenia.backend.processor.ws.processor.imp.IdentifyProcessor;
 import de.netbeacon.xenia.backend.processor.ws.processor.imp.StatisticsProcessor;
@@ -42,6 +43,7 @@ import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
 import de.netbeacon.xenia.backend.utils.twitch.TwitchWrap;
 import io.javalin.Javalin;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -471,6 +473,11 @@ public class Core {
                             });
                         });
                         path("info", ()->{
+                            path("ping", ()->{
+                                // we might receive invalid auth data so we dont even check for this here
+                                head(ctx -> ctx.status(200));
+                                get(ctx -> ctx.status(200));
+                            });
                             path("public", ()->{
                                 get(ctx -> {
                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
@@ -527,6 +534,31 @@ public class Core {
             javalin.start(config.getInt("web_port"));
             // add to shutdown hook
             shutdownHook.addShutdownAble(new JavalinWrap(javalin));
+            // prepare client notify in case the backend shuts down
+            class ShutdownIRQ implements IShutdown {
+                private final long delay = 5*1000;
+                private final SecondaryWebsocketProcessor secondaryWebsocketProcessor;
+
+                public ShutdownIRQ(SecondaryWebsocketProcessor secondaryWebsocketProcessor){
+                    this.secondaryWebsocketProcessor = secondaryWebsocketProcessor;
+                }
+
+                @Override
+                public void onShutdown() throws Exception {
+                    WSRequest wsRequest = new WSRequest.Builder()
+                            .mode(WSRequest.Mode.BROADCAST)
+                            .recipient(0)
+                            .action("shutdownirq")
+                            .payload(new JSONObject()
+                                    .put("at", System.currentTimeMillis()+delay)
+                            )
+                            .exitOn(WSRequest.ExitOn.INSTANT)
+                            .build();
+                    secondaryWebsocketProcessor.getWsProcessorCore().process(wsRequest);
+                    // sleep for the initial delay and a bit more to make sure that the clients have enough time to finish what they are doing
+                    TimeUnit.MILLISECONDS.sleep(delay+(delay/2));
+                }
+            }
             // ok
             logger.info("! Backend Running !");
         }catch (Exception e){
