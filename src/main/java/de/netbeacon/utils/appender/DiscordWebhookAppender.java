@@ -79,7 +79,7 @@ public class DiscordWebhookAppender extends AppenderSkeleton {
                 webhookMessageBuilder.addEmbeds(webhookEmbedBuilder.build());
             }
             webhookClient.send(webhookMessageBuilder.build());
-        }, 2, 2, TimeUnit.SECONDS);
+        }, 5, 5, TimeUnit.SECONDS);
     }
 
     @Override
