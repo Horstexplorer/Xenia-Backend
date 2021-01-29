@@ -559,6 +559,7 @@ public class Core {
                     TimeUnit.MILLISECONDS.sleep(delay+(delay/2));
                 }
             }
+            shutdownHook.addShutdownAble(new ShutdownIRQ(secondaryWebsocketProcessor));
             // ok
             logger.info("! Backend Running !");
         }catch (Exception e){
