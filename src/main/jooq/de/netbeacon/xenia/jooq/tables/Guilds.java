@@ -59,11 +59,6 @@ public class Guilds extends TableImpl<GuildsRecord> {
     public final TableField<GuildsRecord, Integer> LICENSE_ID = createField(DSL.name("license_id"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>public.guilds.use_vperms</code>.
-     */
-    public final TableField<GuildsRecord, Boolean> USE_VPERMS = createField(DSL.name("use_vperms"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
-
-    /**
      * The column <code>public.guilds.meta_guildname</code>.
      */
     public final TableField<GuildsRecord, String> META_GUILDNAME = createField(DSL.name("meta_guildname"), SQLDataType.VARCHAR(100).nullable(false).defaultValue(DSL.field("'unknown_name'::character varying", SQLDataType.VARCHAR)), this, "");
@@ -77,6 +72,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
      * The column <code>public.guilds.guild_prefix</code>.
      */
     public final TableField<GuildsRecord, String> GUILD_PREFIX = createField(DSL.name("guild_prefix"), SQLDataType.VARCHAR(4).nullable(false).defaultValue(DSL.field("'~'::character varying", SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>public.guilds.guild_settings</code>.
+     */
+    public final TableField<GuildsRecord, Integer> GUILD_SETTINGS = createField(DSL.name("guild_settings"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     private Guilds(Name alias, Table<GuildsRecord> aliased) {
         this(alias, aliased, null);
@@ -166,7 +166,7 @@ public class Guilds extends TableImpl<GuildsRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Long, LocalDateTime, String, Integer, Boolean, String, String, String> fieldsRow() {
+    public Row8<Long, LocalDateTime, String, Integer, String, String, String, Integer> fieldsRow() {
         return (Row8) super.fieldsRow();
     }
 }
