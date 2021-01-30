@@ -79,7 +79,7 @@ public class DataGuild extends RequestProcessor {
                     throw new BadRequestResponse();
                 }
                 Record memberGuildRelation = memberGuildRelations.get(0);
-                if((!memberGuildRelation.get(Tables.GUILDS.USE_VPERMS) && memberGuildRelation.get(Tables.MEMBERS.META_IS_ADMINISTRATOR)) || memberGuildRelation.get(Tables.MEMBERS.META_IS_OWNER)){
+                if(((((memberGuildRelation.get(Tables.GUILDS.GUILD_SETTINGS).intValue() >> 0) & 1) == 0) && memberGuildRelation.get(Tables.MEMBERS.META_IS_ADMINISTRATOR)) || memberGuildRelation.get(Tables.MEMBERS.META_IS_OWNER)){
                     return this;
                 }
                 Result<Record> vpermRecords = sqlContext.select()
@@ -126,7 +126,7 @@ public class DataGuild extends RequestProcessor {
                     .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage())
                     .put("prefix", guildsRecord.getGuildPrefix())
-                    .put("useVPerms", guildsRecord.getUseVperms())
+                    .put("settings", guildsRecord.getGuildSettings())
                     .put("meta", new JSONObject()
                             .put("name", guildsRecord.getMetaGuildname())
                             .put("iconUrl", (guildsRecord.getMetaIconurl() != null) ? guildsRecord.getMetaIconurl() : JSONObject.NULL)
@@ -163,7 +163,7 @@ public class DataGuild extends RequestProcessor {
             JSONObject newData = new JSONObject(ctx.body());
             // update data
             guildsRecord.setPreferredLanguage(newData.getString("preferredLanguage"));
-            guildsRecord.setUseVperms(newData.getBoolean("useVPerms"));
+            guildsRecord.setGuildSettings(newData.getInt("settings"));
             guildsRecord.setGuildPrefix(newData.getString("prefix"));
             JSONObject metaData = newData.getJSONObject("meta");
             guildsRecord.setMetaGuildname(metaData.getString("name"));
@@ -176,7 +176,7 @@ public class DataGuild extends RequestProcessor {
                     .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage())
                     .put("prefix", guildsRecord.getGuildPrefix())
-                    .put("useVPerms", guildsRecord.getUseVperms())
+                    .put("settings", guildsRecord.getGuildSettings())
                     .put("meta", new JSONObject()
                             .put("name", guildsRecord.getMetaGuildname())
                             .put("iconUrl", (guildsRecord.getMetaIconurl() != null) ? guildsRecord.getMetaIconurl() : JSONObject.NULL)
@@ -219,7 +219,7 @@ public class DataGuild extends RequestProcessor {
                     .put("creationTimestamp", guildsRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage())
                     .put("prefix", guildsRecord.getGuildPrefix())
-                    .put("useVPerms", guildsRecord.getUseVperms())
+                    .put("settings", guildsRecord.getGuildSettings())
                     .put("meta", new JSONObject()
                             .put("name", guildsRecord.getMetaGuildname())
                             .put("iconUrl", (guildsRecord.getMetaIconurl() != null) ? guildsRecord.getMetaIconurl() : JSONObject.NULL)

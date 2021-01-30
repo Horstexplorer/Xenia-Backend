@@ -75,7 +75,7 @@ public class DataGuildMember extends RequestProcessor {
                     throw new BadRequestResponse();
                 }
                 Record memberGuildRelation = memberGuildRelations.get(0);
-                if((!memberGuildRelation.get(Tables.GUILDS.USE_VPERMS) && memberGuildRelation.get(Tables.MEMBERS.META_IS_ADMINISTRATOR)) || memberGuildRelation.get(Tables.MEMBERS.META_IS_OWNER)){
+                if(((((memberGuildRelation.get(Tables.GUILDS.GUILD_SETTINGS).intValue() >> 0) & 1) == 0) && memberGuildRelation.get(Tables.MEMBERS.META_IS_ADMINISTRATOR)) || memberGuildRelation.get(Tables.MEMBERS.META_IS_OWNER)){
                     return this;
                 }
                 Result<Record> vpermRecords = sqlContext.select()
