@@ -117,15 +117,6 @@ public class Users extends TableImpl<UsersRecord> {
     }
 
     @Override
-    public List<ForeignKey<UsersRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<UsersRecord, ?>>asList(Keys.USERS__USERS_PREFERRED_LANGUAGE_FKEY);
-    }
-
-    public TranslationLanguages translationLanguages() {
-        return new TranslationLanguages(this, Keys.USERS__USERS_PREFERRED_LANGUAGE_FKEY);
-    }
-
-    @Override
     public Users as(String alias) {
         return new Users(DSL.name(alias), this);
     }

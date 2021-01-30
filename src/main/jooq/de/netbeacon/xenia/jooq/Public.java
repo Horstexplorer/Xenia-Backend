@@ -93,16 +93,6 @@ public class Public extends SchemaImpl {
     public final Tags TAGS = Tags.TAGS;
 
     /**
-     * The table <code>public.translation_languages</code>.
-     */
-    public final TranslationLanguages TRANSLATION_LANGUAGES = TranslationLanguages.TRANSLATION_LANGUAGES;
-
-    /**
-     * The table <code>public.translations</code>.
-     */
-    public final Translations TRANSLATIONS = Translations.TRANSLATIONS;
-
-    /**
      * The table <code>public.twitchnotifications</code>.
      */
     public final Twitchnotifications TWITCHNOTIFICATIONS = Twitchnotifications.TWITCHNOTIFICATIONS;
@@ -137,7 +127,6 @@ public class Public extends SchemaImpl {
             Sequences.NOTIFICATION_NOTIFICATION_ID_SEQ,
             Sequences.OAUTH_STATES_STATE_ID_SEQ,
             Sequences.ROLES_ROLE_ID_SEQ,
-            Sequences.TRANSLATIONS_TRANSLATION_INTERNAL_ID_SEQ,
             Sequences.TWITCHNOTIFICATIONS_TWITCHNOTIFICATION_ID_SEQ);
     }
 
@@ -157,8 +146,6 @@ public class Public extends SchemaImpl {
             Oauth.OAUTH,
             OauthStates.OAUTH_STATES,
             Tags.TAGS,
-            TranslationLanguages.TRANSLATION_LANGUAGES,
-            Translations.TRANSLATIONS,
             Twitchnotifications.TWITCHNOTIFICATIONS,
             Users.USERS,
             Vroles.VROLES);

@@ -423,18 +423,7 @@ public class Core {
                             });
                             path("client", ()->{
                                 path("discordbot", ()->{
-                                    path("languagepacks", ()->{
-                                        path(":language", ()->{
-                                            get(ctx -> {
-                                                Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
-                                                processor.next("data").next("client").next("discordbot").next("languagepack").preProcessor(client, ctx).get(client, ctx); // list of language keys
-                                            });
-                                        });
-                                        get(ctx -> {
-                                            Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
-                                            processor.next("data").next("client").next("discordbot").next("languagepack").preProcessor(client, ctx).get(client, ctx); // list of languages
-                                        });
-                                    });
+
                                 });
                                 path("frontend", ()->{
                                     path("me", ()->{
