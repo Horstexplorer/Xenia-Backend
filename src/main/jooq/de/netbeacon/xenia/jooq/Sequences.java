@@ -36,11 +36,6 @@ public class Sequences {
     public static final Sequence<Long> ROLES_ROLE_ID_SEQ = Internal.createSequence("roles_role_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, 2147483647, false, null);
 
     /**
-     * The sequence <code>public.translations_translation_internal_id_seq</code>
-     */
-    public static final Sequence<Integer> TRANSLATIONS_TRANSLATION_INTERNAL_ID_SEQ = Internal.createSequence("translations_translation_internal_id_seq", Public.PUBLIC, SQLDataType.INTEGER.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.twitchnotifications_twitchnotification_id_seq</code>
      */
     public static final Sequence<Long> TWITCHNOTIFICATIONS_TWITCHNOTIFICATION_ID_SEQ = Internal.createSequence("twitchnotifications_twitchnotification_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, 2147483647, false, null);

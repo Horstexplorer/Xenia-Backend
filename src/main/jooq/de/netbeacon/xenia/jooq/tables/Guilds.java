@@ -128,11 +128,7 @@ public class Guilds extends TableImpl<GuildsRecord> {
 
     @Override
     public List<ForeignKey<GuildsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<GuildsRecord, ?>>asList(Keys.GUILDS__GUILDS_PREFERRED_LANGUAGE_FKEY, Keys.GUILDS__GUILDS_LICENSE_ID_FKEY);
-    }
-
-    public TranslationLanguages translationLanguages() {
-        return new TranslationLanguages(this, Keys.GUILDS__GUILDS_PREFERRED_LANGUAGE_FKEY);
+        return Arrays.<ForeignKey<GuildsRecord, ?>>asList(Keys.GUILDS__GUILDS_LICENSE_ID_FKEY);
     }
 
     public Licenses licenses() {

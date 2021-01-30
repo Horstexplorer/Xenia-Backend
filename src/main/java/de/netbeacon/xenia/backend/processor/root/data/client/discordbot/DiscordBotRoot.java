@@ -19,12 +19,11 @@ package de.netbeacon.xenia.backend.processor.root.data.client.discordbot;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.backend.processor.root.data.client.discordbot.languagepack.DiscordBotLanguagePack;
 
 public class DiscordBotRoot extends RequestProcessor {
     public DiscordBotRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("discordbot", sqlConnectionPool, websocketProcessor,
-                new DiscordBotLanguagePack(sqlConnectionPool, websocketProcessor)
+        super("discordbot", sqlConnectionPool, websocketProcessor
+
         );
     }
 }
