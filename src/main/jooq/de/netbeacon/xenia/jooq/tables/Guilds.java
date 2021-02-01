@@ -7,14 +7,24 @@ package de.netbeacon.xenia.jooq.tables;
 import de.netbeacon.xenia.jooq.Keys;
 import de.netbeacon.xenia.jooq.Public;
 import de.netbeacon.xenia.jooq.tables.records.GuildsRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.SQLDataType;
-import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Row8;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.TableOptions;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -51,7 +61,7 @@ public class Guilds extends TableImpl<GuildsRecord> {
     /**
      * The column <code>public.guilds.preferred_language</code>.
      */
-    public final TableField<GuildsRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.field("'en_US'::character varying", SQLDataType.VARCHAR)), this, "");
+    public final TableField<GuildsRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.field("'en_us'::character varying", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.guilds.license_id</code>.

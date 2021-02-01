@@ -5,13 +5,14 @@ package de.netbeacon.xenia.jooq.tables.records;
 
 
 import de.netbeacon.xenia.jooq.tables.Vroles;
+
+import java.time.LocalDateTime;
+
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record5;
 import org.jooq.Row5;
 import org.jooq.impl.UpdatableRecordImpl;
-
-import java.time.LocalDateTime;
 
 
 /**

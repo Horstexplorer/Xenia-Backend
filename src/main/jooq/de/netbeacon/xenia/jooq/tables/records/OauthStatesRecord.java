@@ -5,12 +5,13 @@ package de.netbeacon.xenia.jooq.tables.records;
 
 
 import de.netbeacon.xenia.jooq.tables.OauthStates;
+
+import java.time.LocalDateTime;
+
 import org.jooq.Field;
 import org.jooq.Record4;
 import org.jooq.Row4;
 import org.jooq.impl.TableRecordImpl;
-
-import java.time.LocalDateTime;
 
 
 /**
