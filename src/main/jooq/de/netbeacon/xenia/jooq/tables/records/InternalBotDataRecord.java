@@ -5,6 +5,7 @@ package de.netbeacon.xenia.jooq.tables.records;
 
 
 import de.netbeacon.xenia.jooq.tables.InternalBotData;
+
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record6;

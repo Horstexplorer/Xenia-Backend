@@ -6,12 +6,22 @@ package de.netbeacon.xenia.jooq.tables;
 
 import de.netbeacon.xenia.jooq.Public;
 import de.netbeacon.xenia.jooq.tables.records.OauthStatesRecord;
-import org.jooq.*;
+
+import java.time.LocalDateTime;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Identity;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Row4;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
-
-import java.time.LocalDateTime;
 
 
 /**
