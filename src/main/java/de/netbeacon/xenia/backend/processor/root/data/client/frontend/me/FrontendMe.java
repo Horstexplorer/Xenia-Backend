@@ -57,7 +57,7 @@ public class FrontendMe extends RequestProcessor {
             UsersRecord usersRecord = usersRecordResult.get(0);
             // fluffy json
             JSONObject jsonObject = new JSONObject()
-                    .put("id", usersRecord.getUserId())
+                    .put("id", String.valueOf(usersRecord.getUserId()))
                     .put("name",usersRecord.getMetaUsername())
                     .put("icon", usersRecord.getMetaIconurl())
                     .put("internalRole", usersRecord.getInternalRole());

@@ -82,13 +82,13 @@ public class FrontendMetaGuilds extends RequestProcessor {
 
             for(Record record : records){
                 jsonArray.put(new JSONObject()
-                        .put("guildId", record.get(Tables.GUILDS.GUILD_ID))
+                        .put("guildId", String.valueOf(record.get(Tables.GUILDS.GUILD_ID)))
                         .put("guildName", record.get(Tables.GUILDS.META_GUILDNAME))
                         .put("iconUrl", (record.field(Tables.GUILDS.META_ICONURL) != null) ? record.get(Tables.GUILDS.META_ICONURL) : JSONObject.NULL)
                         .put("member", new JSONObject()
                                 .put("isAdmin", ((record.field(Tables.MEMBERS.META_IS_ADMINISTRATOR) != null) ? (boolean) record.get(Tables.MEMBERS.META_IS_ADMINISTRATOR) : (adminOverride) ? true : false))
                                 .put("isOwner", ((record.field(Tables.MEMBERS.META_IS_OWNER) != null) ? (boolean) record.get(Tables.MEMBERS.META_IS_OWNER) : (adminOverride) ? true : false))
-                                .put("userPermValue", (permMerge.getOrDefault(record.get(Tables.GUILDS.GUILD_ID), (adminOverride) ? Long.MAX_VALUE : 0L)))
+                                .put("userPermValue", String.valueOf((permMerge.getOrDefault(record.get(Tables.GUILDS.GUILD_ID), (adminOverride) ? Long.MAX_VALUE : 0L))))
                         )
                 );
             }
