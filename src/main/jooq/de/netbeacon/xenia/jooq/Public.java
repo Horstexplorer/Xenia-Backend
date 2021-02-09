@@ -4,30 +4,14 @@
 package de.netbeacon.xenia.jooq;
 
 
-import de.netbeacon.xenia.jooq.tables.Channels;
-import de.netbeacon.xenia.jooq.tables.Guilds;
-import de.netbeacon.xenia.jooq.tables.InternalBotData;
-import de.netbeacon.xenia.jooq.tables.InternalBotShards;
-import de.netbeacon.xenia.jooq.tables.LicenseTypes;
-import de.netbeacon.xenia.jooq.tables.Licenses;
-import de.netbeacon.xenia.jooq.tables.Members;
-import de.netbeacon.xenia.jooq.tables.MembersRoles;
-import de.netbeacon.xenia.jooq.tables.Messages;
-import de.netbeacon.xenia.jooq.tables.Notifications;
-import de.netbeacon.xenia.jooq.tables.Oauth;
-import de.netbeacon.xenia.jooq.tables.OauthStates;
-import de.netbeacon.xenia.jooq.tables.Tags;
-import de.netbeacon.xenia.jooq.tables.Twitchnotifications;
-import de.netbeacon.xenia.jooq.tables.Users;
-import de.netbeacon.xenia.jooq.tables.Vroles;
-
-import java.util.Arrays;
-import java.util.List;
-
+import de.netbeacon.xenia.jooq.tables.*;
 import org.jooq.Catalog;
 import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -47,6 +31,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.channels</code>.
      */
     public final Channels CHANNELS = Channels.CHANNELS;
+
+    /**
+     * The table <code>public.d43z1_channels</code>.
+     */
+    public final D43z1Channels D43Z1_CHANNELS = D43z1Channels.D43Z1_CHANNELS;
 
     /**
      * The table <code>public.guilds</code>.
@@ -150,6 +139,7 @@ public class Public extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
             Channels.CHANNELS,
+            D43z1Channels.D43Z1_CHANNELS,
             Guilds.GUILDS,
             InternalBotData.INTERNAL_BOT_DATA,
             InternalBotShards.INTERNAL_BOT_SHARDS,

@@ -4,37 +4,8 @@
 package de.netbeacon.xenia.jooq;
 
 
-import de.netbeacon.xenia.jooq.tables.Channels;
-import de.netbeacon.xenia.jooq.tables.Guilds;
-import de.netbeacon.xenia.jooq.tables.InternalBotData;
-import de.netbeacon.xenia.jooq.tables.InternalBotShards;
-import de.netbeacon.xenia.jooq.tables.LicenseTypes;
-import de.netbeacon.xenia.jooq.tables.Licenses;
-import de.netbeacon.xenia.jooq.tables.Members;
-import de.netbeacon.xenia.jooq.tables.MembersRoles;
-import de.netbeacon.xenia.jooq.tables.Messages;
-import de.netbeacon.xenia.jooq.tables.Notifications;
-import de.netbeacon.xenia.jooq.tables.Oauth;
-import de.netbeacon.xenia.jooq.tables.Tags;
-import de.netbeacon.xenia.jooq.tables.Twitchnotifications;
-import de.netbeacon.xenia.jooq.tables.Users;
-import de.netbeacon.xenia.jooq.tables.Vroles;
-import de.netbeacon.xenia.jooq.tables.records.ChannelsRecord;
-import de.netbeacon.xenia.jooq.tables.records.GuildsRecord;
-import de.netbeacon.xenia.jooq.tables.records.InternalBotDataRecord;
-import de.netbeacon.xenia.jooq.tables.records.InternalBotShardsRecord;
-import de.netbeacon.xenia.jooq.tables.records.LicenseTypesRecord;
-import de.netbeacon.xenia.jooq.tables.records.LicensesRecord;
-import de.netbeacon.xenia.jooq.tables.records.MembersRecord;
-import de.netbeacon.xenia.jooq.tables.records.MembersRolesRecord;
-import de.netbeacon.xenia.jooq.tables.records.MessagesRecord;
-import de.netbeacon.xenia.jooq.tables.records.NotificationsRecord;
-import de.netbeacon.xenia.jooq.tables.records.OauthRecord;
-import de.netbeacon.xenia.jooq.tables.records.TagsRecord;
-import de.netbeacon.xenia.jooq.tables.records.TwitchnotificationsRecord;
-import de.netbeacon.xenia.jooq.tables.records.UsersRecord;
-import de.netbeacon.xenia.jooq.tables.records.VrolesRecord;
-
+import de.netbeacon.xenia.jooq.tables.*;
+import de.netbeacon.xenia.jooq.tables.records.*;
 import org.jooq.ForeignKey;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
@@ -54,6 +25,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<ChannelsRecord> CHANNELS_CHANNEL_ID = Internal.createUniqueKey(Channels.CHANNELS, DSL.name("channels_channel_id"), new TableField[] { Channels.CHANNELS.CHANNEL_ID }, true);
+    public static final UniqueKey<D43z1ChannelsRecord> D43Z1_CHANNELS_GUILD_ID_CHANNEL_ID = Internal.createUniqueKey(D43z1Channels.D43Z1_CHANNELS, DSL.name("d43z1_channels_guild_id_channel_id"), new TableField[] { D43z1Channels.D43Z1_CHANNELS.GUILD_ID, D43z1Channels.D43Z1_CHANNELS.CHANNEL_ID }, true);
     public static final UniqueKey<GuildsRecord> GUILDS_GUILD_ID = Internal.createUniqueKey(Guilds.GUILDS, DSL.name("guilds_guild_id"), new TableField[] { Guilds.GUILDS.GUILD_ID }, true);
     public static final UniqueKey<GuildsRecord> GUILDS_LICENSE_ID = Internal.createUniqueKey(Guilds.GUILDS, DSL.name("guilds_license_id"), new TableField[] { Guilds.GUILDS.LICENSE_ID }, true);
     public static final UniqueKey<InternalBotDataRecord> INTERNAL_BOT_DATA_CLIENT_ID = Internal.createUniqueKey(InternalBotData.INTERNAL_BOT_DATA, DSL.name("internal_bot_data_client_id"), new TableField[] { InternalBotData.INTERNAL_BOT_DATA.CLIENT_ID }, true);
@@ -77,6 +49,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<ChannelsRecord, GuildsRecord> CHANNELS__CHANNELS_GUILD_ID_FKEY = Internal.createForeignKey(Channels.CHANNELS, DSL.name("channels_guild_id_fkey"), new TableField[] { Channels.CHANNELS.GUILD_ID }, Keys.GUILDS_GUILD_ID, new TableField[] { Guilds.GUILDS.GUILD_ID }, true);
+    public static final ForeignKey<D43z1ChannelsRecord, ChannelsRecord> D43Z1_CHANNELS__D43Z1_CHANNELS_CHANNEL_ID_FKEY = Internal.createForeignKey(D43z1Channels.D43Z1_CHANNELS, DSL.name("d43z1_channels_channel_id_fkey"), new TableField[] { D43z1Channels.D43Z1_CHANNELS.CHANNEL_ID }, Keys.CHANNELS_CHANNEL_ID, new TableField[] { Channels.CHANNELS.CHANNEL_ID }, true);
+    public static final ForeignKey<D43z1ChannelsRecord, GuildsRecord> D43Z1_CHANNELS__D43Z1_CHANNELS_GUILD_ID_FKEY = Internal.createForeignKey(D43z1Channels.D43Z1_CHANNELS, DSL.name("d43z1_channels_guild_id_fkey"), new TableField[] { D43z1Channels.D43Z1_CHANNELS.GUILD_ID }, Keys.GUILDS_GUILD_ID, new TableField[] { Guilds.GUILDS.GUILD_ID }, true);
     public static final ForeignKey<GuildsRecord, LicensesRecord> GUILDS__GUILDS_LICENSE_ID_FKEY = Internal.createForeignKey(Guilds.GUILDS, DSL.name("guilds_license_id_fkey"), new TableField[] { Guilds.GUILDS.LICENSE_ID }, Keys.LICENSES_LICENSE_ID, new TableField[] { Licenses.LICENSES.LICENSE_ID }, true);
     public static final ForeignKey<InternalBotShardsRecord, InternalBotDataRecord> INTERNAL_BOT_SHARDS__INTERNAL_BOT_SHARDS_CLIENT_ID_FKEY = Internal.createForeignKey(InternalBotShards.INTERNAL_BOT_SHARDS, DSL.name("internal_bot_shards_client_id_fkey"), new TableField[] { InternalBotShards.INTERNAL_BOT_SHARDS.CLIENT_ID }, Keys.INTERNAL_BOT_DATA_CLIENT_ID, new TableField[] { InternalBotData.INTERNAL_BOT_DATA.CLIENT_ID }, true);
     public static final ForeignKey<LicensesRecord, LicenseTypesRecord> LICENSES__LICENSES_LICENSE_TYPE_FKEY = Internal.createForeignKey(Licenses.LICENSES, DSL.name("licenses_license_type_fkey"), new TableField[] { Licenses.LICENSES.LICENSE_TYPE }, Keys.LICENSE_TYPES_LICENSE_TYPE_ID, new TableField[] { LicenseTypes.LICENSE_TYPES.LICENSE_TYPE_ID }, true);

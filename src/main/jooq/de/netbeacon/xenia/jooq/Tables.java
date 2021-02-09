@@ -4,22 +4,7 @@
 package de.netbeacon.xenia.jooq;
 
 
-import de.netbeacon.xenia.jooq.tables.Channels;
-import de.netbeacon.xenia.jooq.tables.Guilds;
-import de.netbeacon.xenia.jooq.tables.InternalBotData;
-import de.netbeacon.xenia.jooq.tables.InternalBotShards;
-import de.netbeacon.xenia.jooq.tables.LicenseTypes;
-import de.netbeacon.xenia.jooq.tables.Licenses;
-import de.netbeacon.xenia.jooq.tables.Members;
-import de.netbeacon.xenia.jooq.tables.MembersRoles;
-import de.netbeacon.xenia.jooq.tables.Messages;
-import de.netbeacon.xenia.jooq.tables.Notifications;
-import de.netbeacon.xenia.jooq.tables.Oauth;
-import de.netbeacon.xenia.jooq.tables.OauthStates;
-import de.netbeacon.xenia.jooq.tables.Tags;
-import de.netbeacon.xenia.jooq.tables.Twitchnotifications;
-import de.netbeacon.xenia.jooq.tables.Users;
-import de.netbeacon.xenia.jooq.tables.Vroles;
+import de.netbeacon.xenia.jooq.tables.*;
 
 
 /**
@@ -32,6 +17,11 @@ public class Tables {
      * The table <code>public.channels</code>.
      */
     public static final Channels CHANNELS = Channels.CHANNELS;
+
+    /**
+     * The table <code>public.d43z1_channels</code>.
+     */
+    public static final D43z1Channels D43Z1_CHANNELS = D43z1Channels.D43Z1_CHANNELS;
 
     /**
      * The table <code>public.guilds</code>.
