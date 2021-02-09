@@ -292,24 +292,6 @@ public class Core {
                                                     processor.next("data").next("guild").next("channel").next("message").preProcessor(client, ctx).get(client, ctx); // get full guild data
                                                 });
                                             });
-                                            path("d43z1", ()->{
-                                                get(ctx -> {
-                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
-                                                    processor.next("data").next("guild").next("channel").next("d43z1").preProcessor(client, ctx).get(client, ctx); // get d43z1 data
-                                                });
-                                                put(ctx -> {
-                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
-                                                    processor.next("data").next("guild").next("channel").next("d43z1").preProcessor(client, ctx).put(client, ctx); // update d43z1 data
-                                                });
-                                                post(ctx -> {
-                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
-                                                    processor.next("data").next("guild").next("channel").next("d43z1").preProcessor(client, ctx).post(client, ctx); // create new entry
-                                                });
-                                                delete(ctx -> {
-                                                    Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
-                                                    processor.next("data").next("guild").next("channel").next("d43z1").preProcessor(client, ctx).delete(client, ctx); // delete d43z1 data
-                                                });
-                                            });
                                             get(ctx -> {
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("channel").preProcessor(client, ctx).get(client, ctx); // get channel data

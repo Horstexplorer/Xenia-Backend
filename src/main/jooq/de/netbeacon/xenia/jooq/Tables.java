@@ -19,11 +19,6 @@ public class Tables {
     public static final Channels CHANNELS = Channels.CHANNELS;
 
     /**
-     * The table <code>public.d43z1_channels</code>.
-     */
-    public static final D43z1Channels D43Z1_CHANNELS = D43z1Channels.D43Z1_CHANNELS;
-
-    /**
      * The table <code>public.guilds</code>.
      */
     public static final Guilds GUILDS = Guilds.GUILDS;

@@ -33,11 +33,6 @@ public class Public extends SchemaImpl {
     public final Channels CHANNELS = Channels.CHANNELS;
 
     /**
-     * The table <code>public.d43z1_channels</code>.
-     */
-    public final D43z1Channels D43Z1_CHANNELS = D43z1Channels.D43Z1_CHANNELS;
-
-    /**
      * The table <code>public.guilds</code>.
      */
     public final Guilds GUILDS = Guilds.GUILDS;
@@ -139,7 +134,6 @@ public class Public extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
             Channels.CHANNELS,
-            D43z1Channels.D43Z1_CHANNELS,
             Guilds.GUILDS,
             InternalBotData.INTERNAL_BOT_DATA,
             InternalBotShards.INTERNAL_BOT_SHARDS,
