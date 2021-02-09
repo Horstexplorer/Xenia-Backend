@@ -22,7 +22,7 @@ import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.client.objects.imp.LocalClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.InternalBotDataRecord;
 import de.netbeacon.xenia.jooq.tables.records.InternalBotShardsRecord;
@@ -41,7 +41,7 @@ public class ManagementClients extends RequestProcessor {
     private final Logger logger = LoggerFactory.getLogger(ManagementClients.class);
     private final ClientManager clientManager;
 
-    public ManagementClients(ClientManager clientManager, SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public ManagementClients(ClientManager clientManager, SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("clients", sqlConnectionPool, websocketProcessor);
         this.clientManager = clientManager;
     }

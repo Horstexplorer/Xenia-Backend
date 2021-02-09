@@ -19,13 +19,13 @@ package de.netbeacon.xenia.backend.processor.root.management;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.ClientManager;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.management.clients.ManagementClients;
 import de.netbeacon.xenia.backend.processor.root.management.licenses.ManagementLicenses;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 
 public class ManagementRoot extends RequestProcessor {
 
-    public ManagementRoot(ClientManager clientManager, SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public ManagementRoot(ClientManager clientManager, SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("management", sqlConnectionPool, websocketProcessor,
                 new ManagementClients(clientManager, sqlConnectionPool, websocketProcessor),
                 new ManagementLicenses(sqlConnectionPool, websocketProcessor)

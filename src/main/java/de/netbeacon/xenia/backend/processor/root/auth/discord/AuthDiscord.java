@@ -19,7 +19,7 @@ package de.netbeacon.xenia.backend.processor.root.auth.discord;
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
 import de.netbeacon.xenia.jooq.Tables;
 import io.javalin.http.*;
@@ -38,7 +38,7 @@ public class AuthDiscord extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(AuthDiscord.class);
 
-    public AuthDiscord(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public AuthDiscord(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("discord", sqlConnectionPool, websocketProcessor,
                 new AuthDiscordVerify(sqlConnectionPool, websocketProcessor),
                 new AuthDiscordRevoke(sqlConnectionPool, websocketProcessor),

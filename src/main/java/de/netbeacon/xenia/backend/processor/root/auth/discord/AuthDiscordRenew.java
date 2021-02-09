@@ -20,7 +20,7 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
 import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.OauthRecord;
@@ -35,7 +35,7 @@ public class AuthDiscordRenew extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(AuthDiscordRenew.class);
 
-    public AuthDiscordRenew(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public AuthDiscordRenew(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("renew", sqlConnectionPool, websocketProcessor);
     }
 

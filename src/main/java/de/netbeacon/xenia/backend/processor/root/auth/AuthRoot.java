@@ -18,13 +18,13 @@ package de.netbeacon.xenia.backend.processor.root.auth;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.auth.discord.AuthDiscord;
 import de.netbeacon.xenia.backend.processor.root.auth.token.AuthToken;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 
 public class AuthRoot extends RequestProcessor {
 
-    public AuthRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public AuthRoot(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("auth", sqlConnectionPool, websocketProcessor,
                 new AuthToken(sqlConnectionPool, websocketProcessor),
                 new AuthDiscord(sqlConnectionPool, websocketProcessor)

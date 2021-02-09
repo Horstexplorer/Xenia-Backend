@@ -18,6 +18,7 @@ package de.netbeacon.xenia.backend.processor;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import io.javalin.http.Context;
 
 import java.util.Arrays;
@@ -27,16 +28,16 @@ public abstract class RequestProcessor {
 
     private final String identifier;
     private final SQLConnectionPool sqlConnectionPool;
-    private final WebsocketProcessor websocketProcessor;
+    private final PrimaryWebsocketProcessor websocketProcessor;
     private final ConcurrentHashMap<String, RequestProcessor> processorHashMap = new ConcurrentHashMap<>();
 
-    public RequestProcessor(String identifier, SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor){
+    public RequestProcessor(String identifier, SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
         this.identifier = identifier;
         this.sqlConnectionPool = sqlConnectionPool;
         this.websocketProcessor = websocketProcessor;
     }
 
-    public RequestProcessor(String identifier, SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor, RequestProcessor...requestProcessors){
+    public RequestProcessor(String identifier, SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor, RequestProcessor...requestProcessors){
         this.identifier = identifier;
         this.sqlConnectionPool = sqlConnectionPool;
         this.websocketProcessor = websocketProcessor;
@@ -51,7 +52,7 @@ public abstract class RequestProcessor {
         return sqlConnectionPool;
     }
 
-    public WebsocketProcessor getWebsocketProcessor(){
+    public PrimaryWebsocketProcessor getWebsocketProcessor(){
         return websocketProcessor;
     }
 

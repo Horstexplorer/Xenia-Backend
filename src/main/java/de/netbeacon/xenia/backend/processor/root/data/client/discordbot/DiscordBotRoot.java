@@ -18,10 +18,10 @@ package de.netbeacon.xenia.backend.processor.root.data.client.discordbot;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 
 public class DiscordBotRoot extends RequestProcessor {
-    public DiscordBotRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public DiscordBotRoot(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("discordbot", sqlConnectionPool, websocketProcessor
 
         );

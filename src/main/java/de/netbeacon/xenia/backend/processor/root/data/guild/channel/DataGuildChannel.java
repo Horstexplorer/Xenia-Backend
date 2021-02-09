@@ -22,7 +22,9 @@ import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.client.objects.imp.DiscordClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.root.data.guild.channel.d43z1.DataGuildChannelD43Z1;
 import de.netbeacon.xenia.backend.processor.root.data.guild.channel.message.DataGuildChannelMessage;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.ChannelsRecord;
 import io.javalin.http.*;
@@ -41,8 +43,11 @@ public class DataGuildChannel extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(DataGuildChannel.class);
 
-    public DataGuildChannel(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
-        super("channel", sqlConnectionPool, websocketProcessor, new DataGuildChannelMessage(sqlConnectionPool, websocketProcessor));
+    public DataGuildChannel(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
+        super("channel", sqlConnectionPool, websocketProcessor,
+                new DataGuildChannelMessage(sqlConnectionPool, websocketProcessor),
+                new DataGuildChannelD43Z1(sqlConnectionPool, websocketProcessor)
+        );
     }
 
     private static final long DISCORD_USER_PERM_FILTER = 134217729; // interact, guild_channel_ov

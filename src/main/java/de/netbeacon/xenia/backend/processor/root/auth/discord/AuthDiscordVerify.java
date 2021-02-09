@@ -20,13 +20,13 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
 
 public class AuthDiscordVerify extends RequestProcessor {
 
-    public AuthDiscordVerify(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public AuthDiscordVerify(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("verify", sqlConnectionPool, websocketProcessor);
     }
 

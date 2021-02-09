@@ -22,6 +22,7 @@ import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.client.objects.imp.DiscordClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.TagsRecord;
 import io.javalin.http.*;
@@ -40,7 +41,7 @@ public class DataGuildMiscTag extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(DataGuildMiscTag.class);
 
-    public DataGuildMiscTag(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public DataGuildMiscTag(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("tags", sqlConnectionPool, websocketProcessor);
     }
 

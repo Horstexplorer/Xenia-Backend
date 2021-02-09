@@ -21,7 +21,7 @@ import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.client.objects.imp.LocalClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
@@ -33,7 +33,7 @@ public class AuthToken extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(AuthToken.class);
 
-    public AuthToken(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public AuthToken(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("token", sqlConnectionPool, websocketProcessor,
                 new AuthTokenRenew(sqlConnectionPool, websocketProcessor)
         );

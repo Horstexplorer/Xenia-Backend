@@ -18,12 +18,12 @@ package de.netbeacon.xenia.backend.processor.root.data.client;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.data.client.discordbot.DiscordBotRoot;
 import de.netbeacon.xenia.backend.processor.root.data.client.frontend.FrontendRoot;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 
 public class ClientRoot extends RequestProcessor {
-    public ClientRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public ClientRoot(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("client", sqlConnectionPool, websocketProcessor,
                 new FrontendRoot(sqlConnectionPool, websocketProcessor),
                 new DiscordBotRoot(sqlConnectionPool, websocketProcessor)

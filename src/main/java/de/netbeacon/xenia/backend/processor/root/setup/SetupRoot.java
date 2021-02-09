@@ -18,12 +18,12 @@ package de.netbeacon.xenia.backend.processor.root.setup;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.setup.bot.SetupBot;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 
 public class SetupRoot extends RequestProcessor {
 
-    public SetupRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public SetupRoot(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("setup", sqlConnectionPool, websocketProcessor,
                 new SetupBot(sqlConnectionPool, websocketProcessor)
         );
