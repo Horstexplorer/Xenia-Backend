@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.ZoneOffset;
+import java.util.UUID;
 
 import static org.jooq.impl.DSL.bitAnd;
 
@@ -124,6 +125,8 @@ public class DataGuildChannel extends RequestProcessor {
                             .put("channelSettings", channelsRecord.getChannelSettings())
                             .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
                             .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId())
+                            .put("d43z1Settings", channelsRecord.getD43z1Settings())
+                            .put("d43z1CustomContextPoolUUID", channelsRecord.getD43z1CustomContextPoolUuid().toString())
                             .put("meta", new JSONObject()
                                     .put("name", channelsRecord.getMetaChannelname())
                                     .put("topic", channelsRecord.getMetaChanneltopic())
@@ -146,6 +149,8 @@ public class DataGuildChannel extends RequestProcessor {
                         .put("channelSettings", channelsRecord.getChannelSettings())
                         .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
                         .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId())
+                        .put("d43z1Settings", channelsRecord.getD43z1Settings())
+                        .put("d43z1CustomContextPoolUUID", channelsRecord.getD43z1CustomContextPoolUuid().toString())
                         .put("meta", new JSONObject()
                                 .put("name", channelsRecord.getMetaChannelname())
                                 .put("topic", channelsRecord.getMetaChanneltopic())
@@ -188,6 +193,8 @@ public class DataGuildChannel extends RequestProcessor {
             channelsRecord.setChannelFlags(newData.getInt("channelFlags"));
             channelsRecord.setChannelSettings(newData.getInt("channelSettings"));
             channelsRecord.setTmpLoggingActive(newData.getBoolean("tmpLoggingActive"));
+            channelsRecord.setD43z1Settings(newData.getInt("d43z1Settings"));
+            channelsRecord.setD43z1CustomContextPoolUuid(UUID.fromString(newData.getString("d43z1CustomContextPoolUUID")));
             JSONObject meta = newData.getJSONObject("meta");
             channelsRecord.setMetaChannelname(meta.getString("name"));
             channelsRecord.setMetaChanneltopic(meta.getString("topic"));
@@ -203,6 +210,8 @@ public class DataGuildChannel extends RequestProcessor {
                     .put("channelSettings", channelsRecord.getChannelSettings())
                     .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
                     .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId())
+                    .put("d43z1Settings", channelsRecord.getD43z1Settings())
+                    .put("d43z1CustomContextPoolUUID", channelsRecord.getD43z1CustomContextPoolUuid().toString())
                     .put("meta", new JSONObject()
                             .put("name", channelsRecord.getMetaChannelname())
                             .put("topic", channelsRecord.getMetaChanneltopic())
@@ -250,6 +259,8 @@ public class DataGuildChannel extends RequestProcessor {
                     .put("channelSettings", channelsRecord.getChannelSettings())
                     .put("tmpLoggingActive", channelsRecord.getTmpLoggingActive())
                     .put("tmpLoggingChannelId", channelsRecord.getTmpLoggingChannelId())
+                    .put("d43z1Settings", channelsRecord.getD43z1Settings())
+                    .put("d43z1CustomContextPoolUUID", channelsRecord.getD43z1CustomContextPoolUuid().toString())
                     .put("meta", new JSONObject()
                             .put("name", channelsRecord.getMetaChannelname())
                             .put("topic", channelsRecord.getMetaChanneltopic())
