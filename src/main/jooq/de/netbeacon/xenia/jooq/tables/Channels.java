@@ -7,24 +7,15 @@ package de.netbeacon.xenia.jooq.tables;
 import de.netbeacon.xenia.jooq.Keys;
 import de.netbeacon.xenia.jooq.Public;
 import de.netbeacon.xenia.jooq.tables.records.ChannelsRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row10;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.SQLDataType;
-import org.jooq.impl.TableImpl;
+import java.util.UUID;
 
 
 /**
@@ -97,6 +88,16 @@ public class Channels extends TableImpl<ChannelsRecord> {
      * The column <code>public.channels.channel_settings</code>.
      */
     public final TableField<ChannelsRecord, Integer> CHANNEL_SETTINGS = createField(DSL.name("channel_settings"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.channels.d43z1_settings</code>.
+     */
+    public final TableField<ChannelsRecord, Integer> D43Z1_SETTINGS = createField(DSL.name("d43z1_settings"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.channels.d43z1_custom_context_pool_uuid</code>.
+     */
+    public final TableField<ChannelsRecord, UUID> D43Z1_CUSTOM_CONTEXT_POOL_UUID = createField(DSL.name("d43z1_custom_context_pool_uuid"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field("'00000000-0000-0000-0000-000000000000'::uuid", SQLDataType.UUID)), this, "");
 
     private Channels(Name alias, Table<ChannelsRecord> aliased) {
         this(alias, aliased, null);
@@ -182,11 +183,11 @@ public class Channels extends TableImpl<ChannelsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, Long, LocalDateTime, Boolean, Long, String, String, Integer, Integer, Integer> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row12<Long, Long, LocalDateTime, Boolean, Long, String, String, Integer, Integer, Integer, Integer, UUID> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 }
