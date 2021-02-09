@@ -21,7 +21,6 @@ import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.client.objects.imp.DiscordClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.VrolesRecord;
@@ -39,7 +38,7 @@ public class DataGuildRole extends RequestProcessor {
 
     public final Logger logger = LoggerFactory.getLogger(DataGuildRole.class);
 
-    public DataGuildRole(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public DataGuildRole(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("role", sqlConnectionPool, websocketProcessor);
     }
 

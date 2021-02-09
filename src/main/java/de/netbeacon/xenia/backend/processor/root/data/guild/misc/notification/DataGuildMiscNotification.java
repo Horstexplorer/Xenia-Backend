@@ -22,6 +22,7 @@ import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.client.objects.imp.DiscordClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.NotificationsRecord;
 import io.javalin.http.*;
@@ -41,7 +42,7 @@ public class DataGuildMiscNotification extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(DataGuildMiscNotification.class);
 
-    public DataGuildMiscNotification(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public DataGuildMiscNotification(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("notifications", sqlConnectionPool, websocketProcessor);
     }
 

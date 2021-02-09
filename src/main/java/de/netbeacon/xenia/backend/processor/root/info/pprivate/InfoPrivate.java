@@ -21,7 +21,7 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import io.javalin.http.*;
 import org.json.JSONObject;
@@ -32,7 +32,7 @@ public class InfoPrivate extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(InfoPrivate.class);
 
-    public InfoPrivate(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public InfoPrivate(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("private", sqlConnectionPool, websocketProcessor);
     }
 

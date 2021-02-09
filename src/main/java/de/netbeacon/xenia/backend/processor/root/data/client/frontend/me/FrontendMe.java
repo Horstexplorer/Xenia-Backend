@@ -20,7 +20,7 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.UsersRecord;
 import io.javalin.http.*;
@@ -33,7 +33,7 @@ public class FrontendMe extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(FrontendMe.class);
 
-    public FrontendMe(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public FrontendMe(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("me", sqlConnectionPool, websocketProcessor);
     }
 

@@ -18,13 +18,13 @@ package de.netbeacon.xenia.backend.processor.root.info;
 
 import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.root.info.pprivate.InfoPrivate;
 import de.netbeacon.xenia.backend.processor.root.info.ppublic.InfoPublic;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 
 public class InfoRoot extends RequestProcessor {
 
-    public InfoRoot(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public InfoRoot(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("info", sqlConnectionPool, websocketProcessor,
                 new InfoPrivate(sqlConnectionPool, websocketProcessor),
                 new InfoPublic(sqlConnectionPool, websocketProcessor)

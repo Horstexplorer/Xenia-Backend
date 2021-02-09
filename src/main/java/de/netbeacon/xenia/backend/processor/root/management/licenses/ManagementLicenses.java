@@ -20,7 +20,7 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.LicensesRecord;
 import io.javalin.http.*;
@@ -34,7 +34,7 @@ public class ManagementLicenses extends RequestProcessor {
 
     public final Logger logger = LoggerFactory.getLogger(ManagementLicenses.class);
 
-    public ManagementLicenses(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public ManagementLicenses(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("licenses", sqlConnectionPool, websocketProcessor);
     }
 

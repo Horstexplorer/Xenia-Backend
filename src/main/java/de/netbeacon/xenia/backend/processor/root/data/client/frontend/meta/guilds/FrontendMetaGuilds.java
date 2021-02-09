@@ -21,7 +21,7 @@ import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.client.objects.imp.DiscordClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
-import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
+import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import io.javalin.http.*;
 import org.jooq.Record;
@@ -39,7 +39,7 @@ public class FrontendMetaGuilds extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(FrontendMetaGuilds.class);
 
-    public FrontendMetaGuilds(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public FrontendMetaGuilds(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("meta_guilds", sqlConnectionPool, websocketProcessor);
     }
 

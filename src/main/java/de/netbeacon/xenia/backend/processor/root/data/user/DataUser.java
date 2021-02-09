@@ -38,7 +38,7 @@ public class DataUser extends RequestProcessor {
 
     private final Logger logger = LoggerFactory.getLogger(DataUser.class);
 
-    public DataUser(SQLConnectionPool sqlConnectionPool, WebsocketProcessor websocketProcessor) {
+    public DataUser(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
         super("user", sqlConnectionPool, websocketProcessor);
     }
 
