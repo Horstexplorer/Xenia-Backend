@@ -38,12 +38,15 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2' // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl
     implementation group: 'io.jsonwebtoken', name: 'jjwt-orgjson', version: '0.11.2' // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-orgjson
 
-
     // LOGGING
 
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30' // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.30' // https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12
     implementation group: 'club.minnced', name: 'discord-webhooks', version: '0.5.4' // https://mvnrepository.com/artifact/club.minnced/discord-webhooks
+
+    implementation 'io.prometheus:simpleclient:0.10.0' // https://mvnrepository.com/artifact/io.prometheus/simpleclient
+    implementation 'io.prometheus:simpleclient_hotspot:0.10.0' // https://mvnrepository.com/artifact/io.prometheus/simpleclient_hotspot
+    implementation 'io.prometheus:simpleclient_httpserver:0.10.0' // https://mvnrepository.com/artifact/io.prometheus/simpleclient_httpserver
 
     // AUTH THINGS
 
