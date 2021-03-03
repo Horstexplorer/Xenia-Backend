@@ -129,7 +129,7 @@ public class Core {
             DiscordOAuthHandler.createInstance(config.getLong("discord_client_id"), config.getString("discord_client_secret"),"https://xenia.netbeacon.de/auth/returning");
             // start PrometheusQOL
             try{
-                PrometheusQOL prometheusQOL = new PrometheusQOL(config.getInt("prometheus_port"));
+                PrometheusQOL prometheusQOL = new PrometheusQOL(config.getInt("web_port") + 1);
                 shutdownHook.addShutdownAble(prometheusQOL);
             }catch (Exception e){
                 logger.warn("Failed To Start Prometheus Integration");
