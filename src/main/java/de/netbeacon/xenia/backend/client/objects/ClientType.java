@@ -83,6 +83,8 @@ public class ClientType {
                 return BOT;
             case "web_interface":
                 return WEB_INTERFACE;
+            case "metrics":
+                return METRICS;
             case "internal":
                 return INTERNAL;
             case "system":
