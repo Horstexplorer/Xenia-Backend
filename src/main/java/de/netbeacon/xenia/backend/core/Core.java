@@ -146,7 +146,7 @@ public class Core {
                         cnf.enableCorsForOrigin("https://xenia.netbeacon.de/");
                     })
                     .before( ctx -> {
-                        Metrics.HTTP_REQUESTS.labels(ctx.path(), "total").inc();
+                        Metrics.HTTP_REQUESTS.labels(ctx.path(), "in", "total").inc();
                     })
                     .routes(()->{
                         path("auth", ()->{
@@ -556,7 +556,7 @@ public class Core {
                         });
                     })
                     .exception(HttpResponseException.class, (exception, ctx) -> {
-                        Metrics.HTTP_REQUESTS.labels(ctx.path(), String.valueOf(exception.getStatus())).inc();
+                        Metrics.HTTP_REQUESTS.labels(ctx.path(), "error", String.valueOf(exception.getStatus())).inc();
                     })
                     .after(ctx -> {
                         ctx.header("Server", "Xenia-Backend");

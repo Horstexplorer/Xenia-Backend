@@ -26,7 +26,7 @@ public class Metrics {
     public static final Counter HTTP_REQUESTS = Counter.build()
             .name("xenia_backend_http_requests")
             .help("Amount of http requests received")
-            .labelNames("endpoint", "status")
+            .labelNames("endpoint", "type", "status")
             .register();
 
     public static final Gauge WS_CLIENT_CONNECTIONS = Gauge.build()
