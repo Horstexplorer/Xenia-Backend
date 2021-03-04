@@ -557,7 +557,7 @@ public class Core {
                     })
                     .exception(HttpResponseException.class, (exception, ctx) -> {
                         Metrics.HTTP_REQUESTS.labels(ctx.path(), "error", String.valueOf(exception.getStatus())).inc();
-                        throw exception;
+                        ctx.status(exception.getStatus());
                     })
                     .after(ctx -> {
                         ctx.header("Server", "Xenia-Backend");
