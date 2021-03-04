@@ -41,10 +41,10 @@ import de.netbeacon.xenia.backend.security.SecurityManager;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
 import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
 import de.netbeacon.xenia.backend.utils.prometheus.Metrics;
-import de.netbeacon.xenia.backend.utils.prometheus.PrometheusQOL;
 import de.netbeacon.xenia.backend.utils.twitch.TwitchWrap;
 import io.javalin.Javalin;
 import io.javalin.http.HttpResponseException;
+import io.prometheus.client.hotspot.DefaultExports;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -107,6 +107,7 @@ public class Core {
                     .putRateLimiterSetting(ClientType.DISCORD, TimeUnit.MINUTES, 1, 60L);
             SecuritySettings managementSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.SYSTEM);
             SecuritySettings websocketSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.INTERNAL);
+            SecuritySettings metricsSetting = new SecuritySettings(SecuritySettings.AuthType.BASIC, ClientType.METRICS);
             // add to shutdown hook
             shutdownHook.addShutdownAble(securityManager);
             // prepare twitch wrap
@@ -128,12 +129,7 @@ public class Core {
             // prepare oAuth handler
             DiscordOAuthHandler.createInstance(config.getLong("discord_client_id"), config.getString("discord_client_secret"),"https://xenia.netbeacon.de/auth/returning");
             // start PrometheusQOL
-            try{
-                PrometheusQOL prometheusQOL = new PrometheusQOL(config.getInt("web_port") + 1);
-                shutdownHook.addShutdownAble(prometheusQOL);
-            }catch (Exception e){
-                logger.warn("Failed To Start Prometheus Integration");
-            }
+            DefaultExports.initialize();
             // start background tasks
             BackgroundServiceScheduler backgroundServiceScheduler = new BackgroundServiceScheduler();
             shutdownHook.addShutdownAble(backgroundServiceScheduler);
@@ -491,6 +487,12 @@ public class Core {
                             });
                         });
                         path("info", ()->{
+                            path("metrics", ()->{
+                                get(ctx -> {
+                                    Client client = securityManager.authorizeConnection(metricsSetting, ctx);
+                                    processor.next("info").next("metrics").preProcessor(client, ctx).get(client, ctx); // get metrics
+                                });
+                            });
                             path("ping", ()->{
                                 // we might receive invalid auth data so we dont even check for this here
                                 head(ctx -> ctx.status(200));
