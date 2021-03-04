@@ -25,16 +25,17 @@ public class ClientType {
     public static final ClientType DISCORD = new ClientType("DISCORD", 10);
     public static final ClientType BOT = new ClientType("BOT", 100);
     public static final ClientType WEB_INTERFACE = new ClientType("WEB_INTERFACE", 1000);
+    public static final ClientType METRICS = new ClientType("METRICS", 2500);
     public static final ClientType SYSTEM = new ClientType("SYSTEM", 10000);
     // GROUPS
     public static final ClientType INTERNAL = new ClientType("INTERNAL", 1,
-            List.of(SYSTEM, WEB_INTERFACE, BOT)
+            List.of(SYSTEM, WEB_INTERFACE, BOT, METRICS)
     );
     public static final ClientType REMOTE = new ClientType("REMOTE", 2,
             List.of(DISCORD)
     );
     public static final ClientType ANY = new ClientType("ANY", 0,
-           List.of(SYSTEM, REMOTE)
+           List.of(INTERNAL, REMOTE)
     );
 
 

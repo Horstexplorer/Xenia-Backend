@@ -18,6 +18,7 @@ package de.netbeacon.xenia.backend.processor;
 
 import de.netbeacon.utils.shutdownhook.IShutdown;
 import de.netbeacon.xenia.backend.client.objects.Client;
+import de.netbeacon.xenia.backend.utils.prometheus.Metrics;
 import io.javalin.websocket.WsContext;
 import io.javalin.websocket.WsMessageContext;
 import org.json.JSONObject;
@@ -66,6 +67,7 @@ public abstract class WebsocketProcessor implements IShutdown {
     }
 
     public void broadcast(WsMessage wsMessage, Client except){
+        Metrics.WS_MESSAGES.labels("out", "broadcast").inc();
         for(Map.Entry<Client, WsContext> entry : clientWSContextConcurrentHashMap.entrySet()){
             try{
                 if(entry.getKey().equals(except)){
@@ -79,6 +81,7 @@ public abstract class WebsocketProcessor implements IShutdown {
     }
 
     public void unicast(WsMessage wsMessage, Client recipient){
+        Metrics.WS_MESSAGES.labels("out", "unicast").inc();
         if(clientWSContextConcurrentHashMap.containsKey(recipient)){
             try{
                 clientWSContextConcurrentHashMap.get(recipient).send(wsMessage.asString());

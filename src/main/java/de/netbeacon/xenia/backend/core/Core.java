@@ -40,8 +40,11 @@ import de.netbeacon.xenia.backend.processor.ws.processor.imp.TwitchNotificationA
 import de.netbeacon.xenia.backend.security.SecurityManager;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
 import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
+import de.netbeacon.xenia.backend.utils.prometheus.Metrics;
 import de.netbeacon.xenia.backend.utils.twitch.TwitchWrap;
 import io.javalin.Javalin;
+import io.javalin.http.HttpResponseException;
+import io.prometheus.client.hotspot.DefaultExports;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -104,6 +107,7 @@ public class Core {
                     .putRateLimiterSetting(ClientType.DISCORD, TimeUnit.MINUTES, 1, 60L);
             SecuritySettings managementSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.SYSTEM);
             SecuritySettings websocketSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.INTERNAL);
+            SecuritySettings metricsSetting = new SecuritySettings(SecuritySettings.AuthType.BASIC, ClientType.METRICS);
             // add to shutdown hook
             shutdownHook.addShutdownAble(securityManager);
             // prepare twitch wrap
@@ -124,6 +128,8 @@ public class Core {
             RequestProcessor processor = new Root(clientManager, connectionPool, primaryWebsocketProcessor);
             // prepare oAuth handler
             DiscordOAuthHandler.createInstance(config.getLong("discord_client_id"), config.getString("discord_client_secret"),"https://xenia.netbeacon.de/auth/returning");
+            // start PrometheusQOL
+            DefaultExports.initialize();
             // start background tasks
             BackgroundServiceScheduler backgroundServiceScheduler = new BackgroundServiceScheduler();
             shutdownHook.addShutdownAble(backgroundServiceScheduler);
@@ -138,6 +144,9 @@ public class Core {
                     .create(cnf -> {
                         cnf.enforceSsl = true;
                         cnf.enableCorsForOrigin("https://xenia.netbeacon.de/");
+                    })
+                    .before( ctx -> {
+                        Metrics.HTTP_REQUESTS.labels(ctx.path(), "in", "total").inc();
                     })
                     .routes(()->{
                         path("auth", ()->{
@@ -478,6 +487,12 @@ public class Core {
                             });
                         });
                         path("info", ()->{
+                            path("metrics", ()->{
+                                get(ctx -> {
+                                    Client client = securityManager.authorizeConnection(metricsSetting, ctx);
+                                    processor.next("info").next("metrics").preProcessor(client, ctx).get(client, ctx); // get metrics
+                                });
+                            });
                             path("ping", ()->{
                                 // we might receive invalid auth data so we dont even check for this here
                                 head(ctx -> ctx.status(200));
@@ -499,26 +514,49 @@ public class Core {
                         path("ws", ()->{
                             ws(wsHandler -> {
                                 wsHandler.onConnect(wsCon->{
+                                    Metrics.WS_CLIENT_CONNECTIONS.labels("primary").inc();
                                     primaryWebsocketProcessor.register(wsCon, securityManager.authorizeWsConnection(websocketSetting, wsCon, primaryWebsocketProcessor));
                                 });
-                                wsHandler.onClose(primaryWebsocketProcessor::remove);
-                                wsHandler.onError(primaryWebsocketProcessor::remove);
-                                wsHandler.onMessage(primaryWebsocketProcessor::onMessage);
+                                wsHandler.onClose(ctx -> {
+                                    Metrics.WS_CLIENT_CONNECTIONS.labels("primary").dec();
+                                    primaryWebsocketProcessor.remove(ctx);
+                                });
+                                wsHandler.onError(ctx -> {
+                                    Metrics.WS_CLIENT_CONNECTIONS.labels("primary").dec();
+                                    primaryWebsocketProcessor.remove(ctx);
+                                });
+                                wsHandler.onMessage(ctx -> {
+                                    primaryWebsocketProcessor.onMessage(ctx);
+                                    Metrics.WS_MESSAGES.labels("in", "received").inc();
+                                });
                             });
                             path("secondary", ()->{
                                 ws(wsHandler -> {
                                     wsHandler.onConnect(wsCon->{
+                                        Metrics.WS_CLIENT_CONNECTIONS.labels("secondary").inc();
                                         secondaryWebsocketProcessor.register(wsCon, securityManager.authorizeWsConnection(websocketSetting, wsCon, secondaryWebsocketProcessor));
                                     });
-                                    wsHandler.onClose(secondaryWebsocketProcessor::remove);
-                                    wsHandler.onError(secondaryWebsocketProcessor::remove);
-                                    wsHandler.onMessage(secondaryWebsocketProcessor::onMessage);
+                                    wsHandler.onClose(ctx -> {
+                                        Metrics.WS_CLIENT_CONNECTIONS.labels("secondary").dec();
+                                        secondaryWebsocketProcessor.remove(ctx);
+                                    });
+                                    wsHandler.onError(ctx -> {
+                                        Metrics.WS_CLIENT_CONNECTIONS.labels("secondary").dec();
+                                        secondaryWebsocketProcessor.remove(ctx);
+                                    });
+                                    wsHandler.onMessage(ctx -> {
+                                        Metrics.WS_MESSAGES.labels("in", "received").inc();
+                                        secondaryWebsocketProcessor.onMessage(ctx);
+                                    });
                                 });
                             });
                         });
                         get("/", ctx -> {
                             ctx.html("<h1> Xenia-Backend </h1>\n"+"Running: "+AppInfo.get("buildVersion")+"_"+ AppInfo.get("buildNumber"));
                         });
+                    })
+                    .exception(HttpResponseException.class, (exception, ctx) -> {
+                        Metrics.HTTP_REQUESTS.labels(ctx.path(), "error", String.valueOf(exception.getStatus())).inc();
                     })
                     .after(ctx -> {
                         ctx.header("Server", "Xenia-Backend");
