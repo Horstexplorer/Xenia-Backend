@@ -25,9 +25,7 @@ import io.javalin.http.InternalServerErrorResponse;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.exporter.common.TextFormat;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -47,9 +45,11 @@ public class InfoMetrics extends RequestProcessor {
         Set<String> includedParam = ctx.pathParamMap().containsKey("name[]") ? new HashSet<>(ctx.queryParams("name[]")) : Collections.emptySet();
         ctx.status(200);
         ctx.contentType(contentType);
-        try{
-            Writer writer = new BufferedWriter(ctx.res.getWriter());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Writer writer = new BufferedWriter(new OutputStreamWriter(baos));
+        try(writer){
             TextFormat.writeFormat(contentType, writer, collectorRegistry.filteredMetricFamilySamples(includedParam));
+            ctx.result(baos.toByteArray());
         }catch (IOException e){
             throw new InternalServerErrorResponse(e.getMessage());
         }
