@@ -145,37 +145,39 @@ public class Core {
                         cnf.enforceSsl = true;
                         cnf.enableCorsForOrigin("https://xenia.netbeacon.de/");
                     })
-                    .before( ctx -> {
-                        Metrics.HTTP_REQUESTS.labels(ctx.path(), "in", "total").inc();
-                    })
                     .routes(()->{
                         path("auth", ()->{
                             path("discord", ()->{
                                 path("verify", ()-> {
                                     get(ctx -> {
+                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                         Client client = securityManager.authorizeConnection(discordAuthSetting, ctx);
                                         processor.next("auth").next("discord").next("verify").preProcessor(client, ctx).get(client, ctx);
                                     });
                                 });
                                 path("renew", ()-> {
                                     get(ctx -> {
+                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                         Client client = securityManager.authorizeConnection(discordAuthSetting, ctx);
                                         processor.next("auth").next("discord").next("renew").preProcessor(client, ctx).get(client, ctx);
                                     });
                                 });
                                 path("revoke", ()-> {
                                     get(ctx -> {
+                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                         Client client = securityManager.authorizeConnection(discordAuthSetting, ctx);
                                         processor.next("auth").next("discord").next("revoke").preProcessor(client, ctx).get(client, ctx);
                                     });
                                 });
                                 path("prepare", ()-> {
                                     get(ctx -> {
+                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                         Client client = securityManager.authorizeConnection(discordAuthReqSetting, ctx);
                                         processor.next("auth").next("discord").next("prepare").preProcessor(client, ctx).get(client, ctx);
                                     });
                                 });
                                 get(ctx -> {
+                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                     Client client = securityManager.authorizeConnection(discordAuthReqSetting, ctx);
                                     processor.next("auth").next("discord").preProcessor(client, ctx).get(client, ctx); // verify oauth and hand over local auth token
                                 });
@@ -183,11 +185,13 @@ public class Core {
                             path("token", ()->{
                                 path("renew", ()->{
                                     get(ctx -> {
+                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                         Client client = securityManager.authorizeConnection(tokenRenewSetting, ctx);
                                         processor.next("auth").next("token").next("renew").preProcessor(client, ctx).get(client, ctx); // renew token by using it
                                     });
                                 });
                                 get(ctx -> {
+                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                     Client client = securityManager.authorizeConnection(tokenRequestSetting, ctx);
                                     processor.next("auth").next("token").preProcessor(client, ctx).get(client, ctx); // get token with password
                                 });
@@ -196,6 +200,7 @@ public class Core {
                         path("setup", ()->{
                             path("bot", ()->{
                                 get(ctx -> {
+                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                     Client client = securityManager.authorizeConnection(botSetupSetting, ctx);
                                     processor.next("setup").next("bot").preProcessor(client, ctx).get(client, ctx); // get setup data
                                 });
@@ -205,18 +210,22 @@ public class Core {
                             path("users", ()->{
                                 path(":userId", ()->{
                                     get(ctx -> {
+                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                         Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                         processor.next("data").next("user").preProcessor(client, ctx).get(client, ctx); // get user data
                                     });
                                     put(ctx -> {
+                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                         Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                         processor.next("data").next("user").preProcessor(client, ctx).put(client, ctx); // update user data
                                     });
                                     post(ctx -> {
+                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                         Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                         processor.next("data").next("user").preProcessor(client, ctx).post(client, ctx); // create new
                                     });
                                     delete(ctx -> {
+                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                         Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                         processor.next("data").next("user").preProcessor(client, ctx).delete(client, ctx); // delete user
                                     });
@@ -228,23 +237,28 @@ public class Core {
                                     path("members", ()->{
                                         path(":userId", ()->{
                                             get(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("member").preProcessor(client, ctx).get(client, ctx); // get member data
                                             });
                                             put(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("member").preProcessor(client, ctx).put(client, ctx); // update member data
                                             });
                                             post(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("member").preProcessor(client, ctx).post(client, ctx); // create new
                                             });
                                             delete(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("member").preProcessor(client, ctx).delete(client, ctx); // delete member
                                             });
                                         });
                                         get(ctx -> {
+                                            Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                             Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                             processor.next("data").next("guild").next("member").preProcessor(client, ctx).get(client, ctx); // get data of all members
                                         });
@@ -253,23 +267,28 @@ public class Core {
                                     path("roles", ()->{
                                         path(":roleId", ()->{
                                             get(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("role").get(client, ctx); // get role data
                                             });
                                             put(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("role").put(client, ctx); // get update role data
                                             });
                                             post(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("role").post(client, ctx); // create new
                                             });
                                             delete(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("role").delete(client, ctx); // delete role
                                             });
                                         });
                                         get(ctx -> {
+                                            Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                             Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                             processor.next("data").next("guild").next("role").get(client, ctx); // get data of all roles
                                         });
@@ -280,45 +299,55 @@ public class Core {
                                             path("messages", ()->{
                                                 path(":messageId", ()->{
                                                     get(ctx -> {
+                                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                         Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                         processor.next("data").next("guild").next("channel").next("message").preProcessor(client, ctx).get(client, ctx); // get full guild data
                                                     });
                                                     put(ctx -> {
+                                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                         Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                         processor.next("data").next("guild").next("channel").next("message").preProcessor(client, ctx).put(client, ctx); // update guild data
                                                     });
                                                     post(ctx -> {
+                                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                         Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                         processor.next("data").next("guild").next("channel").next("message").preProcessor(client, ctx).post(client, ctx); // create guild data
                                                     });
                                                     delete(ctx -> {
+                                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                         Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                         processor.next("data").next("guild").next("channel").next("message").preProcessor(client, ctx).delete(client, ctx); // delete guild
                                                     });
                                                 });
                                                 get(ctx -> {
+                                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                     processor.next("data").next("guild").next("channel").next("message").preProcessor(client, ctx).get(client, ctx); // get full guild data
                                                 });
                                             });
                                             get(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("channel").preProcessor(client, ctx).get(client, ctx); // get channel data
                                             });
                                             put(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("channel").preProcessor(client, ctx).put(client, ctx); // update channel data
                                             });
                                             post(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("channel").preProcessor(client, ctx).post(client, ctx); // create new
                                             });
                                             delete(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("channel").preProcessor(client, ctx).delete(client, ctx); // delete channel
                                             });
                                         });
                                         get(ctx -> {
+                                            Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                             Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                             processor.next("data").next("guild").next("channel").preProcessor(client, ctx).get(client, ctx); // get data of all channels
                                         });
@@ -326,10 +355,12 @@ public class Core {
                                     // license
                                     path("license", ()->{
                                             get(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("license").preProcessor(client, ctx).get(client, ctx); // get current license
                                             });
                                             put(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("license").preProcessor(client, ctx).put(client, ctx); // update current license
                                             });
@@ -340,23 +371,28 @@ public class Core {
                                         path("tags", ()->{
                                             path(":tagName", ()->{
                                                 get(ctx -> {
+                                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                     processor.next("data").next("guild").next("misc").next("tags").preProcessor(client, ctx).get(client, ctx); // get tag data
                                                 });
                                                 put(ctx -> {
+                                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                     processor.next("data").next("guild").next("misc").next("tags").preProcessor(client, ctx).put(client, ctx); // edit tag
                                                 });
                                                 post(ctx -> {
+                                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                     processor.next("data").next("guild").next("misc").next("tags").preProcessor(client, ctx).post(client, ctx); // create tag
                                                 });
                                                 delete(ctx -> {
+                                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                     processor.next("data").next("guild").next("misc").next("tags").preProcessor(client, ctx).delete(client, ctx); // delete tag
                                                 });
                                             });
                                             get(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("misc").next("tags").preProcessor(client, ctx).get(client, ctx); // get full tag data
                                             });
@@ -365,23 +401,28 @@ public class Core {
                                         path("notifications", ()->{
                                             path(":notificationId", ()->{
                                                 get(ctx -> {
+                                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                     processor.next("data").next("guild").next("misc").next("notifications").preProcessor(client, ctx).get(client, ctx); // get notification data
                                                 });
                                                 put(ctx -> {
+                                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                     processor.next("data").next("guild").next("misc").next("notifications").preProcessor(client, ctx).put(client, ctx); // edit notification
                                                 });
                                                 post(ctx -> {
+                                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                     processor.next("data").next("guild").next("misc").next("notifications").preProcessor(client, ctx).post(client, ctx); // create notification
                                                 });
                                                 delete(ctx -> {
+                                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                     processor.next("data").next("guild").next("misc").next("notifications").preProcessor(client, ctx).delete(client, ctx); // delete notification
                                                 });
                                             });
                                             get(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("misc").next("notifications").preProcessor(client, ctx).get(client, ctx); // get full notification data
                                             });
@@ -389,23 +430,28 @@ public class Core {
                                         path("twitchnotifications", ()->{
                                             path(":notificationId", ()->{
                                                 get(ctx -> {
+                                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                     processor.next("data").next("guild").next("misc").next("twitchnotifications").preProcessor(client, ctx).get(client, ctx); // get notification data
                                                 });
                                                 put(ctx -> {
+                                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                     processor.next("data").next("guild").next("misc").next("twitchnotifications").preProcessor(client, ctx).put(client, ctx); // edit notification
                                                 });
                                                 post(ctx -> {
+                                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                     processor.next("data").next("guild").next("misc").next("twitchnotifications").preProcessor(client, ctx).post(client, ctx); // create notification
                                                 });
                                                 delete(ctx -> {
+                                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                     processor.next("data").next("guild").next("misc").next("twitchnotifications").preProcessor(client, ctx).delete(client, ctx); // delete notification
                                                 });
                                             });
                                             get(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                                 processor.next("data").next("guild").next("misc").next("twitchnotifications").preProcessor(client, ctx).get(client, ctx); // get full notification data
                                             });
@@ -413,18 +459,22 @@ public class Core {
                                     });
                                     // guild
                                     get(ctx -> {
+                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                         Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                         processor.next("data").next("guild").preProcessor(client, ctx).get(client, ctx); // get full guild data
                                     });
                                     put(ctx -> {
+                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                         Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                         processor.next("data").next("guild").preProcessor(client, ctx).put(client, ctx); // update guild data
                                     });
                                     post(ctx -> {
+                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                         Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                         processor.next("data").next("guild").preProcessor(client, ctx).post(client, ctx); // create guild data
                                     });
                                     delete(ctx -> {
+                                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                         Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                         processor.next("data").next("guild").preProcessor(client, ctx).delete(client, ctx); // delete guild
                                     });
@@ -437,6 +487,7 @@ public class Core {
                                 path("frontend", ()->{
                                     path("me", ()->{
                                         get(ctx -> {
+                                            Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                             Client client = securityManager.authorizeConnection(frontendQoLSetting, ctx);
                                             processor.next("data").next("client").next("frontend").next("me").preProcessor(client, ctx).get(client, ctx);
                                         });
@@ -444,6 +495,7 @@ public class Core {
                                     path("meta", ()->{
                                         path("guilds", ()->{
                                             get(ctx -> {
+                                                Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                                 Client client = securityManager.authorizeConnection(frontendQoLSetting, ctx);
                                                 processor.next("data").next("client").next("frontend").next("meta_guilds").preProcessor(client, ctx).get(client, ctx);
                                             });
@@ -455,32 +507,39 @@ public class Core {
                         path("management", ()->{
                             path("clients", ()->{
                                 get(ctx -> {
+                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                     Client client = securityManager.authorizeConnection(managementSetting, ctx);
                                     processor.next("management").next("clients").preProcessor(client, ctx).get(client, ctx); // get channel data
                                 });
                                 put(ctx -> {
+                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                     Client client = securityManager.authorizeConnection(managementSetting, ctx);
                                     processor.next("management").next("clients").preProcessor(client, ctx).put(client, ctx); // update channel data
                                 });
                                 post(ctx -> {
+                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                     Client client = securityManager.authorizeConnection(managementSetting, ctx);
                                     processor.next("management").next("clients").preProcessor(client, ctx).post(client, ctx); // create new
                                 });
                                 delete(ctx -> {
+                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                     Client client = securityManager.authorizeConnection(managementSetting, ctx);
                                     processor.next("management").next("clients").preProcessor(client, ctx).delete(client, ctx); // delete channel
                                 });
                             });
                             path("licenses", ()->{
                                 get(ctx -> {
+                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                     Client client = securityManager.authorizeConnection(managementSetting, ctx);
                                     processor.next("management").next("licenses").preProcessor(client, ctx).get(client, ctx); // get channel data
                                 });
                                 post(ctx -> {
+                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                     Client client = securityManager.authorizeConnection(managementSetting, ctx);
                                     processor.next("management").next("licenses").preProcessor(client, ctx).post(client, ctx); // create new
                                 });
                                 delete(ctx -> {
+                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                     Client client = securityManager.authorizeConnection(managementSetting, ctx);
                                     processor.next("management").next("licenses").preProcessor(client, ctx).delete(client, ctx); // delete channel
                                 });
@@ -489,6 +548,7 @@ public class Core {
                         path("info", ()->{
                             path("metrics", ()->{
                                 get(ctx -> {
+                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                     Client client = securityManager.authorizeConnection(metricsSetting, ctx);
                                     processor.next("info").next("metrics").preProcessor(client, ctx).get(client, ctx); // get metrics
                                 });
@@ -500,12 +560,14 @@ public class Core {
                             });
                             path("public", ()->{
                                 get(ctx -> {
+                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                     Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
                                     processor.next("info").next("public").preProcessor(client, ctx).get(client, ctx); // get public stats
                                 });
                             });
                             path("private", ()->{
                                 get(ctx -> {
+                                    Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                                     Client client = securityManager.authorizeConnection(botPrivateStatSetting, ctx);
                                     processor.next("info").next("private").preProcessor(client, ctx).get(client, ctx); // get private stats
                                 });
@@ -552,6 +614,7 @@ public class Core {
                             });
                         });
                         get("/", ctx -> {
+                            Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "path").inc();
                             ctx.html("<h1> Xenia-Backend </h1>\n"+"Running: "+AppInfo.get("buildVersion")+"_"+ AppInfo.get("buildNumber"));
                         });
                     })
@@ -560,6 +623,7 @@ public class Core {
                         ctx.status(exception.getStatus());
                     })
                     .after(ctx -> {
+                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "in", "total").inc();
                         ctx.header("Server", "Xenia-Backend");
                     });
 
