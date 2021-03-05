@@ -46,7 +46,6 @@ dependencies {
 
     implementation group: 'io.prometheus', name: 'simpleclient', version: '0.10.0' // https://mvnrepository.com/artifact/io.prometheus/simpleclient
     implementation group: 'io.prometheus', name:'simpleclient_hotspot', version: '0.10.0' // https://mvnrepository.com/artifact/io.prometheus/simpleclient_hotspot
-    implementation group: 'io.prometheus', name: 'simpleclient_servlet', version: '0.10.0' // https://mvnrepository.com/artifact/io.prometheus/simpleclient_servlet
 
     // AUTH THINGS
 
