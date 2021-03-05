@@ -556,7 +556,7 @@ public class Core {
                         });
                     })
                     .exception(HttpResponseException.class, (exception, ctx) -> {
-                        Metrics.HTTP_REQUESTS.labels(ctx.path(), "error", String.valueOf(exception.getStatus())).inc();
+                        Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), "error", String.valueOf(exception.getStatus())).inc();
                         ctx.status(exception.getStatus());
                     })
                     .after(ctx -> {
