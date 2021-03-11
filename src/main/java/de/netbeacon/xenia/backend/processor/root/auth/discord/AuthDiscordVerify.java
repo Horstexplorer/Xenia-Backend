@@ -41,6 +41,6 @@ public class AuthDiscordVerify extends RequestProcessor {
 
     @Override
     public void get(Client client, Context ctx) {
-        ctx.status(200);
+        ctx.status(204);
     }
 }
