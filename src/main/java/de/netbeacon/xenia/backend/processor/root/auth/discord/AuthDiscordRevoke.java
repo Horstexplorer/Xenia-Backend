@@ -50,7 +50,7 @@ public class AuthDiscordRevoke extends RequestProcessor {
             if(mod == 0){
                 throw new InternalServerErrorResponse();
             }
-            ctx.status(200);
+            ctx.status(204);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing AuthDiscordRevoke#GET ", e);

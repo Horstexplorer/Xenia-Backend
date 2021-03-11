@@ -303,7 +303,7 @@ public class DataGuildMember extends RequestProcessor {
             if(mod == 0){
                 throw new NotFoundResponse();
             }
-            ctx.status(200);
+            ctx.status(204);
             // send ws notification
             WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
             wsMessage.get().put("type", "GUILD_MEMBER").put("action", "DELETE").put("guildId", guildId).put("userId", userId);

@@ -77,7 +77,7 @@ public class AuthDiscordRenew extends RequestProcessor {
             // update db
             sqlContext.executeUpdate(oauthRecord);
             // send ok
-            ctx.status(200);
+            ctx.status(204);
         }catch (HttpResponseException e){
             if(e instanceof InternalServerErrorResponse){
                 logger.error("An Error Occurred Processing AuthDiscordRenew#GET ", e);

@@ -146,7 +146,7 @@ public class ManagementLicenses extends RequestProcessor {
                 throw new NotFoundResponse();
             }
             // return
-            ctx.status(200);
+            ctx.status(204);
         }catch (HttpResponseException e){
             throw e;
         }catch (NullPointerException e){

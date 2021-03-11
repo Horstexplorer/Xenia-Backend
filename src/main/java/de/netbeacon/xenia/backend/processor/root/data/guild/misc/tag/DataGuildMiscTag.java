@@ -246,7 +246,7 @@ public class DataGuildMiscTag extends RequestProcessor {
             if(mod == 0){
                 throw new NotFoundResponse();
             }
-            ctx.status(200);
+            ctx.status(204);
             // send ws notification
             WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
             wsMessage.get().put("type", "GUILD_MISC_TAG").put("action", "DELETE").put("guildId", guildId).put("tagName", tagName);

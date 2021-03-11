@@ -236,7 +236,7 @@ public class DataGuildRole extends RequestProcessor {
             if(mod == 0){
                 throw new NotFoundResponse();
             }
-            ctx.status(200);
+            ctx.status(204);
             // send ws notification
             PrimaryWebsocketProcessor.WsMessage wsMessage = new PrimaryWebsocketProcessor.WsMessage();
             wsMessage.get().put("type", "GUILD_ROLE").put("action", "DELETE").put("guildId", guildId).put("roleId", roleId);
