@@ -135,6 +135,7 @@ public class DataGuildLicense extends RequestProcessor {
                                 .put("miscTags", record2.get(Tables.LICENSE_TYPES.PERK_MISC_TAGS_C))
                                 .put("miscNotifications", record2.get(Tables.LICENSE_TYPES.PERK_MISC_NOTIFICATIONS_C))
                                 .put("miscTwitchNotifications", record2.get(Tables.LICENSE_TYPES.PERK_MISC_TWITCHNOTIFICATIONS_C))
+                                .put("channelD43z1SelfLearning", record2.get(Tables.LICENSE_TYPES.PERK_CHANNEL_D43Z1_SELFLEARNING_C))
                         );
             }else{
                 jsonObject
@@ -148,6 +149,7 @@ public class DataGuildLicense extends RequestProcessor {
                                 .put("miscTags", record.get(Tables.LICENSE_TYPES.PERK_MISC_TAGS_C))
                                 .put("miscNotifications", record.get(Tables.LICENSE_TYPES.PERK_MISC_NOTIFICATIONS_C))
                                 .put("miscTwitchNotifications", record.get(Tables.LICENSE_TYPES.PERK_MISC_TWITCHNOTIFICATIONS_C))
+                                .put("channelD43z1SelfLearning", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_D43Z1_SELFLEARNING_C))
                         );
             }
             // respond
@@ -209,6 +211,7 @@ public class DataGuildLicense extends RequestProcessor {
                             .put("miscTags", record.get(Tables.LICENSE_TYPES.PERK_MISC_TAGS_C))
                             .put("miscNotifications", record.get(Tables.LICENSE_TYPES.PERK_MISC_NOTIFICATIONS_C))
                             .put("miscTwitchNotifications", record.get(Tables.LICENSE_TYPES.PERK_MISC_TWITCHNOTIFICATIONS_C))
+                            .put("channelD43z1SelfLearning", record.get(Tables.LICENSE_TYPES.PERK_CHANNEL_D43Z1_SELFLEARNING_C))
                     );
             // respond
             ctx.status(200);
