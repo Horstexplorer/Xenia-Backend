@@ -4,8 +4,37 @@
 package de.netbeacon.xenia.jooq;
 
 
-import de.netbeacon.xenia.jooq.tables.*;
-import de.netbeacon.xenia.jooq.tables.records.*;
+import de.netbeacon.xenia.jooq.tables.Channels;
+import de.netbeacon.xenia.jooq.tables.Guilds;
+import de.netbeacon.xenia.jooq.tables.InternalBotData;
+import de.netbeacon.xenia.jooq.tables.InternalBotShards;
+import de.netbeacon.xenia.jooq.tables.LicenseTypes;
+import de.netbeacon.xenia.jooq.tables.Licenses;
+import de.netbeacon.xenia.jooq.tables.Members;
+import de.netbeacon.xenia.jooq.tables.MembersRoles;
+import de.netbeacon.xenia.jooq.tables.Messages;
+import de.netbeacon.xenia.jooq.tables.Notifications;
+import de.netbeacon.xenia.jooq.tables.Oauth;
+import de.netbeacon.xenia.jooq.tables.Tags;
+import de.netbeacon.xenia.jooq.tables.Twitchnotifications;
+import de.netbeacon.xenia.jooq.tables.Users;
+import de.netbeacon.xenia.jooq.tables.Vroles;
+import de.netbeacon.xenia.jooq.tables.records.ChannelsRecord;
+import de.netbeacon.xenia.jooq.tables.records.GuildsRecord;
+import de.netbeacon.xenia.jooq.tables.records.InternalBotDataRecord;
+import de.netbeacon.xenia.jooq.tables.records.InternalBotShardsRecord;
+import de.netbeacon.xenia.jooq.tables.records.LicenseTypesRecord;
+import de.netbeacon.xenia.jooq.tables.records.LicensesRecord;
+import de.netbeacon.xenia.jooq.tables.records.MembersRecord;
+import de.netbeacon.xenia.jooq.tables.records.MembersRolesRecord;
+import de.netbeacon.xenia.jooq.tables.records.MessagesRecord;
+import de.netbeacon.xenia.jooq.tables.records.NotificationsRecord;
+import de.netbeacon.xenia.jooq.tables.records.OauthRecord;
+import de.netbeacon.xenia.jooq.tables.records.TagsRecord;
+import de.netbeacon.xenia.jooq.tables.records.TwitchnotificationsRecord;
+import de.netbeacon.xenia.jooq.tables.records.UsersRecord;
+import de.netbeacon.xenia.jooq.tables.records.VrolesRecord;
+
 import org.jooq.ForeignKey;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;

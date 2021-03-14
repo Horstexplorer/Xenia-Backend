@@ -66,7 +66,7 @@ public class Users extends TableImpl<UsersRecord> {
     /**
      * The column <code>public.users.preferred_language</code>.
      */
-    public final TableField<UsersRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.field("'en_US'::character varying", SQLDataType.VARCHAR)), this, "");
+    public final TableField<UsersRecord, String> PREFERRED_LANGUAGE = createField(DSL.name("preferred_language"), SQLDataType.VARCHAR(64).nullable(false).defaultValue(DSL.field("'en_us'::character varying", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.users.meta_username</code>.

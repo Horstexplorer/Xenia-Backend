@@ -15,7 +15,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -86,6 +86,11 @@ public class LicenseTypes extends TableImpl<LicenseTypesRecord> {
      * The column <code>public.license_types.perk_misc_twitchnotifications_c</code>.
      */
     public final TableField<LicenseTypesRecord, Integer> PERK_MISC_TWITCHNOTIFICATIONS_C = createField(DSL.name("perk_misc_twitchnotifications_c"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.license_types.perk_channel_d43z1_selflearning_c</code>.
+     */
+    public final TableField<LicenseTypesRecord, Integer> PERK_CHANNEL_D43Z1_SELFLEARNING_C = createField(DSL.name("perk_channel_d43z1_selflearning_c"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private LicenseTypes(Name alias, Table<LicenseTypesRecord> aliased) {
         this(alias, aliased, null);
@@ -162,11 +167,11 @@ public class LicenseTypes extends TableImpl<LicenseTypesRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, String, String, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<Integer, String, String, Integer, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }
