@@ -7,24 +7,14 @@ package de.netbeacon.xenia.jooq.tables;
 import de.netbeacon.xenia.jooq.Keys;
 import de.netbeacon.xenia.jooq.Public;
 import de.netbeacon.xenia.jooq.tables.records.GuildsRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row8;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.SQLDataType;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -87,6 +77,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
      * The column <code>public.guilds.guild_settings</code>.
      */
     public final TableField<GuildsRecord, Integer> GUILD_SETTINGS = createField(DSL.name("guild_settings"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.guilds.guild_d43z1_mode</code>.
+     */
+    public final TableField<GuildsRecord, Integer> GUILD_D43Z1_MODE = createField(DSL.name("guild_d43z1_mode"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     private Guilds(Name alias, Table<GuildsRecord> aliased) {
         this(alias, aliased, null);
@@ -172,11 +167,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Long, LocalDateTime, String, Integer, String, String, String, Integer> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<Long, LocalDateTime, String, Integer, String, String, String, Integer, Integer> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }
