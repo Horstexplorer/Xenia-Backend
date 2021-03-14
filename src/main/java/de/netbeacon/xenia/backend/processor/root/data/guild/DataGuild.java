@@ -128,6 +128,7 @@ public class DataGuild extends RequestProcessor {
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage())
                     .put("prefix", guildsRecord.getGuildPrefix())
                     .put("settings", guildsRecord.getGuildSettings())
+                    .put("d43z1Mode", guildsRecord.getGuildD43z1Mode())
                     .put("meta", new JSONObject()
                             .put("name", guildsRecord.getMetaGuildname())
                             .put("iconUrl", (guildsRecord.getMetaIconurl() != null) ? guildsRecord.getMetaIconurl() : JSONObject.NULL)
@@ -166,6 +167,7 @@ public class DataGuild extends RequestProcessor {
             guildsRecord.setPreferredLanguage(newData.getString("preferredLanguage"));
             guildsRecord.setGuildSettings(newData.getInt("settings"));
             guildsRecord.setGuildPrefix(newData.getString("prefix"));
+            guildsRecord.setGuildD43z1Mode(newData.getInt("d43z1Mode"));
             JSONObject metaData = newData.getJSONObject("meta");
             guildsRecord.setMetaGuildname(metaData.getString("name"));
             guildsRecord.setMetaIconurl(metaData.get("iconUrl") != JSONObject.NULL ? metaData.getString("iconUrl") : null);
@@ -178,6 +180,7 @@ public class DataGuild extends RequestProcessor {
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage())
                     .put("prefix", guildsRecord.getGuildPrefix())
                     .put("settings", guildsRecord.getGuildSettings())
+                    .put("d43z1Mode", guildsRecord.getGuildD43z1Mode())
                     .put("meta", new JSONObject()
                             .put("name", guildsRecord.getMetaGuildname())
                             .put("iconUrl", (guildsRecord.getMetaIconurl() != null) ? guildsRecord.getMetaIconurl() : JSONObject.NULL)
@@ -221,6 +224,7 @@ public class DataGuild extends RequestProcessor {
                     .put("preferredLanguage", guildsRecord.getPreferredLanguage())
                     .put("prefix", guildsRecord.getGuildPrefix())
                     .put("settings", guildsRecord.getGuildSettings())
+                    .put("d43z1Mode", guildsRecord.getGuildD43z1Mode())
                     .put("meta", new JSONObject()
                             .put("name", guildsRecord.getMetaGuildname())
                             .put("iconUrl", (guildsRecord.getMetaIconurl() != null) ? guildsRecord.getMetaIconurl() : JSONObject.NULL)
