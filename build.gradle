@@ -19,7 +19,6 @@ compileJava.options.encoding = 'UTF-8'
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
