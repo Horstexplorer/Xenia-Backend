@@ -39,6 +39,7 @@ import de.netbeacon.xenia.backend.processor.ws.processor.imp.StatisticsProcessor
 import de.netbeacon.xenia.backend.processor.ws.processor.imp.TwitchNotificationAccelerator;
 import de.netbeacon.xenia.backend.security.SecurityManager;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
+import de.netbeacon.xenia.backend.utils.botlistupdater.BotListUpdater;
 import de.netbeacon.xenia.backend.utils.oauth.DiscordOAuthHandler;
 import de.netbeacon.xenia.backend.utils.prometheus.Metrics;
 import de.netbeacon.xenia.backend.utils.twitch.TwitchWrap;
@@ -128,6 +129,8 @@ public class Core {
             RequestProcessor processor = new Root(clientManager, connectionPool, primaryWebsocketProcessor);
             // prepare oAuth handler
             DiscordOAuthHandler.createInstance(config.getLong("discord_client_id"), config.getString("discord_client_secret"),"https://xenia.netbeacon.de/auth/returning");
+            // prepare BotListUpdater
+            shutdownHook.addShutdownAble(new BotListUpdater(connectionPool));
             // start PrometheusQOL
             DefaultExports.initialize();
             // start background tasks
@@ -139,7 +142,6 @@ public class Core {
             backgroundServiceScheduler.schedule(new TwitchNotificationProcessor(connectionPool, primaryWebsocketProcessor, secondaryWebsocketProcessor, twitchWrap), 300000, true);
             backgroundServiceScheduler.schedule(new TwitchNotificationCleanup(connectionPool, primaryWebsocketProcessor), 300000, true);
             backgroundServiceScheduler.schedule(new MessageCleanup(connectionPool, primaryWebsocketProcessor), 1800000, true);
-            backgroundServiceScheduler.schedule(new BotListStatsUpdate(connectionPool), 300000, true);
             // prepare javalin
             Javalin javalin = Javalin
                     .create(cnf -> {
