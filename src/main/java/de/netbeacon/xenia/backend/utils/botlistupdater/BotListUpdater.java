@@ -51,7 +51,7 @@ public class BotListUpdater implements IBLHUpdater, IShutdown {
         for(String key : botLists.keySet()){
             botListMap.put(BotList.valueOf(key), botLists.getString(key));
         }
-        this.botListHandler = new BLHBuilder(this, botListMap).setAutoPostDelay(15, TimeUnit.MINUTES).build();
+        this.botListHandler = new BLHBuilder(this, botListMap).setNoUpdateNecessaryLoggingEnabled(false).setAutoPostDelay(15, TimeUnit.MINUTES).build();
     }
 
     @Override
