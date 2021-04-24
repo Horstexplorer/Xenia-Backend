@@ -23,12 +23,13 @@ import de.netbeacon.xenia.backend.processor.root.management.clients.ManagementCl
 import de.netbeacon.xenia.backend.processor.root.management.licenses.ManagementLicenses;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 
-public class ManagementRoot extends RequestProcessor {
+public class ManagementRoot extends RequestProcessor{
 
-    public ManagementRoot(ClientManager clientManager, SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
-        super("management", sqlConnectionPool, websocketProcessor,
-                new ManagementClients(clientManager, sqlConnectionPool, websocketProcessor),
-                new ManagementLicenses(sqlConnectionPool, websocketProcessor)
-        );
-    }
+	public ManagementRoot(ClientManager clientManager, SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
+		super("management", sqlConnectionPool, websocketProcessor,
+			new ManagementClients(clientManager, sqlConnectionPool, websocketProcessor),
+			new ManagementLicenses(sqlConnectionPool, websocketProcessor)
+		);
+	}
+
 }

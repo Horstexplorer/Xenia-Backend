@@ -21,12 +21,13 @@ package de.netbeacon.xenia.backend.utils.twitch.exceptions;
  */
 public class ProcessingException extends RuntimeException{
 
-    /**
-     * Creates a new instance of this class
-     * @param message error message
-     */
-    public ProcessingException(String message){
-        super(message);
-    }
+	/**
+	 * Creates a new instance of this class
+	 *
+	 * @param message error message
+	 */
+	public ProcessingException(String message){
+		super(message);
+	}
 
 }

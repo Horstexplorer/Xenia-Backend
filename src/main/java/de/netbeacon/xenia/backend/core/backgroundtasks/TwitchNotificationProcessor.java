@@ -36,88 +36,92 @@ import java.util.stream.Collectors;
 
 public class TwitchNotificationProcessor extends BackgroundServiceScheduler.Task{
 
-    private final TwitchWrap wrap;
-    private final Logger logger = LoggerFactory.getLogger(TwitchNotificationProcessor.class);
-    private final ConcurrentHashMap<Long, Boolean> streamStateHashMap = new ConcurrentHashMap<>();
-    private final AtomicBoolean running = new AtomicBoolean(false);
+	private final TwitchWrap wrap;
+	private final Logger logger = LoggerFactory.getLogger(TwitchNotificationProcessor.class);
+	private final ConcurrentHashMap<Long, Boolean> streamStateHashMap = new ConcurrentHashMap<>();
+	private final AtomicBoolean running = new AtomicBoolean(false);
 
-    public TwitchNotificationProcessor(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor, SecondaryWebsocketProcessor secondaryWebsocketProcessor, TwitchWrap twitchWrap) {
-        super(sqlConnectionPool, primaryWebsocketProcessor, secondaryWebsocketProcessor);
-        this.wrap = twitchWrap;
-    }
+	public TwitchNotificationProcessor(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor, SecondaryWebsocketProcessor secondaryWebsocketProcessor, TwitchWrap twitchWrap){
+		super(sqlConnectionPool, primaryWebsocketProcessor, secondaryWebsocketProcessor);
+		this.wrap = twitchWrap;
+	}
 
-    @Override
-    void onExecution() {
-        try{
-            if(running.get()){
-                logger.warn("Skipping Stream Refresh - Action Is Still Running");
-                return;
-            }
-            running.set(true);
-            // retrieve all stream ids
-            try(var con = getSqlConnectionPool().getConnection()) {
-                var sqlContext = getSqlConnectionPool().getContext(con);
-                Result<TwitchnotificationsRecord> twitchnotificationsRecordResult = sqlContext.selectFrom(Tables.TWITCHNOTIFICATIONS).fetch();
-                Set<Long> channelIds = new HashSet<>();
-                HashMap<Long, List<TwitchnotificationsRecord>> tempStorage = new HashMap<>();
-                for(TwitchnotificationsRecord record : twitchnotificationsRecordResult){
-                    if(record.getTwitchnotificationTwitchChannelId() == null){
-                        return; // hasn't been init yet
-                    }
-                    channelIds.add(record.getTwitchnotificationTwitchChannelId());
-                    if(!tempStorage.containsKey(record.getTwitchnotificationTwitchChannelId())){
-                        tempStorage.put(record.getTwitchnotificationTwitchChannelId(), new ArrayList<>());
-                    }
-                    tempStorage.get(record.getTwitchnotificationTwitchChannelId()).add(record);
-                }
-                // remove no longer existing entries
-                streamStateHashMap.keySet().stream().filter(k -> !channelIds.contains(k)).collect(Collectors.toList()).forEach(streamStateHashMap::remove);
-                // request data for all streams existing
-                List<TwitchWrapQOL.StreamResponse> streamResponseList = TwitchWrapQOL.getStreamOf(channelIds, wrap);
-                // prepare something
-                Set<Long> usedIds = new HashSet<>();
-                // check against the cached state
-                streamResponseList.forEach(response -> {
-                            usedIds.add(response.getChannelId());
-                            if((!streamStateHashMap.containsKey(response.getChannelId()) && response.isLive()) || (streamStateHashMap.get(response.getChannelId()) != response.isLive() && response.isLive())){
-                                streamStateHashMap.put(response.getChannelId(), response.isLive());
-                                // trigger notification
-                                triggerNotification(tempStorage.get(response.getChannelId()), response);
-                            }else {
-                                // reset the state as we dont know for sure
-                                streamStateHashMap.put(response.getChannelId(), response.isLive());
-                            }
-                        });
-                // reset streams that are offline
-                streamStateHashMap.keySet().stream().filter(k -> !usedIds.contains(k)).forEach(k -> streamStateHashMap.put(k, false));
-            }
-        }catch (Exception e){
-            logger.error("A Critical Error While Checking Twitch Streams: ", e);
-        }finally {
-            running.set(false);
-        }
-    }
+	@Override
+	void onExecution(){
+		try{
+			if(running.get()){
+				logger.warn("Skipping Stream Refresh - Action Is Still Running");
+				return;
+			}
+			running.set(true);
+			// retrieve all stream ids
+			try(var con = getSqlConnectionPool().getConnection()){
+				var sqlContext = getSqlConnectionPool().getContext(con);
+				Result<TwitchnotificationsRecord> twitchnotificationsRecordResult = sqlContext.selectFrom(Tables.TWITCHNOTIFICATIONS).fetch();
+				Set<Long> channelIds = new HashSet<>();
+				HashMap<Long, List<TwitchnotificationsRecord>> tempStorage = new HashMap<>();
+				for(TwitchnotificationsRecord record : twitchnotificationsRecordResult){
+					if(record.getTwitchnotificationTwitchChannelId() == null){
+						return; // hasn't been init yet
+					}
+					channelIds.add(record.getTwitchnotificationTwitchChannelId());
+					if(!tempStorage.containsKey(record.getTwitchnotificationTwitchChannelId())){
+						tempStorage.put(record.getTwitchnotificationTwitchChannelId(), new ArrayList<>());
+					}
+					tempStorage.get(record.getTwitchnotificationTwitchChannelId()).add(record);
+				}
+				// remove no longer existing entries
+				streamStateHashMap.keySet().stream().filter(k -> !channelIds.contains(k)).collect(Collectors.toList()).forEach(streamStateHashMap::remove);
+				// request data for all streams existing
+				List<TwitchWrapQOL.StreamResponse> streamResponseList = TwitchWrapQOL.getStreamOf(channelIds, wrap);
+				// prepare something
+				Set<Long> usedIds = new HashSet<>();
+				// check against the cached state
+				streamResponseList.forEach(response -> {
+					usedIds.add(response.getChannelId());
+					if((!streamStateHashMap.containsKey(response.getChannelId()) && response.isLive()) || (streamStateHashMap.get(response.getChannelId()) != response.isLive() && response.isLive())){
+						streamStateHashMap.put(response.getChannelId(), response.isLive());
+						// trigger notification
+						triggerNotification(tempStorage.get(response.getChannelId()), response);
+					}
+					else{
+						// reset the state as we dont know for sure
+						streamStateHashMap.put(response.getChannelId(), response.isLive());
+					}
+				});
+				// reset streams that are offline
+				streamStateHashMap.keySet().stream().filter(k -> !usedIds.contains(k)).forEach(k -> streamStateHashMap.put(k, false));
+			}
+		}
+		catch(Exception e){
+			logger.error("A Critical Error While Checking Twitch Streams: ", e);
+		}
+		finally{
+			running.set(false);
+		}
+	}
 
-    private void triggerNotification(List<TwitchnotificationsRecord> temp, TwitchWrapQOL.StreamResponse response){
-        for(TwitchnotificationsRecord twitchnotificationsRecord : temp){
-            // payload
-            JSONObject jsonObject = new JSONObject()
-                    .put("guildId", twitchnotificationsRecord.getGuildId())
-                    .put("twitchNotificationId", twitchnotificationsRecord.getTwitchnotificationId())
-                    .put("data", new JSONObject()
-                            .put("channelName", response.getChannelName())
-                            .put("streamTitle", response.getStreamTitle())
-                            .put("game", response.getGame())
-                    );
-            // request
-            WSRequest wsRequest = new WSRequest.Builder()
-                    .action("twitchnotify")
-                    .exitOn(WSRequest.ExitOn.INSTANT)
-                    .mode(WSRequest.Mode.BROADCAST)
-                    .payload(jsonObject)
-                    .build();
-            // as we dont know where it belongs we broadcast it
-            getSecondaryWebsocketProcessor().getWsProcessorCore().process(wsRequest);
-        }
-    }
+	private void triggerNotification(List<TwitchnotificationsRecord> temp, TwitchWrapQOL.StreamResponse response){
+		for(TwitchnotificationsRecord twitchnotificationsRecord : temp){
+			// payload
+			JSONObject jsonObject = new JSONObject()
+				.put("guildId", twitchnotificationsRecord.getGuildId())
+				.put("twitchNotificationId", twitchnotificationsRecord.getTwitchnotificationId())
+				.put("data", new JSONObject()
+					.put("channelName", response.getChannelName())
+					.put("streamTitle", response.getStreamTitle())
+					.put("game", response.getGame())
+				);
+			// request
+			WSRequest wsRequest = new WSRequest.Builder()
+				.action("twitchnotify")
+				.exitOn(WSRequest.ExitOn.INSTANT)
+				.mode(WSRequest.Mode.BROADCAST)
+				.payload(jsonObject)
+				.build();
+			// as we dont know where it belongs we broadcast it
+			getSecondaryWebsocketProcessor().getWsProcessorCore().process(wsRequest);
+		}
+	}
+
 }

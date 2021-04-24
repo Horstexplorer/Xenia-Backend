@@ -18,12 +18,14 @@ package de.netbeacon.xenia.backend.client.objects;
 
 import de.netbeacon.utils.json.serial.IJSONSerializable;
 
-public interface Auth extends IJSONSerializable {
+public interface Auth extends IJSONSerializable{
 
-    default void setPassword(String password){}
-    default boolean verifyPassword(String password){ return false; }
+	default void setPassword(String password){}
 
-    default String getToken(){ return null; }
-    default boolean verifyToken(String token){ return false; }
+	default boolean verifyPassword(String password){ return false; }
+
+	default String getToken(){ return null; }
+
+	default boolean verifyToken(String token){ return false; }
 
 }

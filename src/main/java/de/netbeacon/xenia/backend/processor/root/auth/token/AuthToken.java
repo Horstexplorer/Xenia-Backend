@@ -29,37 +29,39 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AuthToken extends RequestProcessor {
+public class AuthToken extends RequestProcessor{
 
-    private final Logger logger = LoggerFactory.getLogger(AuthToken.class);
+	private final Logger logger = LoggerFactory.getLogger(AuthToken.class);
 
-    public AuthToken(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
-        super("token", sqlConnectionPool, websocketProcessor,
-                new AuthTokenRenew(sqlConnectionPool, websocketProcessor)
-        );
-    }
+	public AuthToken(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
+		super("token", sqlConnectionPool, websocketProcessor,
+			new AuthTokenRenew(sqlConnectionPool, websocketProcessor)
+		);
+	}
 
-    @Override
-    public RequestProcessor preProcessor(Client client, Context context) {
-        if(client.getClientType().equals(ClientType.DISCORD)){
-            throw new ForbiddenResponse();
-        }
-        return this;
-    }
+	@Override
+	public RequestProcessor preProcessor(Client client, Context context){
+		if(client.getClientType().equals(ClientType.DISCORD)){
+			throw new ForbiddenResponse();
+		}
+		return this;
+	}
 
-    @Override
-    public void get(Client client, Context ctx) {
-        try{
-            // json
-            JSONObject jsonObject = new JSONObject()
-                    .put("token", ((LocalClient) client).getAuth().getToken());
-            // return
-            ctx.status(200);
-            ctx.header("Content-Type", "application/json");
-            ctx.result(jsonObject.toString());
-        }catch (Exception e){
-            logger.warn("An Error Occurred Processing AuthToken#GET ", e);
-            throw new BadRequestResponse();
-        }
-    }
+	@Override
+	public void get(Client client, Context ctx){
+		try{
+			// json
+			JSONObject jsonObject = new JSONObject()
+				.put("token", ((LocalClient) client).getAuth().getToken());
+			// return
+			ctx.status(200);
+			ctx.header("Content-Type", "application/json");
+			ctx.result(jsonObject.toString());
+		}
+		catch(Exception e){
+			logger.warn("An Error Occurred Processing AuthToken#GET ", e);
+			throw new BadRequestResponse();
+		}
+	}
+
 }

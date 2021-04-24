@@ -24,59 +24,60 @@ import io.javalin.http.Context;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class RequestProcessor {
+public abstract class RequestProcessor{
 
-    private final String identifier;
-    private final SQLConnectionPool sqlConnectionPool;
-    private final PrimaryWebsocketProcessor websocketProcessor;
-    private final ConcurrentHashMap<String, RequestProcessor> processorHashMap = new ConcurrentHashMap<>();
+	private final String identifier;
+	private final SQLConnectionPool sqlConnectionPool;
+	private final PrimaryWebsocketProcessor websocketProcessor;
+	private final ConcurrentHashMap<String, RequestProcessor> processorHashMap = new ConcurrentHashMap<>();
 
-    public RequestProcessor(String identifier, SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
-        this.identifier = identifier;
-        this.sqlConnectionPool = sqlConnectionPool;
-        this.websocketProcessor = websocketProcessor;
-    }
+	public RequestProcessor(String identifier, SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
+		this.identifier = identifier;
+		this.sqlConnectionPool = sqlConnectionPool;
+		this.websocketProcessor = websocketProcessor;
+	}
 
-    public RequestProcessor(String identifier, SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor, RequestProcessor...requestProcessors){
-        this.identifier = identifier;
-        this.sqlConnectionPool = sqlConnectionPool;
-        this.websocketProcessor = websocketProcessor;
-        Arrays.stream(requestProcessors).forEach(p->processorHashMap.put(p.getIdentifier(), p));
-    }
+	public RequestProcessor(String identifier, SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor, RequestProcessor... requestProcessors){
+		this.identifier = identifier;
+		this.sqlConnectionPool = sqlConnectionPool;
+		this.websocketProcessor = websocketProcessor;
+		Arrays.stream(requestProcessors).forEach(p -> processorHashMap.put(p.getIdentifier(), p));
+	}
 
-    public String getIdentifier() {
-        return identifier;
-    }
+	public String getIdentifier(){
+		return identifier;
+	}
 
-    public SQLConnectionPool getSqlConnectionPool(){
-        return sqlConnectionPool;
-    }
+	public SQLConnectionPool getSqlConnectionPool(){
+		return sqlConnectionPool;
+	}
 
-    public PrimaryWebsocketProcessor getWebsocketProcessor(){
-        return websocketProcessor;
-    }
+	public PrimaryWebsocketProcessor getWebsocketProcessor(){
+		return websocketProcessor;
+	}
 
-    public RequestProcessor next(String identifier){
-        return processorHashMap.get(identifier);
-    }
+	public RequestProcessor next(String identifier){
+		return processorHashMap.get(identifier);
+	}
 
-    public RequestProcessor preProcessor(Client client, Context context) {
-        return this;
-    }
+	public RequestProcessor preProcessor(Client client, Context context){
+		return this;
+	}
 
-    public void get(Client client, Context ctx){
-        ctx.result("Not Implemented");
-    }
+	public void get(Client client, Context ctx){
+		ctx.result("Not Implemented");
+	}
 
-    public void put(Client client, Context ctx){
-        ctx.result("Not Implemented");
-    }
+	public void put(Client client, Context ctx){
+		ctx.result("Not Implemented");
+	}
 
-    public void post(Client client, Context ctx){
-        ctx.result("Not Implemented");
-    }
+	public void post(Client client, Context ctx){
+		ctx.result("Not Implemented");
+	}
 
-    public void delete(Client client, Context ctx){
-        ctx.result("Not Implemented");
-    }
+	public void delete(Client client, Context ctx){
+		ctx.result("Not Implemented");
+	}
+
 }

@@ -27,22 +27,24 @@ import java.time.LocalDateTime;
 
 public class OAuthStateCleanup extends BackgroundServiceScheduler.Task{
 
-    private final Logger logger = LoggerFactory.getLogger(OAuthStateCleanup.class);
+	private final Logger logger = LoggerFactory.getLogger(OAuthStateCleanup.class);
 
-    public OAuthStateCleanup(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor) {
-        super(sqlConnectionPool, primaryWebsocketProcessor, null);
-    }
+	public OAuthStateCleanup(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor){
+		super(sqlConnectionPool, primaryWebsocketProcessor, null);
+	}
 
-    @Override
-    void onExecution() {
-        try(var con = getSqlConnectionPool().getConnection()){
-            var sqlContext = getSqlConnectionPool().getContext(con);
-            sqlContext.deleteFrom(Tables.OAUTH_STATES)
-                    .where(Tables.OAUTH_STATES.CREATION_TIMESTAMP.lessThan(LocalDateTime.now().minusMinutes(10)))
-                    .execute();
-        }catch (Exception e){
-            logger.warn("An Error Occurred Running OAuthStateCleanup ", e);
-            throw new BadRequestResponse();
-        }
-    }
+	@Override
+	void onExecution(){
+		try(var con = getSqlConnectionPool().getConnection()){
+			var sqlContext = getSqlConnectionPool().getContext(con);
+			sqlContext.deleteFrom(Tables.OAUTH_STATES)
+				.where(Tables.OAUTH_STATES.CREATION_TIMESTAMP.lessThan(LocalDateTime.now().minusMinutes(10)))
+				.execute();
+		}
+		catch(Exception e){
+			logger.warn("An Error Occurred Running OAuthStateCleanup ", e);
+			throw new BadRequestResponse();
+		}
+	}
+
 }

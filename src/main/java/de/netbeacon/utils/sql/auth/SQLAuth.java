@@ -21,67 +21,67 @@ package de.netbeacon.utils.sql.auth;
  *
  * @author horstexplorer
  */
-public class SQLAuth {
+public class SQLAuth{
 
-    private final String url;
-    private final String username;
-    private final String password;
+	private final String url;
+	private final String username;
+	private final String password;
 
-    /**
-     * Creates a new instance of this class
-     *
-     * @param host of the db
-     * @param port of the db
-     * @param db name
-     * @param username username
-     * @param password password
-     */
-    public SQLAuth(String host, int port, String db, String username, String password){
-        this.url = "jdbc:postgresql://"+host+":"+port+"/"+db;
-        this.username = username;
-        this.password = password;
-    }
+	/**
+	 * Creates a new instance of this class
+	 *
+	 * @param host     of the db
+	 * @param port     of the db
+	 * @param db       name
+	 * @param username username
+	 * @param password password
+	 */
+	public SQLAuth(String host, int port, String db, String username, String password){
+		this.url = "jdbc:postgresql://" + host + ":" + port + "/" + db;
+		this.username = username;
+		this.password = password;
+	}
 
-    /**
-     * Creates a new instance of this class
-     *
-     * @param url jdbc url
-     * @param username username
-     * @param password password
-     */
-    public SQLAuth(String url, String username, String password){
-        this.url = url;
-        this.username = username;
-        this.password = password;
-    }
+	/**
+	 * Creates a new instance of this class
+	 *
+	 * @param url      jdbc url
+	 * @param username username
+	 * @param password password
+	 */
+	public SQLAuth(String url, String username, String password){
+		this.url = url;
+		this.username = username;
+		this.password = password;
+	}
 
-    /**
-     * Returns the jdbc url for this auth
-     *
-     * If not specified manually this returns the url for postgres
-     *
-     * @return String
-     */
-    public String getUrl() {
-        return url;
-    }
+	/**
+	 * Returns the jdbc url for this auth
+	 * <p>
+	 * If not specified manually this returns the url for postgres
+	 *
+	 * @return String
+	 */
+	public String getUrl(){
+		return url;
+	}
 
-    /**
-     * Returns the username
-     *
-     * @return String
-     */
-    public String getUsername(){
-        return username;
-    }
+	/**
+	 * Returns the username
+	 *
+	 * @return String
+	 */
+	public String getUsername(){
+		return username;
+	}
 
-    /**
-     * Returns the password
-     *
-     * @return String
-     */
-    public String getPassword(){
-        return password;
-    }
+	/**
+	 * Returns the password
+	 *
+	 * @return String
+	 */
+	public String getPassword(){
+		return password;
+	}
 
 }

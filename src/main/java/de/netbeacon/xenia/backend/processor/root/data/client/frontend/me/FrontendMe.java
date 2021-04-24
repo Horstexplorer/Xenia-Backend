@@ -29,52 +29,56 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FrontendMe extends RequestProcessor {
+public class FrontendMe extends RequestProcessor{
 
-    private final Logger logger = LoggerFactory.getLogger(FrontendMe.class);
+	private final Logger logger = LoggerFactory.getLogger(FrontendMe.class);
 
-    public FrontendMe(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
-        super("me", sqlConnectionPool, websocketProcessor);
-    }
+	public FrontendMe(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
+		super("me", sqlConnectionPool, websocketProcessor);
+	}
 
-    @Override
-    public RequestProcessor preProcessor(Client client, Context context) {
-        if(!client.getClientType().equals(ClientType.DISCORD) || !context.method().equalsIgnoreCase("get")){
-            throw new ForbiddenResponse();
-        }
-        return this;
-    }
+	@Override
+	public RequestProcessor preProcessor(Client client, Context context){
+		if(!client.getClientType().equals(ClientType.DISCORD) || !context.method().equalsIgnoreCase("get")){
+			throw new ForbiddenResponse();
+		}
+		return this;
+	}
 
-    @Override
-    public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection()){
-            var sqlContext = getSqlConnectionPool().getContext(con);
-            long userId = Long.parseLong(ctx.pathParam("userId"));
-            Result<UsersRecord> usersRecordResult = sqlContext.selectFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(userId)).fetch();
-            if(usersRecordResult.isEmpty()){
-                throw new NotFoundResponse();
-            }
-            UsersRecord usersRecord = usersRecordResult.get(0);
-            // fluffy json
-            JSONObject jsonObject = new JSONObject()
-                    .put("id", String.valueOf(usersRecord.getUserId()))
-                    .put("name",usersRecord.getMetaUsername())
-                    .put("icon", usersRecord.getMetaIconurl())
-                    .put("internalRole", usersRecord.getInternalRole());
-            // respond
-            ctx.status(200);
-            ctx.header("Content-Type", "application/json");
-            ctx.result(jsonObject.toString());
-        }catch (HttpResponseException e){
-            if(e instanceof InternalServerErrorResponse){
-                logger.error("An Error Occurred Processing FrontendMe#GET ", e);
-            }
-            throw e;
-        }catch (NullPointerException e){
-            throw new BadRequestResponse();
-        }catch (Exception e){
-            logger.warn("An Error Occurred Processing FrontendMe#GET ", e);
-            throw new BadRequestResponse();
-        }
-    }
+	@Override
+	public void get(Client client, Context ctx){
+		try(var con = getSqlConnectionPool().getConnection()){
+			var sqlContext = getSqlConnectionPool().getContext(con);
+			long userId = Long.parseLong(ctx.pathParam("userId"));
+			Result<UsersRecord> usersRecordResult = sqlContext.selectFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(userId)).fetch();
+			if(usersRecordResult.isEmpty()){
+				throw new NotFoundResponse();
+			}
+			UsersRecord usersRecord = usersRecordResult.get(0);
+			// fluffy json
+			JSONObject jsonObject = new JSONObject()
+				.put("id", String.valueOf(usersRecord.getUserId()))
+				.put("name", usersRecord.getMetaUsername())
+				.put("icon", usersRecord.getMetaIconurl())
+				.put("internalRole", usersRecord.getInternalRole());
+			// respond
+			ctx.status(200);
+			ctx.header("Content-Type", "application/json");
+			ctx.result(jsonObject.toString());
+		}
+		catch(HttpResponseException e){
+			if(e instanceof InternalServerErrorResponse){
+				logger.error("An Error Occurred Processing FrontendMe#GET ", e);
+			}
+			throw e;
+		}
+		catch(NullPointerException e){
+			throw new BadRequestResponse();
+		}
+		catch(Exception e){
+			logger.warn("An Error Occurred Processing FrontendMe#GET ", e);
+			throw new BadRequestResponse();
+		}
+	}
+
 }

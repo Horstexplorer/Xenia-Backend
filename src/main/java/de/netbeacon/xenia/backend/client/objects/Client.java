@@ -18,23 +18,24 @@ package de.netbeacon.xenia.backend.client.objects;
 
 import de.netbeacon.xenia.backend.security.SecuritySettings;
 
-public abstract class Client {
+public abstract class Client{
 
-    private final long clientId;
-    private final ClientType clientType;
+	private final long clientId;
+	private final ClientType clientType;
 
-    public Client(long clientId, ClientType clientType){
-        this.clientId = clientId;
-        this.clientType = clientType;
-    }
+	public Client(long clientId, ClientType clientType){
+		this.clientId = clientId;
+		this.clientType = clientType;
+	}
 
-    public long getClientId() {
-        return clientId;
-    }
+	public long getClientId(){
+		return clientId;
+	}
 
-    public ClientType getClientType() {
-        return clientType;
-    }
+	public ClientType getClientType(){
+		return clientType;
+	}
 
-    public abstract boolean verifyAuth(SecuritySettings.AuthType authType, String credentials);
+	public abstract boolean verifyAuth(SecuritySettings.AuthType authType, String credentials);
+
 }

@@ -29,24 +29,26 @@ import java.time.LocalDateTime;
 
 public class MessageCleanup extends BackgroundServiceScheduler.Task{
 
-    private final Logger logger = LoggerFactory.getLogger(MessageCleanup.class);
+	private final Logger logger = LoggerFactory.getLogger(MessageCleanup.class);
 
-    public MessageCleanup(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor) {
-        super(sqlConnectionPool, primaryWebsocketProcessor, null);
-    }
+	public MessageCleanup(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor){
+		super(sqlConnectionPool, primaryWebsocketProcessor, null);
+	}
 
-    @Override
-    void onExecution() {
-        try(var con = getSqlConnectionPool().getConnection()) {
-            var sqlContext = getSqlConnectionPool().getContext(con);
-            Result<MessagesRecord> messagesRecords = sqlContext.deleteFrom(Tables.MESSAGES).where(Tables.MESSAGES.CREATION_TIMESTAMP_DISCORD.lessThan(LocalDateTime.now().minusDays(60))).returning().fetch();
-            for(MessagesRecord record : messagesRecords){
-                WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
-                wsMessage.get().put("type", "GUILD_MESSAGE").put("action", "DELETE").put("guildId", record.getGuildId()).put("channelId", record.getChannelId()).put("messageId",record.getMessageId());
-                getPrimaryWebsocketProcessor().broadcast(wsMessage);
-            }
-        }catch (Exception e){
-            logger.warn("Failed To Clean Up Old Messages",e);
-        }
-    }
+	@Override
+	void onExecution(){
+		try(var con = getSqlConnectionPool().getConnection()){
+			var sqlContext = getSqlConnectionPool().getContext(con);
+			Result<MessagesRecord> messagesRecords = sqlContext.deleteFrom(Tables.MESSAGES).where(Tables.MESSAGES.CREATION_TIMESTAMP_DISCORD.lessThan(LocalDateTime.now().minusDays(60))).returning().fetch();
+			for(MessagesRecord record : messagesRecords){
+				WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
+				wsMessage.get().put("type", "GUILD_MESSAGE").put("action", "DELETE").put("guildId", record.getGuildId()).put("channelId", record.getChannelId()).put("messageId", record.getMessageId());
+				getPrimaryWebsocketProcessor().broadcast(wsMessage);
+			}
+		}
+		catch(Exception e){
+			logger.warn("Failed To Clean Up Old Messages", e);
+		}
+	}
+
 }

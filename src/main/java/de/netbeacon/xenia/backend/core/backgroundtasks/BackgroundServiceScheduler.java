@@ -27,56 +27,60 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class BackgroundServiceScheduler implements IShutdown {
+public class BackgroundServiceScheduler implements IShutdown{
 
-    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(4);
+	private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(4);
 
-    public void schedule(Task task, long interval, boolean repeat){
-        if(repeat){
-            scheduledExecutorService.scheduleAtFixedRate(task::execute, interval, interval, TimeUnit.MILLISECONDS);
-        }else{
-            scheduledExecutorService.schedule(task::execute, interval, TimeUnit.MILLISECONDS);
-        }
-    }
+	public void schedule(Task task, long interval, boolean repeat){
+		if(repeat){
+			scheduledExecutorService.scheduleAtFixedRate(task::execute, interval, interval, TimeUnit.MILLISECONDS);
+		}
+		else{
+			scheduledExecutorService.schedule(task::execute, interval, TimeUnit.MILLISECONDS);
+		}
+	}
 
-    @Override
-    public void onShutdown() throws Exception {
-        scheduledExecutorService.shutdown();
-    }
+	@Override
+	public void onShutdown() throws Exception{
+		scheduledExecutorService.shutdown();
+	}
 
-    public abstract static class Task {
+	public abstract static class Task{
 
-        private final SQLConnectionPool sqlConnectionPool;
-        private final PrimaryWebsocketProcessor primaryWebsocketProcessor;
-        private final SecondaryWebsocketProcessor secondaryWebsocketProcessor;
-        private final Logger logger = LoggerFactory.getLogger(getClass().getName());
+		private final SQLConnectionPool sqlConnectionPool;
+		private final PrimaryWebsocketProcessor primaryWebsocketProcessor;
+		private final SecondaryWebsocketProcessor secondaryWebsocketProcessor;
+		private final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-        public Task(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor, SecondaryWebsocketProcessor secondaryWebsocketProcessor){
-            this.sqlConnectionPool = sqlConnectionPool;
-            this.primaryWebsocketProcessor = primaryWebsocketProcessor;
-            this.secondaryWebsocketProcessor = secondaryWebsocketProcessor;
-        }
+		public Task(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor, SecondaryWebsocketProcessor secondaryWebsocketProcessor){
+			this.sqlConnectionPool = sqlConnectionPool;
+			this.primaryWebsocketProcessor = primaryWebsocketProcessor;
+			this.secondaryWebsocketProcessor = secondaryWebsocketProcessor;
+		}
 
-        protected SQLConnectionPool getSqlConnectionPool(){
-            return sqlConnectionPool;
-        }
+		protected SQLConnectionPool getSqlConnectionPool(){
+			return sqlConnectionPool;
+		}
 
-        protected PrimaryWebsocketProcessor getPrimaryWebsocketProcessor(){
-            return primaryWebsocketProcessor;
-        }
+		protected PrimaryWebsocketProcessor getPrimaryWebsocketProcessor(){
+			return primaryWebsocketProcessor;
+		}
 
-        protected SecondaryWebsocketProcessor getSecondaryWebsocketProcessor(){
-            return secondaryWebsocketProcessor;
-        }
+		protected SecondaryWebsocketProcessor getSecondaryWebsocketProcessor(){
+			return secondaryWebsocketProcessor;
+		}
 
-        void execute(){
-            try{
-                onExecution();
-            }catch (Exception e){
-                logger.warn("Background task threw an uncaught exception: ", e);
-            }
-        }
+		void execute(){
+			try{
+				onExecution();
+			}
+			catch(Exception e){
+				logger.warn("Background task threw an uncaught exception: ", e);
+			}
+		}
 
-        abstract void onExecution();
-    }
+		abstract void onExecution();
+
+	}
+
 }

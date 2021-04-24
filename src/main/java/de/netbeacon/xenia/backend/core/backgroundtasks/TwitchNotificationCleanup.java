@@ -29,24 +29,26 @@ import java.time.LocalDateTime;
 
 public class TwitchNotificationCleanup extends BackgroundServiceScheduler.Task{
 
-    private final Logger logger = LoggerFactory.getLogger(TwitchNotificationCleanup.class);
+	private final Logger logger = LoggerFactory.getLogger(TwitchNotificationCleanup.class);
 
-    public TwitchNotificationCleanup(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor) {
-        super(sqlConnectionPool, primaryWebsocketProcessor, null);
-    }
+	public TwitchNotificationCleanup(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor){
+		super(sqlConnectionPool, primaryWebsocketProcessor, null);
+	}
 
-    @Override
-    void onExecution() {
-        try(var con = getSqlConnectionPool().getConnection()) {
-            var sqlContext = getSqlConnectionPool().getContext(con);
-            Result<TwitchnotificationsRecord> records = sqlContext.deleteFrom(Tables.TWITCHNOTIFICATIONS).where(Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_TWITCH_CHANNEL_ID.isNull().and(Tables.TWITCHNOTIFICATIONS.CREATION_TIMESTAMP.lessOrEqual(LocalDateTime.now().minusMinutes(10)))).returning().fetch();
-            for(TwitchnotificationsRecord record : records){
-                WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
-                wsMessage.get().put("type", "GUILD_MISC_TWITCHNOTIFICATION").put("action", "DELETE").put("guildId", record.getGuildId()).put("twitchNotificationId", record.getTwitchnotificationId());
-                getPrimaryWebsocketProcessor().broadcast(wsMessage);
-            }
-        }catch (Exception e){
-            logger.warn("Failed To Clean Up -Dead- Notifications: ",e);
-        }
-    }
+	@Override
+	void onExecution(){
+		try(var con = getSqlConnectionPool().getConnection()){
+			var sqlContext = getSqlConnectionPool().getContext(con);
+			Result<TwitchnotificationsRecord> records = sqlContext.deleteFrom(Tables.TWITCHNOTIFICATIONS).where(Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_TWITCH_CHANNEL_ID.isNull().and(Tables.TWITCHNOTIFICATIONS.CREATION_TIMESTAMP.lessOrEqual(LocalDateTime.now().minusMinutes(10)))).returning().fetch();
+			for(TwitchnotificationsRecord record : records){
+				WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
+				wsMessage.get().put("type", "GUILD_MISC_TWITCHNOTIFICATION").put("action", "DELETE").put("guildId", record.getGuildId()).put("twitchNotificationId", record.getTwitchnotificationId());
+				getPrimaryWebsocketProcessor().broadcast(wsMessage);
+			}
+		}
+		catch(Exception e){
+			logger.warn("Failed To Clean Up -Dead- Notifications: ", e);
+		}
+	}
+
 }

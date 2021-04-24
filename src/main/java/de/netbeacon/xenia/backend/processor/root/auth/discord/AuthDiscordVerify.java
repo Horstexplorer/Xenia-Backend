@@ -24,23 +24,24 @@ import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
 
-public class AuthDiscordVerify extends RequestProcessor {
+public class AuthDiscordVerify extends RequestProcessor{
 
-    public AuthDiscordVerify(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
-        super("verify", sqlConnectionPool, websocketProcessor);
-    }
+	public AuthDiscordVerify(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
+		super("verify", sqlConnectionPool, websocketProcessor);
+	}
 
 
-    @Override
-    public RequestProcessor preProcessor(Client client, Context context) {
-        if(!client.getClientType().equals(ClientType.DISCORD) || !context.method().equalsIgnoreCase("get")){
-            throw new ForbiddenResponse();
-        }
-        return this;
-    }
+	@Override
+	public RequestProcessor preProcessor(Client client, Context context){
+		if(!client.getClientType().equals(ClientType.DISCORD) || !context.method().equalsIgnoreCase("get")){
+			throw new ForbiddenResponse();
+		}
+		return this;
+	}
 
-    @Override
-    public void get(Client client, Context ctx) {
-        ctx.status(204);
-    }
+	@Override
+	public void get(Client client, Context ctx){
+		ctx.status(204);
+	}
+
 }

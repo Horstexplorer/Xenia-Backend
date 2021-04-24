@@ -22,13 +22,13 @@ import de.netbeacon.xenia.backend.processor.root.data.client.frontend.me.Fronten
 import de.netbeacon.xenia.backend.processor.root.data.client.frontend.meta.guilds.FrontendMetaGuilds;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 
-public class FrontendRoot extends RequestProcessor {
+public class FrontendRoot extends RequestProcessor{
 
-    public FrontendRoot(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
-        super("frontend", sqlConnectionPool, websocketProcessor,
-                new FrontendMe(sqlConnectionPool, websocketProcessor),
-                new FrontendMetaGuilds(sqlConnectionPool, websocketProcessor)
-        );
-    }
+	public FrontendRoot(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
+		super("frontend", sqlConnectionPool, websocketProcessor,
+			new FrontendMe(sqlConnectionPool, websocketProcessor),
+			new FrontendMetaGuilds(sqlConnectionPool, websocketProcessor)
+		);
+	}
 
 }

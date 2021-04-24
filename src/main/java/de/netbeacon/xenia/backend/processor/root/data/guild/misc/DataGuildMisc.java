@@ -23,14 +23,14 @@ import de.netbeacon.xenia.backend.processor.root.data.guild.misc.tag.DataGuildMi
 import de.netbeacon.xenia.backend.processor.root.data.guild.misc.twitchnotifications.DataGuildMiscTwitchNotifications;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 
-public class DataGuildMisc extends RequestProcessor {
+public class DataGuildMisc extends RequestProcessor{
 
-    public DataGuildMisc(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
-        super("misc", sqlConnectionPool, websocketProcessor,
-                new DataGuildMiscTag(sqlConnectionPool, websocketProcessor),
-                new DataGuildMiscNotification(sqlConnectionPool, websocketProcessor),
-                new DataGuildMiscTwitchNotifications(sqlConnectionPool, websocketProcessor)
-        );
-    }
+	public DataGuildMisc(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
+		super("misc", sqlConnectionPool, websocketProcessor,
+			new DataGuildMiscTag(sqlConnectionPool, websocketProcessor),
+			new DataGuildMiscNotification(sqlConnectionPool, websocketProcessor),
+			new DataGuildMiscTwitchNotifications(sqlConnectionPool, websocketProcessor)
+		);
+	}
 
 }

@@ -28,71 +28,75 @@ import java.io.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ClientManager implements IShutdown {
+public class ClientManager implements IShutdown{
 
-    private final File localData;
-    private final SQLConnectionPool sqlConnectionPool;
-    private final ConcurrentHashMap<Long, LocalClient> localClients = new ConcurrentHashMap<>();
+	private final File localData;
+	private final SQLConnectionPool sqlConnectionPool;
+	private final ConcurrentHashMap<Long, LocalClient> localClients = new ConcurrentHashMap<>();
 
-    public ClientManager(File localData, SQLConnectionPool sqlConnectionPool){
-        this.localData = localData;
-        this.sqlConnectionPool = sqlConnectionPool;
-    }
+	public ClientManager(File localData, SQLConnectionPool sqlConnectionPool){
+		this.localData = localData;
+		this.sqlConnectionPool = sqlConnectionPool;
+	}
 
-    public Client getClient(ClientType clientType, long clientId){
-        if(ClientType.INTERNAL.containsType(clientType)){
-            return localClients.get(clientId); // will return from cache
-        }else if(ClientType.DISCORD.containsType(clientType)){
-            return DiscordClient.create(clientId, sqlConnectionPool); // will return db linked object
-        }else{
-            return null;
-        }
-    }
+	public Client getClient(ClientType clientType, long clientId){
+		if(ClientType.INTERNAL.containsType(clientType)){
+			return localClients.get(clientId); // will return from cache
+		}
+		else if(ClientType.DISCORD.containsType(clientType)){
+			return DiscordClient.create(clientId, sqlConnectionPool); // will return db linked object
+		}
+		else{
+			return null;
+		}
+	}
 
-    public Client createLocalClient(ClientType clientType, String clientName, String password){
-        if(ClientType.INTERNAL.containsType(clientType)){
-            LocalClient client = LocalClient.create(clientType, clientName, password);
-            localClients.put(client.getClientId(), client);
-            return client;
-        }
-        return null;
-    }
+	public Client createLocalClient(ClientType clientType, String clientName, String password){
+		if(ClientType.INTERNAL.containsType(clientType)){
+			LocalClient client = LocalClient.create(clientType, clientName, password);
+			localClients.put(client.getClientId(), client);
+			return client;
+		}
+		return null;
+	}
 
-    public void deleteLocalClient(long clientId){
-        localClients.remove(clientId);
-    }
+	public void deleteLocalClient(long clientId){
+		localClients.remove(clientId);
+	}
 
-    public ClientManager loadFromFile() throws IOException {
-        try(BufferedReader bufferedReader = new BufferedReader(new FileReader(localData))){
-            String line;
-            while((line = bufferedReader.readLine()) != null){
-                if(line.isBlank())
-                    continue;
-                LocalClient client = LocalClient.create(new JSONObject(line));
-                localClients.put(client.getClientId(), client);
-            }
-        }
-        return this;
-    }
+	public ClientManager loadFromFile() throws IOException{
+		try(BufferedReader bufferedReader = new BufferedReader(new FileReader(localData))){
+			String line;
+			while((line = bufferedReader.readLine()) != null){
+				if(line.isBlank()){
+					continue;
+				}
+				LocalClient client = LocalClient.create(new JSONObject(line));
+				localClients.put(client.getClientId(), client);
+			}
+		}
+		return this;
+	}
 
-    public ClientManager writeToFile() throws IOException {
-        try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(localData))){
-            for(Map.Entry<Long, LocalClient> entry : localClients.entrySet()){
-                bufferedWriter.write(entry.getValue().asJSON().toString());
-                bufferedWriter.newLine();
-                bufferedWriter.flush();
-            }
-        }
-        return this;
-    }
+	public ClientManager writeToFile() throws IOException{
+		try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(localData))){
+			for(Map.Entry<Long, LocalClient> entry : localClients.entrySet()){
+				bufferedWriter.write(entry.getValue().asJSON().toString());
+				bufferedWriter.newLine();
+				bufferedWriter.flush();
+			}
+		}
+		return this;
+	}
 
-    public int size(){
-        return localClients.size();
-    }
+	public int size(){
+		return localClients.size();
+	}
 
-    @Override
-    public void onShutdown() throws Exception {
-        writeToFile();
-        // do not shut down sql connection pool
-    }
+	@Override
+	public void onShutdown() throws Exception{
+		writeToFile();
+		// do not shut down sql connection pool
+	}
+
 }

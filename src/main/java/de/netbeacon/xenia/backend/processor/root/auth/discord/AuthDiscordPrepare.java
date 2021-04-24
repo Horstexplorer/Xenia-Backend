@@ -26,56 +26,60 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AuthDiscordPrepare extends RequestProcessor {
+public class AuthDiscordPrepare extends RequestProcessor{
 
-    private final Logger logger = LoggerFactory.getLogger(AuthDiscordPrepare.class);
+	private final Logger logger = LoggerFactory.getLogger(AuthDiscordPrepare.class);
 
-    public AuthDiscordPrepare(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
-        super("prepare", sqlConnectionPool, websocketProcessor);
-    }
+	public AuthDiscordPrepare(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
+		super("prepare", sqlConnectionPool, websocketProcessor);
+	}
 
-    @Override
-    public RequestProcessor preProcessor(Client client, Context context) {
-        if(!context.method().equalsIgnoreCase("get")){
-            throw new ForbiddenResponse();
-        }
-        return this;
-    }
+	@Override
+	public RequestProcessor preProcessor(Client client, Context context){
+		if(!context.method().equalsIgnoreCase("get")){
+			throw new ForbiddenResponse();
+		}
+		return this;
+	}
 
-    @Override
-    public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection()){
-            var sqlContext = getSqlConnectionPool().getContext(con);
-            // fetch owner
-            String owner = null;
-            if(ctx.queryParamMap().containsKey("ownerId")){
-                owner = ctx.queryParam("ownerId");
-            }
-            StringBuilder scopesB = new StringBuilder();
-            if(ctx.queryParamMap().containsKey("scopes")){
-                ctx.queryParamMap().get("scopes")
-                        .forEach(scope -> scopesB.append(scope).append("%20"));
-            }
-            String scopes = ((scopes = scopesB.toString()).isBlank()) ? "identify" : scopes;
-            // generate random state
-            String randomState = RandomStringUtils.randomAlphanumeric(32);
-            // insert
-            sqlContext.insertInto(Tables.OAUTH_STATES, Tables.OAUTH_STATES.STATE_OWNER, Tables.OAUTH_STATES.STATE)
-                    .values(owner, randomState)
-                    .execute();
-            // redirect
-            ctx.redirect("https://discord.com/api/oauth2/authorize?client_id=509065864763408385&redirect_uri=https%3A%2F%2Fxenia.netbeacon.de%2Fauth%2Freturning&response_type=code&scope="+scopes+"&state="+randomState);
-        }catch (HttpResponseException e){
-            if(e instanceof InternalServerErrorResponse){
-                logger.error("An Error Occurred Processing AuthDiscordPrepare#GET ", e);
-            }
-            throw e;
-        }catch (NullPointerException e){
-            // dont log
-            throw new BadRequestResponse();
-        }catch (Exception e){
-            logger.warn("An Error Occurred Processing AuthDiscordPrepare#GET ", e);
-            throw new BadRequestResponse();
-        }
-    }
+	@Override
+	public void get(Client client, Context ctx){
+		try(var con = getSqlConnectionPool().getConnection()){
+			var sqlContext = getSqlConnectionPool().getContext(con);
+			// fetch owner
+			String owner = null;
+			if(ctx.queryParamMap().containsKey("ownerId")){
+				owner = ctx.queryParam("ownerId");
+			}
+			StringBuilder scopesB = new StringBuilder();
+			if(ctx.queryParamMap().containsKey("scopes")){
+				ctx.queryParamMap().get("scopes")
+					.forEach(scope -> scopesB.append(scope).append("%20"));
+			}
+			String scopes = ((scopes = scopesB.toString()).isBlank()) ? "identify" : scopes;
+			// generate random state
+			String randomState = RandomStringUtils.randomAlphanumeric(32);
+			// insert
+			sqlContext.insertInto(Tables.OAUTH_STATES, Tables.OAUTH_STATES.STATE_OWNER, Tables.OAUTH_STATES.STATE)
+				.values(owner, randomState)
+				.execute();
+			// redirect
+			ctx.redirect("https://discord.com/api/oauth2/authorize?client_id=509065864763408385&redirect_uri=https%3A%2F%2Fxenia.netbeacon.de%2Fauth%2Freturning&response_type=code&scope=" + scopes + "&state=" + randomState);
+		}
+		catch(HttpResponseException e){
+			if(e instanceof InternalServerErrorResponse){
+				logger.error("An Error Occurred Processing AuthDiscordPrepare#GET ", e);
+			}
+			throw e;
+		}
+		catch(NullPointerException e){
+			// dont log
+			throw new BadRequestResponse();
+		}
+		catch(Exception e){
+			logger.warn("An Error Occurred Processing AuthDiscordPrepare#GET ", e);
+			throw new BadRequestResponse();
+		}
+	}
+
 }

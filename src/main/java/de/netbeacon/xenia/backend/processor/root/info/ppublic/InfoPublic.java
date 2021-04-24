@@ -30,51 +30,54 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InfoPublic extends RequestProcessor {
+public class InfoPublic extends RequestProcessor{
 
-    private final Logger logger = LoggerFactory.getLogger(InfoPublic.class);
+	private final Logger logger = LoggerFactory.getLogger(InfoPublic.class);
 
-    public InfoPublic(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
-        super("public", sqlConnectionPool, websocketProcessor);
-    }
+	public InfoPublic(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
+		super("public", sqlConnectionPool, websocketProcessor);
+	}
 
-    @Override
-    public RequestProcessor preProcessor(Client client, Context context) {
-        return this;
-    }
+	@Override
+	public RequestProcessor preProcessor(Client client, Context context){
+		return this;
+	}
 
-    @Override
-    public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection()){
-            var sqlContext = getSqlConnectionPool().getContext(con);
-            // the number of known users
-            int users = sqlContext.fetchCount(Tables.USERS);
-            // get the number of known guilds
-            int guilds = sqlContext.fetchCount(Tables.GUILDS);
-            // get the number of known members
-            int members = sqlContext.fetchCount(Tables.MEMBERS);
-            // build json
-            JSONObject jsonObject = new JSONObject()
-                    .put("version", AppInfo.get("buildVersion")+"_"+ AppInfo.get("buildNumber"))
-                    .put("guilds", guilds)
-                    .put("users", users)
-                    .put("members", members);
-            // return
-            ctx.status(200);
-            ctx.header("Content-Type", "application/json");
-            ctx.result(jsonObject.toString());
-        }catch (HttpResponseException e){
-            if(e instanceof InternalServerErrorResponse){
-                logger.error("An Error Occurred Processing InfoPublic#GET ", e);
-            }
-            throw e;
-        }catch (NullPointerException e){
-            // dont log
-            throw new BadRequestResponse();
-        }catch (Exception e){
-            logger.warn("An Error Occurred Processing InfoPublic#GET ", e);
-            throw new BadRequestResponse();
-        }
-    }
+	@Override
+	public void get(Client client, Context ctx){
+		try(var con = getSqlConnectionPool().getConnection()){
+			var sqlContext = getSqlConnectionPool().getContext(con);
+			// the number of known users
+			int users = sqlContext.fetchCount(Tables.USERS);
+			// get the number of known guilds
+			int guilds = sqlContext.fetchCount(Tables.GUILDS);
+			// get the number of known members
+			int members = sqlContext.fetchCount(Tables.MEMBERS);
+			// build json
+			JSONObject jsonObject = new JSONObject()
+				.put("version", AppInfo.get("buildVersion") + "_" + AppInfo.get("buildNumber"))
+				.put("guilds", guilds)
+				.put("users", users)
+				.put("members", members);
+			// return
+			ctx.status(200);
+			ctx.header("Content-Type", "application/json");
+			ctx.result(jsonObject.toString());
+		}
+		catch(HttpResponseException e){
+			if(e instanceof InternalServerErrorResponse){
+				logger.error("An Error Occurred Processing InfoPublic#GET ", e);
+			}
+			throw e;
+		}
+		catch(NullPointerException e){
+			// dont log
+			throw new BadRequestResponse();
+		}
+		catch(Exception e){
+			logger.warn("An Error Occurred Processing InfoPublic#GET ", e);
+			throw new BadRequestResponse();
+		}
+	}
 
 }

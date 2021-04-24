@@ -21,20 +21,21 @@ import de.netbeacon.xenia.backend.processor.ws.processor.WSRequest;
 import de.netbeacon.xenia.backend.processor.ws.processor.WSResponse;
 import org.json.JSONObject;
 
-public class IdentifyProcessor extends WSProcessor {
+public class IdentifyProcessor extends WSProcessor{
 
 
-    public IdentifyProcessor() {
-        super("identify");
-    }
+	public IdentifyProcessor(){
+		super("identify");
+	}
 
-    @Override
-    public WSResponse process(WSRequest wsRequest) {
-        return new WSResponse.Builder()
-                .requestId(wsRequest.getRequestId())
-                .recipient(wsRequest.getSender())
-                .action(getAction())
-                .payload(new JSONObject().put("id", 0L).put("name", "Backend-Core").put("description", "Primary Backend"))
-                .build();
-    }
+	@Override
+	public WSResponse process(WSRequest wsRequest){
+		return new WSResponse.Builder()
+			.requestId(wsRequest.getRequestId())
+			.recipient(wsRequest.getSender())
+			.action(getAction())
+			.payload(new JSONObject().put("id", 0L).put("name", "Backend-Core").put("description", "Primary Backend"))
+			.build();
+	}
+
 }

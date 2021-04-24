@@ -16,17 +16,18 @@
 
 package de.netbeacon.xenia.backend.processor.ws.processor;
 
-public abstract class WSProcessor {
+public abstract class WSProcessor{
 
-    private final String action;
+	private final String action;
 
-    public WSProcessor(String action){
-        this.action = action.toLowerCase();
-    }
+	public WSProcessor(String action){
+		this.action = action.toLowerCase();
+	}
 
-    public abstract WSResponse process(WSRequest wsRequest);
+	public abstract WSResponse process(WSRequest wsRequest);
 
-    public String getAction(){
-        return action;
-    }
+	public String getAction(){
+		return action;
+	}
+
 }

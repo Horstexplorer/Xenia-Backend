@@ -23,183 +23,188 @@ import org.json.JSONObject;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class DiscordOAuthHandler {
+public class DiscordOAuthHandler{
 
-    private static DiscordOAuthHandler instance;
+	private static DiscordOAuthHandler instance;
 
-    private final OkHttpClient okHttpClient;
-    private final long appId;
-    private final String appSecret;
-    private final String appRedirectUrl;
-    private static final String TOKEN_URL = "https://discord.com/api/oauth2/token";
+	private final OkHttpClient okHttpClient;
+	private final long appId;
+	private final String appSecret;
+	private final String appRedirectUrl;
+	private static final String TOKEN_URL = "https://discord.com/api/oauth2/token";
 
-    public static DiscordOAuthHandler getInstance(){
-        return instance;
-    }
+	public static DiscordOAuthHandler getInstance(){
+		return instance;
+	}
 
-    public static DiscordOAuthHandler createInstance(long appId, String appSecret, String appRedirectUrl){
-        if(instance == null){
-            instance = new DiscordOAuthHandler(appId, appSecret, appRedirectUrl);
-        }
-        return instance;
-    }
+	public static DiscordOAuthHandler createInstance(long appId, String appSecret, String appRedirectUrl){
+		if(instance == null){
+			instance = new DiscordOAuthHandler(appId, appSecret, appRedirectUrl);
+		}
+		return instance;
+	}
 
-    private DiscordOAuthHandler(long appId, String appSecret, String appRedirectUrl){
-        okHttpClient = new OkHttpClient.Builder().build();
-        this.appId = appId;
-        this.appSecret = appSecret;
-        this.appRedirectUrl = appRedirectUrl;
-    }
+	private DiscordOAuthHandler(long appId, String appSecret, String appRedirectUrl){
+		okHttpClient = new OkHttpClient.Builder().build();
+		this.appId = appId;
+		this.appSecret = appSecret;
+		this.appRedirectUrl = appRedirectUrl;
+	}
 
-    public Token retrieve(String code, Scopes scopes){
-        try{
-            RequestBody requestBody = new FormBody.Builder()
-                    .add("client_id", String.valueOf(appId))
-                    .add("client_secret",String.valueOf(appSecret))
-                    .add("grant_type", "authorization_code")
-                    .add("code", code)
-                    .add("redirect_uri", appRedirectUrl)
-                    .add("scope", scopes.toString())
-                    .build();
-            Request.Builder builder = new Request.Builder()
-                    .url(TOKEN_URL)
-                    .header("User-Agent", "Xenia/X Backend")
-                    .post(requestBody);
-            try(Response response = okHttpClient.newCall(builder.build()).execute()){
-                if(response.code() != 200){
-                    throw new DiscordOAuthHandler.Exception(response.code(), response.message());
-                }
-                return new Token(new JSONObject(response.body().string()));
-            }
-        }catch (java.lang.Exception e){
-            throw new DiscordOAuthHandler.Exception(e);
-        }
-    }
+	public Token retrieve(String code, Scopes scopes){
+		try{
+			RequestBody requestBody = new FormBody.Builder()
+				.add("client_id", String.valueOf(appId))
+				.add("client_secret", String.valueOf(appSecret))
+				.add("grant_type", "authorization_code")
+				.add("code", code)
+				.add("redirect_uri", appRedirectUrl)
+				.add("scope", scopes.toString())
+				.build();
+			Request.Builder builder = new Request.Builder()
+				.url(TOKEN_URL)
+				.header("User-Agent", "Xenia/X Backend")
+				.post(requestBody);
+			try(Response response = okHttpClient.newCall(builder.build()).execute()){
+				if(response.code() != 200){
+					throw new DiscordOAuthHandler.Exception(response.code(), response.message());
+				}
+				return new Token(new JSONObject(response.body().string()));
+			}
+		}
+		catch(java.lang.Exception e){
+			throw new DiscordOAuthHandler.Exception(e);
+		}
+	}
 
-    public Token renew(Token token){
-        try{
-            RequestBody requestBody = new FormBody.Builder()
-                    .add("client_id", String.valueOf(appId))
-                    .add("client_secret",String.valueOf(appSecret))
-                    .add("grant_type", "refresh_token")
-                    .add("refresh_token", token.getRefreshToken())
-                    .add("redirect_uri", appRedirectUrl)
-                    .add("scope", token.getScopes())
-                    .build();
-            Request.Builder builder = new Request.Builder()
-                    .url(TOKEN_URL)
-                    .header("User-Agent", "Xenia/X Backend")
-                    .post(requestBody);
-            try(Response response = okHttpClient.newCall(builder.build()).execute()){
-                if(response.code() != 200){
-                    throw new DiscordOAuthHandler.Exception(response.code(), response.message());
-                }
-                return new Token(new JSONObject(response.body().string()));
-            }
-        }catch (java.lang.Exception e){
-            throw new DiscordOAuthHandler.Exception(e);
-        }
-    }
+	public Token renew(Token token){
+		try{
+			RequestBody requestBody = new FormBody.Builder()
+				.add("client_id", String.valueOf(appId))
+				.add("client_secret", String.valueOf(appSecret))
+				.add("grant_type", "refresh_token")
+				.add("refresh_token", token.getRefreshToken())
+				.add("redirect_uri", appRedirectUrl)
+				.add("scope", token.getScopes())
+				.build();
+			Request.Builder builder = new Request.Builder()
+				.url(TOKEN_URL)
+				.header("User-Agent", "Xenia/X Backend")
+				.post(requestBody);
+			try(Response response = okHttpClient.newCall(builder.build()).execute()){
+				if(response.code() != 200){
+					throw new DiscordOAuthHandler.Exception(response.code(), response.message());
+				}
+				return new Token(new JSONObject(response.body().string()));
+			}
+		}
+		catch(java.lang.Exception e){
+			throw new DiscordOAuthHandler.Exception(e);
+		}
+	}
 
-    public Long getUserID(Token token){
-        try{
-            Request.Builder builder = new Request.Builder()
-                    .url("https://discordapp.com/api/users/@me")
-                    .header("Authorization", "Bearer "+token.getAccessToken())
-                    .get();
-            try(Response response = okHttpClient.newCall(builder.build()).execute()){
-                if(response.code() != 200){
-                    throw new DiscordOAuthHandler.Exception(response.code(), response.message());
-                }
-                return new JSONObject(response.body().string()).getLong("id");
-            }
-        }catch (java.lang.Exception e){
-            return null;
-        }
-    }
+	public Long getUserID(Token token){
+		try{
+			Request.Builder builder = new Request.Builder()
+				.url("https://discordapp.com/api/users/@me")
+				.header("Authorization", "Bearer " + token.getAccessToken())
+				.get();
+			try(Response response = okHttpClient.newCall(builder.build()).execute()){
+				if(response.code() != 200){
+					throw new DiscordOAuthHandler.Exception(response.code(), response.message());
+				}
+				return new JSONObject(response.body().string()).getLong("id");
+			}
+		}
+		catch(java.lang.Exception e){
+			return null;
+		}
+	}
 
 
-    public static class Exception extends java.lang.RuntimeException{
+	public static class Exception extends java.lang.RuntimeException{
 
-        private final int code;
+		private final int code;
 
-        public Exception(int code, String message){
-            super(message);
-            this.code = code;
-        }
+		public Exception(int code, String message){
+			super(message);
+			this.code = code;
+		}
 
-        public Exception(java.lang.Exception e){
-            super(e);
-            this.code = -1;
-        }
+		public Exception(java.lang.Exception e){
+			super(e);
+			this.code = -1;
+		}
 
-        public int getCode(){
-            return code;
-        }
-    }
+		public int getCode(){
+			return code;
+		}
 
-    public static class Scopes{
+	}
 
-        private final List<String> scopes;
+	public static class Scopes{
 
-        public Scopes(List<String> scopes){
-            this.scopes = scopes;
-        }
+		private final List<String> scopes;
 
-        @Override
-        public String toString(){
-            StringBuilder stringBuilder = new StringBuilder();
-            for(String scope : scopes){
-                stringBuilder.append(scope).append(" ");
-            }
-            return stringBuilder.toString().trim();
-        }
+		public Scopes(List<String> scopes){
+			this.scopes = scopes;
+		}
 
-    }
+		@Override
+		public String toString(){
+			StringBuilder stringBuilder = new StringBuilder();
+			for(String scope : scopes){
+				stringBuilder.append(scope).append(" ");
+			}
+			return stringBuilder.toString().trim();
+		}
 
-    public static class Token{
+	}
 
-        private final String accessToken;
-        private final LocalDateTime expires;
-        private final String refreshToken;
-        private final String scope;
+	public static class Token{
 
-        public Token(String accessToken, String tokenType, long expiresIn, String refreshToken, String scope){
-            this.accessToken = accessToken;
-            this.expires = LocalDateTime.now().plusSeconds(expiresIn);
-            this.refreshToken = refreshToken;
-            this.scope = scope;
-        }
+		private final String accessToken;
+		private final LocalDateTime expires;
+		private final String refreshToken;
+		private final String scope;
 
-        public Token(JSONObject jsonObject){
-            this.accessToken = jsonObject.getString("access_token");
-            this.expires = LocalDateTime.now().plusSeconds(jsonObject.getLong("expires_in"));
-            this.refreshToken = jsonObject.getString("refresh_token");
-            this.scope = jsonObject.getString("scope");
-        }
+		public Token(String accessToken, String tokenType, long expiresIn, String refreshToken, String scope){
+			this.accessToken = accessToken;
+			this.expires = LocalDateTime.now().plusSeconds(expiresIn);
+			this.refreshToken = refreshToken;
+			this.scope = scope;
+		}
 
-        public Token(OauthRecord dbOauthRecord){
-            this.accessToken = dbOauthRecord.getDiscordAccessToken();
-            this.refreshToken = dbOauthRecord.getDiscordRefreshToken();
-            this.scope = dbOauthRecord.getDiscordScopes();
-            this.expires = dbOauthRecord.getDiscordInvalidationTime();
-        }
+		public Token(JSONObject jsonObject){
+			this.accessToken = jsonObject.getString("access_token");
+			this.expires = LocalDateTime.now().plusSeconds(jsonObject.getLong("expires_in"));
+			this.refreshToken = jsonObject.getString("refresh_token");
+			this.scope = jsonObject.getString("scope");
+		}
 
-        public String getAccessToken() {
-            return accessToken;
-        }
+		public Token(OauthRecord dbOauthRecord){
+			this.accessToken = dbOauthRecord.getDiscordAccessToken();
+			this.refreshToken = dbOauthRecord.getDiscordRefreshToken();
+			this.scope = dbOauthRecord.getDiscordScopes();
+			this.expires = dbOauthRecord.getDiscordInvalidationTime();
+		}
 
-        public LocalDateTime expiresOn() {
-            return expires;
-        }
+		public String getAccessToken(){
+			return accessToken;
+		}
 
-        public String getRefreshToken() {
-            return refreshToken;
-        }
+		public LocalDateTime expiresOn(){
+			return expires;
+		}
 
-        public String getScopes() {
-            return scope;
-        }
+		public String getRefreshToken(){
+			return refreshToken;
+		}
 
-    }
+		public String getScopes(){
+			return scope;
+		}
+
+	}
+
 }

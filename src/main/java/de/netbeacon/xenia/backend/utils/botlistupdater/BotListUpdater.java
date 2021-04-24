@@ -34,44 +34,46 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class BotListUpdater implements IBLHUpdater, IShutdown {
+public class BotListUpdater implements IBLHUpdater, IShutdown{
 
-    private final SQLConnectionPool sqlConnectionPool;
-    private final long botId;
-    private int lastCount = 0;
-    private final BotListHandler botListHandler;
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final SQLConnectionPool sqlConnectionPool;
+	private final long botId;
+	private int lastCount = 0;
+	private final BotListHandler botListHandler;
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public BotListUpdater(SQLConnectionPool sqlConnectionPool) throws IOException {
-        this.sqlConnectionPool = sqlConnectionPool;
-        JSONObject jsonObject = new JSONObject(new String(Files.readAllBytes(new File("./xenia-backend/config/botlists").toPath())));
-        this.botId = jsonObject.getLong("botId");
-        JSONObject botLists = jsonObject.getJSONObject("botLists");
-        Map<BotList, String> botListMap = new HashMap<>();
-        for(String key : botLists.keySet()){
-            botListMap.put(BotList.valueOf(key), botLists.getString(key));
-        }
-        this.botListHandler = new BLHBuilder(this, botListMap).setNoUpdateNecessaryLoggingEnabled(false).setAutoPostDelay(15, TimeUnit.MINUTES).build();
-    }
+	public BotListUpdater(SQLConnectionPool sqlConnectionPool) throws IOException{
+		this.sqlConnectionPool = sqlConnectionPool;
+		JSONObject jsonObject = new JSONObject(new String(Files.readAllBytes(new File("./xenia-backend/config/botlists").toPath())));
+		this.botId = jsonObject.getLong("botId");
+		JSONObject botLists = jsonObject.getJSONObject("botLists");
+		Map<BotList, String> botListMap = new HashMap<>();
+		for(String key : botLists.keySet()){
+			botListMap.put(BotList.valueOf(key), botLists.getString(key));
+		}
+		this.botListHandler = new BLHBuilder(this, botListMap).setNoUpdateNecessaryLoggingEnabled(false).setAutoPostDelay(15, TimeUnit.MINUTES).build();
+	}
 
-    @Override
-    public long getBotId() {
-        return botId;
-    }
+	@Override
+	public long getBotId(){
+		return botId;
+	}
 
-    @Override
-    public long getServerCount() {
-        try(var con = sqlConnectionPool.getConnection()){
-            var sqlContext = sqlConnectionPool.getContext(con);
-            lastCount = sqlContext.fetchCount(Tables.GUILDS);
-        }catch (Exception e){
-            logger.warn("An Error Occurred Getting The Server Count ", e);
-        }
-        return lastCount;
-    }
+	@Override
+	public long getServerCount(){
+		try(var con = sqlConnectionPool.getConnection()){
+			var sqlContext = sqlConnectionPool.getContext(con);
+			lastCount = sqlContext.fetchCount(Tables.GUILDS);
+		}
+		catch(Exception e){
+			logger.warn("An Error Occurred Getting The Server Count ", e);
+		}
+		return lastCount;
+	}
 
-    @Override
-    public void onShutdown() throws Exception {
-        // maybe needed at some point
-    }
+	@Override
+	public void onShutdown() throws Exception{
+		// maybe needed at some point
+	}
+
 }
