@@ -57,7 +57,7 @@ dependencies {
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '4.0.3' // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.19' // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation group: 'org.jooq', name: 'jooq', version: '3.14.9' // https://mvnrepository.com/artifact/org.jooq/jooq
-    implementation group: 'org.jooq', name: 'jooq-meta', version: '3.14.8' // https://mvnrepository.com/artifact/org.jooq/jooq-meta
+    implementation group: 'org.jooq', name: 'jooq-meta', version: '3.14.9' // https://mvnrepository.com/artifact/org.jooq/jooq-meta
     implementation group: 'org.jooq', name: 'jooq-codegen', version: '3.14.9' // https://mvnrepository.com/artifact/org.jooq/jooq-codegen
     jooqGenerator group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
 
