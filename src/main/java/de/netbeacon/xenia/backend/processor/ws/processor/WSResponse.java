@@ -18,102 +18,103 @@ package de.netbeacon.xenia.backend.processor.ws.processor;
 
 import org.json.JSONObject;
 
-public class WSResponse {
+public class WSResponse{
 
-    private final String requestId;
-    private long sender;
-    private long recipient;
-    private final String action;
-    private JSONObject payload;
+	private final String requestId;
+	private long sender;
+	private long recipient;
+	private final String action;
+	private JSONObject payload;
 
-    private final IO way;
+	private final IO way;
 
-    public enum IO {
-        IN,
-        OUT
-    }
-
-
-    public WSResponse(JSONObject jsonObject, IO way){
-        this.requestId = jsonObject.getString("requestId");
-        if(jsonObject.has("sender")){
-            this.sender = jsonObject.getLong("sender");
-        }
-        if(jsonObject.has("recipient")){
-            this.recipient = jsonObject.getLong("recipient");
-        }
-        this.action = jsonObject.getString("action");
-        if(jsonObject.has("payload")){
-            this.payload = jsonObject.getJSONObject("payload");
-        }
-
-        this.way = way;
-    }
-
-    public String getRequestId(){
-        return requestId;
-    }
-
-    public long getRecipient() {
-        return recipient;
-    }
-
-    public long getSender() {
-        return sender;
-    }
-
-    public String getAction(){
-        return action;
-    }
-
-    public JSONObject getPayload(){
-        return payload;
-    }
-
-    // SECONDARY
+	public enum IO{
+		IN,
+		OUT
+	}
 
 
-    public IO getWay() {
-        return way;
-    }
+	public WSResponse(JSONObject jsonObject, IO way){
+		this.requestId = jsonObject.getString("requestId");
+		if(jsonObject.has("sender")){
+			this.sender = jsonObject.getLong("sender");
+		}
+		if(jsonObject.has("recipient")){
+			this.recipient = jsonObject.getLong("recipient");
+		}
+		this.action = jsonObject.getString("action");
+		if(jsonObject.has("payload")){
+			this.payload = jsonObject.getJSONObject("payload");
+		}
 
-    public JSONObject asJSON(){
-        return new JSONObject()
-                .put("requestId", requestId)
-                .put("requestMode", "RESPONSE")
-                .put("recipient", recipient)
-                .put("sender", sender)
-                .put("action", action)
-                .put("payload", payload);
-    }
+		this.way = way;
+	}
 
-    public static class Builder {
+	public String getRequestId(){
+		return requestId;
+	}
 
-        private final JSONObject jsonObject = new JSONObject();
+	public long getRecipient(){
+		return recipient;
+	}
 
-        public Builder requestId(String id){
-            jsonObject.put("requestId", id);
-            return this;
-        }
+	public long getSender(){
+		return sender;
+	}
 
-        public Builder recipient(long id){
-            jsonObject.put("recipient", id);
-            return this;
-        }
+	public String getAction(){
+		return action;
+	}
 
-        public Builder action(String action){
-            jsonObject.put("action", action);
-            return this;
-        }
+	public JSONObject getPayload(){
+		return payload;
+	}
 
-        public Builder payload(JSONObject payload){
-            jsonObject.put("payload", payload);
-            return this;
-        }
+	// SECONDARY
 
-        public WSResponse build(){
-            return new WSResponse(jsonObject, IO.OUT);
-        }
-    }
+
+	public IO getWay(){
+		return way;
+	}
+
+	public JSONObject asJSON(){
+		return new JSONObject()
+			.put("requestId", requestId)
+			.put("requestMode", "RESPONSE")
+			.put("recipient", recipient)
+			.put("sender", sender)
+			.put("action", action)
+			.put("payload", payload);
+	}
+
+	public static class Builder{
+
+		private final JSONObject jsonObject = new JSONObject();
+
+		public Builder requestId(String id){
+			jsonObject.put("requestId", id);
+			return this;
+		}
+
+		public Builder recipient(long id){
+			jsonObject.put("recipient", id);
+			return this;
+		}
+
+		public Builder action(String action){
+			jsonObject.put("action", action);
+			return this;
+		}
+
+		public Builder payload(JSONObject payload){
+			jsonObject.put("payload", payload);
+			return this;
+		}
+
+		public WSResponse build(){
+			return new WSResponse(jsonObject, IO.OUT);
+		}
+
+	}
 
 }

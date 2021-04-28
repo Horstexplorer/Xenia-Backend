@@ -16,24 +16,24 @@
 
 package de.netbeacon.xenia.backend.processor.ws;
 
-public class PrimaryWebsocketProcessor extends de.netbeacon.xenia.backend.processor.WebsocketProcessor {
+public class PrimaryWebsocketProcessor extends de.netbeacon.xenia.backend.processor.WebsocketProcessor{
 
-    public PrimaryWebsocketProcessor(){
-        super();
-    }
+	public PrimaryWebsocketProcessor(){
+		super();
+	}
 
-    @Override
-    public WsMessage getConnectedMessage() {
-        WsMessage wsMessage = new WsMessage();
-        wsMessage.get().put("type", "status").put("action", "CONNECTED");
-        return wsMessage;
-    }
+	@Override
+	public WsMessage getConnectedMessage(){
+		WsMessage wsMessage = new WsMessage();
+		wsMessage.get().put("type", "status").put("action", "CONNECTED");
+		return wsMessage;
+	}
 
-    @Override
-    public WsMessage getHeartBeatMessage(){
-        WsMessage wsMessage = new WsMessage();
-        wsMessage.get().put("type", "HEARTBEAT").put("action", "HEARTBEAT").put("timestamp", System.currentTimeMillis());
-        return wsMessage;
-    }
+	@Override
+	public WsMessage getHeartBeatMessage(){
+		WsMessage wsMessage = new WsMessage();
+		wsMessage.get().put("type", "HEARTBEAT").put("action", "HEARTBEAT").put("timestamp", System.currentTimeMillis());
+		return wsMessage;
+	}
 
 }

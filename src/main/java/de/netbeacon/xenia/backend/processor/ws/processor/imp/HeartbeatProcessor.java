@@ -20,15 +20,16 @@ import de.netbeacon.xenia.backend.processor.ws.processor.WSProcessor;
 import de.netbeacon.xenia.backend.processor.ws.processor.WSRequest;
 import de.netbeacon.xenia.backend.processor.ws.processor.WSResponse;
 
-public class HeartbeatProcessor extends WSProcessor {
+public class HeartbeatProcessor extends WSProcessor{
 
-    public HeartbeatProcessor() {
-        super("heartbeat");
-    }
+	public HeartbeatProcessor(){
+		super("heartbeat");
+	}
 
-    @Override
-    public WSResponse process(WSRequest wsRequest) {
-        // this does nothing
-        return null;
-    }
+	@Override
+	public WSResponse process(WSRequest wsRequest){
+		// this does nothing
+		return null;
+	}
+
 }

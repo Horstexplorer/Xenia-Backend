@@ -23,21 +23,22 @@ package de.netbeacon.utils.json.serial;
  */
 public class JSONSerializationException extends RuntimeException{
 
-    /**
-     * Creates a new instance of this class
-     *
-     * @param message error message
-     */
-    public JSONSerializationException(String message){
-        super(message);
-    }
+	/**
+	 * Creates a new instance of this class
+	 *
+	 * @param message error message
+	 */
+	public JSONSerializationException(String message){
+		super(message);
+	}
 
-    /**
-     * Creates a new instance of this class
-     *
-     * @param exception original exception
-     */
-    public JSONSerializationException(Exception exception){
-        super(exception);
-    }
+	/**
+	 * Creates a new instance of this class
+	 *
+	 * @param exception original exception
+	 */
+	public JSONSerializationException(Exception exception){
+		super(exception);
+	}
+
 }

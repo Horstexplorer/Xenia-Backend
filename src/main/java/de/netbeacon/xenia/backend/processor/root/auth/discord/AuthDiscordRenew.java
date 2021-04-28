@@ -31,64 +31,69 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 
-public class AuthDiscordRenew extends RequestProcessor {
+public class AuthDiscordRenew extends RequestProcessor{
 
-    private final Logger logger = LoggerFactory.getLogger(AuthDiscordRenew.class);
+	private final Logger logger = LoggerFactory.getLogger(AuthDiscordRenew.class);
 
-    public AuthDiscordRenew(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
-        super("renew", sqlConnectionPool, websocketProcessor);
-    }
+	public AuthDiscordRenew(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
+		super("renew", sqlConnectionPool, websocketProcessor);
+	}
 
-    @Override
-    public RequestProcessor preProcessor(Client client, Context context) {
-        if(!client.getClientType().equals(ClientType.DISCORD) || !context.method().equalsIgnoreCase("get")){
-            throw new ForbiddenResponse();
-        }
-        return this;
-    }
+	@Override
+	public RequestProcessor preProcessor(Client client, Context context){
+		if(!client.getClientType().equals(ClientType.DISCORD) || !context.method().equalsIgnoreCase("get")){
+			throw new ForbiddenResponse();
+		}
+		return this;
+	}
 
-    @Override
-    public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection()) {
-            var sqlContext = getSqlConnectionPool().getContext(con);
-            Result<OauthRecord> result = sqlContext.selectFrom(Tables.OAUTH).where(Tables.OAUTH.USER_ID.eq(client.getClientId())).fetch();
-            if(result.isEmpty()){
-                throw new InternalServerErrorResponse();
-            }
-            OauthRecord oauthRecord = result.get(0);
-            // check if we can renew the token
-            if(oauthRecord.getDiscordInvalidationTime().minusMinutes(90).isAfter(LocalDateTime.now())){
-                // the token is still valid for some time
-                ctx.status(200);
-                return;
-            }
-            // get new token
-            DiscordOAuthHandler.Token newToken;
-            try{
-                newToken = DiscordOAuthHandler.getInstance().renew(new DiscordOAuthHandler.Token(oauthRecord));
-            }catch (Exception e){
-                throw new BadRequestResponse();
-            }
-            // update record
-            oauthRecord.setDiscordAccessToken(newToken.getAccessToken());
-            oauthRecord.setDiscordRefreshToken(newToken.getRefreshToken());
-            oauthRecord.setDiscordInvalidationTime(newToken.expiresOn());
-            oauthRecord.setDiscordScopes(newToken.getScopes());
-            // update db
-            sqlContext.executeUpdate(oauthRecord);
-            // send ok
-            ctx.status(204);
-        }catch (HttpResponseException e){
-            if(e instanceof InternalServerErrorResponse){
-                logger.error("An Error Occurred Processing AuthDiscordRenew#GET ", e);
-            }
-            throw e;
-        }catch (NullPointerException e){
-            // dont log
-            throw new BadRequestResponse();
-        }catch (Exception e){
-            logger.warn("An Error Occurred Processing AuthDiscordRenew#GET ", e);
-            throw new BadRequestResponse();
-        }
-    }
+	@Override
+	public void get(Client client, Context ctx){
+		try(var con = getSqlConnectionPool().getConnection()){
+			var sqlContext = getSqlConnectionPool().getContext(con);
+			Result<OauthRecord> result = sqlContext.selectFrom(Tables.OAUTH).where(Tables.OAUTH.USER_ID.eq(client.getClientId())).fetch();
+			if(result.isEmpty()){
+				throw new InternalServerErrorResponse();
+			}
+			OauthRecord oauthRecord = result.get(0);
+			// check if we can renew the token
+			if(oauthRecord.getDiscordInvalidationTime().minusMinutes(90).isAfter(LocalDateTime.now())){
+				// the token is still valid for some time
+				ctx.status(200);
+				return;
+			}
+			// get new token
+			DiscordOAuthHandler.Token newToken;
+			try{
+				newToken = DiscordOAuthHandler.getInstance().renew(new DiscordOAuthHandler.Token(oauthRecord));
+			}
+			catch(Exception e){
+				throw new BadRequestResponse();
+			}
+			// update record
+			oauthRecord.setDiscordAccessToken(newToken.getAccessToken());
+			oauthRecord.setDiscordRefreshToken(newToken.getRefreshToken());
+			oauthRecord.setDiscordInvalidationTime(newToken.expiresOn());
+			oauthRecord.setDiscordScopes(newToken.getScopes());
+			// update db
+			sqlContext.executeUpdate(oauthRecord);
+			// send ok
+			ctx.status(204);
+		}
+		catch(HttpResponseException e){
+			if(e instanceof InternalServerErrorResponse){
+				logger.error("An Error Occurred Processing AuthDiscordRenew#GET ", e);
+			}
+			throw e;
+		}
+		catch(NullPointerException e){
+			// dont log
+			throw new BadRequestResponse();
+		}
+		catch(Exception e){
+			logger.warn("An Error Occurred Processing AuthDiscordRenew#GET ", e);
+			throw new BadRequestResponse();
+		}
+	}
+
 }

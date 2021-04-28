@@ -19,26 +19,26 @@ package de.netbeacon.xenia.backend.utils.prometheus;
 import io.prometheus.client.Counter;
 import io.prometheus.client.Gauge;
 
-public class Metrics {
+public class Metrics{
 
-    // GENERAL
+	// GENERAL
 
-    public static final Counter HTTP_REQUESTS = Counter.build()
-            .name("xenia_backend_http_requests")
-            .help("Amount of http requests received")
-            .labelNames("endpoint", "type", "status")
-            .register();
+	public static final Counter HTTP_REQUESTS = Counter.build()
+		.name("xenia_backend_http_requests")
+		.help("Amount of http requests received")
+		.labelNames("endpoint", "type", "status")
+		.register();
 
-    public static final Gauge WS_CLIENT_CONNECTIONS = Gauge.build()
-            .name("xenia_backend_ws_client_connections")
-            .help("Amount of clients connected to the websocket")
-            .labelNames("socket")
-            .register();
+	public static final Gauge WS_CLIENT_CONNECTIONS = Gauge.build()
+		.name("xenia_backend_ws_client_connections")
+		.help("Amount of clients connected to the websocket")
+		.labelNames("socket")
+		.register();
 
-    public static final Counter WS_MESSAGES = Counter.build()
-            .name("xenia_backend_ws_messages")
-            .help("Total amount of messages sent via the websocket")
-            .labelNames("way", "action")
-            .register();
+	public static final Counter WS_MESSAGES = Counter.build()
+		.name("xenia_backend_ws_messages")
+		.help("Total amount of messages sent via the websocket")
+		.labelNames("way", "action")
+		.register();
 
 }

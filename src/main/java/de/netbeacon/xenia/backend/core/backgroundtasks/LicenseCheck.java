@@ -35,35 +35,37 @@ import static org.jooq.impl.DSL.inline;
 
 public class LicenseCheck extends BackgroundServiceScheduler.Task{
 
-    private final Logger logger = LoggerFactory.getLogger(LicenseCheck.class);
+	private final Logger logger = LoggerFactory.getLogger(LicenseCheck.class);
 
-    public LicenseCheck(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor) {
-        super(sqlConnectionPool, primaryWebsocketProcessor, null);
-    }
+	public LicenseCheck(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor){
+		super(sqlConnectionPool, primaryWebsocketProcessor, null);
+	}
 
-    @Override
-    void onExecution() {
-        try(var con = getSqlConnectionPool().getConnection()){
-            var sqlContext = getSqlConnectionPool().getContext(con);
-            List<Long> clearForIDs = new ArrayList<>();
-            Result<Record> records = sqlContext.select().from(Tables.GUILDS).join(Tables.LICENSES).on(Tables.GUILDS.LICENSE_ID.eq(Tables.LICENSES.LICENSE_ID)).where(Tables.GUILDS.LICENSE_ID.isNotNull()).fetch();
-            for(Record record : records){
-                LocalDateTime start = record.get(Tables.LICENSES.LICENSE_ACTIVATION_TIMESTAMP);
-                int duration = record.get(Tables.LICENSES.LICENSE_DURATION_DAYS);
-                if(LocalDateTime.now().isAfter(start.plusDays(duration))){
-                    clearForIDs.add(record.get(Tables.GUILDS.GUILD_ID));
-                }
-            }
-            Result<GuildsRecord> records1 = sqlContext.update(Tables.GUILDS).set(Tables.GUILDS.LICENSE_ID, inline(null, Tables.GUILDS.LICENSE_ID)).where(Tables.GUILDS.GUILD_ID.in(clearForIDs)).returning().fetch();
-            for(GuildsRecord guildsRecord : records1){
-                // send ws notification
-                WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
-                wsMessage.get().put("type", "GUILD_LICENSE").put("action", "UPDATE").put("guildId", guildsRecord.getGuildId());
-                getPrimaryWebsocketProcessor().broadcast(wsMessage);
-            }
-        }catch (Exception e){
-            logger.warn("An Error Occurred Running LicenseCheck ", e);
-            throw new BadRequestResponse();
-        }
-    }
+	@Override
+	void onExecution(){
+		try(var con = getSqlConnectionPool().getConnection()){
+			var sqlContext = getSqlConnectionPool().getContext(con);
+			List<Long> clearForIDs = new ArrayList<>();
+			Result<Record> records = sqlContext.select().from(Tables.GUILDS).join(Tables.LICENSES).on(Tables.GUILDS.LICENSE_ID.eq(Tables.LICENSES.LICENSE_ID)).where(Tables.GUILDS.LICENSE_ID.isNotNull()).fetch();
+			for(Record record : records){
+				LocalDateTime start = record.get(Tables.LICENSES.LICENSE_ACTIVATION_TIMESTAMP);
+				int duration = record.get(Tables.LICENSES.LICENSE_DURATION_DAYS);
+				if(LocalDateTime.now().isAfter(start.plusDays(duration))){
+					clearForIDs.add(record.get(Tables.GUILDS.GUILD_ID));
+				}
+			}
+			Result<GuildsRecord> records1 = sqlContext.update(Tables.GUILDS).set(Tables.GUILDS.LICENSE_ID, inline(null, Tables.GUILDS.LICENSE_ID)).where(Tables.GUILDS.GUILD_ID.in(clearForIDs)).returning().fetch();
+			for(GuildsRecord guildsRecord : records1){
+				// send ws notification
+				WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
+				wsMessage.get().put("type", "GUILD_LICENSE").put("action", "UPDATE").put("guildId", guildsRecord.getGuildId());
+				getPrimaryWebsocketProcessor().broadcast(wsMessage);
+			}
+		}
+		catch(Exception e){
+			logger.warn("An Error Occurred Running LicenseCheck ", e);
+			throw new BadRequestResponse();
+		}
+	}
+
 }

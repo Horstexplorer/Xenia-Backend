@@ -32,77 +32,82 @@ import java.sql.SQLException;
  *
  * @author horstexplorer
  */
-public class SQLConnectionPool implements IShutdown {
+public class SQLConnectionPool implements IShutdown{
 
-    private final HikariDataSource hikariDataSource;
+	private final HikariDataSource hikariDataSource;
 
-    /**
-     * Creates a new instance of this class
-     *
-     * @param settings of the connection pools
-     * @param auth which should be used
-     */
-    public SQLConnectionPool(SQLConnectionPoolSettings settings, SQLAuth auth){
-        HikariConfig config = new HikariConfig();
-        // auth n login
-        config.setDriverClassName("org.postgresql.Driver");
-        config.setJdbcUrl(auth.getUrl());
-        config.setUsername(auth.getUsername());
-        config.setPassword(auth.getPassword());
-        // connection settings
-        config.setMinimumIdle(settings.getMinCon());
-        config.setMaximumPoolSize(settings.getMaxCon());
-        config.setConnectionTimeout(settings.getConTimeout());
-        config.setIdleTimeout(settings.getIdleTimeout());
-        config.setMaxLifetime(settings.getMaxLifetime());
-        // build
-        this.hikariDataSource = new HikariDataSource(config);
-    }
+	/**
+	 * Creates a new instance of this class
+	 *
+	 * @param settings of the connection pools
+	 * @param auth     which should be used
+	 */
+	public SQLConnectionPool(SQLConnectionPoolSettings settings, SQLAuth auth){
+		HikariConfig config = new HikariConfig();
+		// auth n login
+		config.setDriverClassName("org.postgresql.Driver");
+		config.setJdbcUrl(auth.getUrl());
+		config.setUsername(auth.getUsername());
+		config.setPassword(auth.getPassword());
+		// connection settings
+		config.setMinimumIdle(settings.getMinCon());
+		config.setMaximumPoolSize(settings.getMaxCon());
+		config.setConnectionTimeout(settings.getConTimeout());
+		config.setIdleTimeout(settings.getIdleTimeout());
+		config.setMaxLifetime(settings.getMaxLifetime());
+		// build
+		this.hikariDataSource = new HikariDataSource(config);
+	}
 
-    /**
-     * Returns a connection from the connection pool
-     *
-     * @return Connection
-     * @throws SQLException on exception
-     */
-    public Connection getConnection() throws SQLException {
-        return hikariDataSource.getConnection();
-    }
+	/**
+	 * Returns a connection from the connection pool
+	 *
+	 * @return Connection
+	 *
+	 * @throws SQLException on exception
+	 */
+	public Connection getConnection() throws SQLException{
+		return hikariDataSource.getConnection();
+	}
 
-    /**
-     * Returns the DSLContext used for JOOP set for an postgres db
-     *
-     * @return DSLContext
-     * @throws SQLException on exception
-     */
-    public DSLContext getContext() throws SQLException {
-        return DSL.using(hikariDataSource.getConnection(), SQLDialect.POSTGRES);
-    }
+	/**
+	 * Returns the DSLContext used for JOOP set for an postgres db
+	 *
+	 * @return DSLContext
+	 *
+	 * @throws SQLException on exception
+	 */
+	public DSLContext getContext() throws SQLException{
+		return DSL.using(hikariDataSource.getConnection(), SQLDialect.POSTGRES);
+	}
 
-    public DSLContext getContext(Connection connection){
-        return DSL.using(connection, SQLDialect.POSTGRES);
-    }
+	public DSLContext getContext(Connection connection){
+		return DSL.using(connection, SQLDialect.POSTGRES);
+	}
 
-    /**
-     * Returns the DSLContext used for JOOP with a given dialect
-     *
-     * @param dialect SQLDialect
-     * @return DSLContext
-     * @throws SQLException on exception
-     */
-    public DSLContext getContext(SQLDialect dialect) throws SQLException {
-        return DSL.using(hikariDataSource.getConnection(), dialect);
-    }
+	/**
+	 * Returns the DSLContext used for JOOP with a given dialect
+	 *
+	 * @param dialect SQLDialect
+	 *
+	 * @return DSLContext
+	 *
+	 * @throws SQLException on exception
+	 */
+	public DSLContext getContext(SQLDialect dialect) throws SQLException{
+		return DSL.using(hikariDataSource.getConnection(), dialect);
+	}
 
-    /**
-     * Used to close the connection pool
-     */
-    public void close(){
-        hikariDataSource.close();
-    }
+	/**
+	 * Used to close the connection pool
+	 */
+	public void close(){
+		hikariDataSource.close();
+	}
 
-    @Override
-    public void onShutdown() throws Exception {
-        close();
-    }
+	@Override
+	public void onShutdown() throws Exception{
+		close();
+	}
+
 }

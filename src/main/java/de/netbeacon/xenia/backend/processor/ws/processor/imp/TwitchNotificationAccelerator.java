@@ -31,56 +31,60 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TwitchNotificationAccelerator extends WSProcessor {
+public class TwitchNotificationAccelerator extends WSProcessor{
 
-    private final TwitchWrap twitchWrap;
-    private final PrimaryWebsocketProcessor primaryWebsocketProcessor;
-    private final SQLConnectionPool sqlConnectionPool;
-    private final Logger logger = LoggerFactory.getLogger(TwitchNotificationAccelerator.class);
+	private final TwitchWrap twitchWrap;
+	private final PrimaryWebsocketProcessor primaryWebsocketProcessor;
+	private final SQLConnectionPool sqlConnectionPool;
+	private final Logger logger = LoggerFactory.getLogger(TwitchNotificationAccelerator.class);
 
-    public TwitchNotificationAccelerator(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor, TwitchWrap twitchWrap) {
-        super("twitchaccelerator");
-        this.sqlConnectionPool = sqlConnectionPool;
-        this.twitchWrap = twitchWrap;
-        this.primaryWebsocketProcessor = primaryWebsocketProcessor;
-    }
+	public TwitchNotificationAccelerator(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor primaryWebsocketProcessor, TwitchWrap twitchWrap){
+		super("twitchaccelerator");
+		this.sqlConnectionPool = sqlConnectionPool;
+		this.twitchWrap = twitchWrap;
+		this.primaryWebsocketProcessor = primaryWebsocketProcessor;
+	}
 
-    @Override
-    public WSResponse process(WSRequest wsRequest) {
-        try{
-            JSONObject payload = wsRequest.getPayload();
-            long guildId = payload.getLong("guildId");
-            long twitchNotificationId = payload.getLong("twitchNotificationId");
-            // force an update of the record
-            try(var con = sqlConnectionPool.getConnection()) {
-                var sqlContext = sqlConnectionPool.getContext(con);
-                Result<TwitchnotificationsRecord> twitchnotificationsRecordResult = sqlContext.selectFrom(Tables.TWITCHNOTIFICATIONS).where(Tables.TWITCHNOTIFICATIONS.GUILD_ID.eq(guildId).and(Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_ID.eq(twitchNotificationId))).fetch();
-                if(twitchnotificationsRecordResult.isEmpty()){
-                    logger.warn("Requested Update For Notification ("+guildId+") "+twitchNotificationId+" Which Does Not Exist");
-                    return null;
-                }
-                TwitchnotificationsRecord twitchnotificationsRecord = twitchnotificationsRecordResult.get(0);
-                // fetch name
-                try{
-                    TwitchWrapQOL.UserResponse userResponse = TwitchWrapQOL.getUserOf(twitchnotificationsRecord.getTwitchnotificationTwitchChannelName(), twitchWrap);
-                    if(userResponse.getUserID() == -1){
-                        throw new RuntimeException("Something Went Wrong");
-                    }
-                    // update and send notification
-                    twitchnotificationsRecord.setTwitchnotificationTwitchChannelId(userResponse.getUserID());
-                    sqlContext.executeUpdate(twitchnotificationsRecord);
-                    WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
-                    wsMessage.get().put("type", "GUILD_MISC_TWITCHNOTIFICATION").put("action", "UPDATE").put("guildId", guildId).put("twitchNotificationId", twitchnotificationsRecord.getTwitchnotificationId());
-                    primaryWebsocketProcessor.broadcast(wsMessage);
-                }catch (Exception e){
-                    // delete and send notification
-                    sqlContext.executeDelete(twitchnotificationsRecord);
-                    WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
-                    wsMessage.get().put("type", "GUILD_MISC_TWITCHNOTIFICATION").put("action", "DELETE").put("guildId", guildId).put("twitchNotificationId", twitchnotificationsRecord.getTwitchnotificationId());
-                    primaryWebsocketProcessor.broadcast(wsMessage);
-                }
-            }
-        }catch (Exception ignore){}
-        return null;
-    }
+	@Override
+	public WSResponse process(WSRequest wsRequest){
+		try{
+			JSONObject payload = wsRequest.getPayload();
+			long guildId = payload.getLong("guildId");
+			long twitchNotificationId = payload.getLong("twitchNotificationId");
+			// force an update of the record
+			try(var con = sqlConnectionPool.getConnection()){
+				var sqlContext = sqlConnectionPool.getContext(con);
+				Result<TwitchnotificationsRecord> twitchnotificationsRecordResult = sqlContext.selectFrom(Tables.TWITCHNOTIFICATIONS).where(Tables.TWITCHNOTIFICATIONS.GUILD_ID.eq(guildId).and(Tables.TWITCHNOTIFICATIONS.TWITCHNOTIFICATION_ID.eq(twitchNotificationId))).fetch();
+				if(twitchnotificationsRecordResult.isEmpty()){
+					logger.warn("Requested Update For Notification (" + guildId + ") " + twitchNotificationId + " Which Does Not Exist");
+					return null;
+				}
+				TwitchnotificationsRecord twitchnotificationsRecord = twitchnotificationsRecordResult.get(0);
+				// fetch name
+				try{
+					TwitchWrapQOL.UserResponse userResponse = TwitchWrapQOL.getUserOf(twitchnotificationsRecord.getTwitchnotificationTwitchChannelName(), twitchWrap);
+					if(userResponse.getUserID() == -1){
+						throw new RuntimeException("Something Went Wrong");
+					}
+					// update and send notification
+					twitchnotificationsRecord.setTwitchnotificationTwitchChannelId(userResponse.getUserID());
+					sqlContext.executeUpdate(twitchnotificationsRecord);
+					WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
+					wsMessage.get().put("type", "GUILD_MISC_TWITCHNOTIFICATION").put("action", "UPDATE").put("guildId", guildId).put("twitchNotificationId", twitchnotificationsRecord.getTwitchnotificationId());
+					primaryWebsocketProcessor.broadcast(wsMessage);
+				}
+				catch(Exception e){
+					// delete and send notification
+					sqlContext.executeDelete(twitchnotificationsRecord);
+					WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
+					wsMessage.get().put("type", "GUILD_MISC_TWITCHNOTIFICATION").put("action", "DELETE").put("guildId", guildId).put("twitchNotificationId", twitchnotificationsRecord.getTwitchnotificationId());
+					primaryWebsocketProcessor.broadcast(wsMessage);
+				}
+			}
+		}
+		catch(Exception ignore){
+		}
+		return null;
+	}
+
 }

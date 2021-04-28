@@ -26,43 +26,46 @@ import io.javalin.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AuthDiscordRevoke extends RequestProcessor {
+public class AuthDiscordRevoke extends RequestProcessor{
 
-    private final Logger logger = LoggerFactory.getLogger(AuthDiscordRevoke.class);
+	private final Logger logger = LoggerFactory.getLogger(AuthDiscordRevoke.class);
 
-    public AuthDiscordRevoke(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
-        super("revoke", sqlConnectionPool, websocketProcessor);
-    }
+	public AuthDiscordRevoke(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
+		super("revoke", sqlConnectionPool, websocketProcessor);
+	}
 
-    @Override
-    public RequestProcessor preProcessor(Client client, Context context) {
-        if(!client.getClientType().equals(ClientType.DISCORD) || !context.method().equalsIgnoreCase("get")){
-            throw new ForbiddenResponse();
-        }
-        return this;
-    }
+	@Override
+	public RequestProcessor preProcessor(Client client, Context context){
+		if(!client.getClientType().equals(ClientType.DISCORD) || !context.method().equalsIgnoreCase("get")){
+			throw new ForbiddenResponse();
+		}
+		return this;
+	}
 
-    @Override
-    public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection()) {
-            var sqlContext = getSqlConnectionPool().getContext(con);
-            int mod = sqlContext.deleteFrom(Tables.OAUTH).where(Tables.OAUTH.USER_ID.eq(client.getClientId())).execute();
-            if(mod == 0){
-                throw new InternalServerErrorResponse();
-            }
-            ctx.status(204);
-        }catch (HttpResponseException e){
-            if(e instanceof InternalServerErrorResponse){
-                logger.error("An Error Occurred Processing AuthDiscordRevoke#GET ", e);
-            }
-            throw e;
-        }catch (NullPointerException e){
-            // dont log
-            throw new BadRequestResponse();
-        }catch (Exception e){
-            logger.warn("An Error Occurred Processing AuthDiscordRevoke#GET ", e);
-            throw new BadRequestResponse();
-        }
-    }
+	@Override
+	public void get(Client client, Context ctx){
+		try(var con = getSqlConnectionPool().getConnection()){
+			var sqlContext = getSqlConnectionPool().getContext(con);
+			int mod = sqlContext.deleteFrom(Tables.OAUTH).where(Tables.OAUTH.USER_ID.eq(client.getClientId())).execute();
+			if(mod == 0){
+				throw new InternalServerErrorResponse();
+			}
+			ctx.status(204);
+		}
+		catch(HttpResponseException e){
+			if(e instanceof InternalServerErrorResponse){
+				logger.error("An Error Occurred Processing AuthDiscordRevoke#GET ", e);
+			}
+			throw e;
+		}
+		catch(NullPointerException e){
+			// dont log
+			throw new BadRequestResponse();
+		}
+		catch(Exception e){
+			logger.warn("An Error Occurred Processing AuthDiscordRevoke#GET ", e);
+			throw new BadRequestResponse();
+		}
+	}
 
 }

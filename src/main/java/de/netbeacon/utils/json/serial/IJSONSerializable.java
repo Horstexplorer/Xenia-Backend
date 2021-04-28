@@ -23,22 +23,26 @@ import org.json.JSONObject;
  *
  * @author horstexplorer
  */
-public interface IJSONSerializable {
+public interface IJSONSerializable{
 
-    /**
-     * Returns a serialized copy of the object as json
-     *
-     * @return JSONObject as serialized copy
-     * @throws JSONSerializationException on exception
-     */
-    public default JSONObject asJSON() throws JSONSerializationException { return null; }
+	/**
+	 * Returns a serialized copy of the object as json
+	 *
+	 * @return JSONObject as serialized copy
+	 *
+	 * @throws JSONSerializationException on exception
+	 */
+	public default JSONObject asJSON() throws JSONSerializationException{ return null; }
 
-    /**
-     * Sets up an object from a given serialized copy
-     *
-     * @param jsonObject as serialized copy
-     * @throws JSONSerializationException on exception
-     */
-    public default void fromJSON(JSONObject jsonObject) throws JSONSerializationException {};
+	/**
+	 * Sets up an object from a given serialized copy
+	 *
+	 * @param jsonObject as serialized copy
+	 *
+	 * @throws JSONSerializationException on exception
+	 */
+	public default void fromJSON(JSONObject jsonObject) throws JSONSerializationException{}
+
+	;
 
 }

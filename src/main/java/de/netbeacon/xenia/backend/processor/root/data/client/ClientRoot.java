@@ -22,11 +22,13 @@ import de.netbeacon.xenia.backend.processor.root.data.client.discordbot.DiscordB
 import de.netbeacon.xenia.backend.processor.root.data.client.frontend.FrontendRoot;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 
-public class ClientRoot extends RequestProcessor {
-    public ClientRoot(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
-        super("client", sqlConnectionPool, websocketProcessor,
-                new FrontendRoot(sqlConnectionPool, websocketProcessor),
-                new DiscordBotRoot(sqlConnectionPool, websocketProcessor)
-       );
-    }
+public class ClientRoot extends RequestProcessor{
+
+	public ClientRoot(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
+		super("client", sqlConnectionPool, websocketProcessor,
+			new FrontendRoot(sqlConnectionPool, websocketProcessor),
+			new DiscordBotRoot(sqlConnectionPool, websocketProcessor)
+		);
+	}
+
 }

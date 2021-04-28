@@ -21,11 +21,13 @@ package de.netbeacon.xenia.backend.utils.twitch.exceptions;
  */
 public class AuthException extends RuntimeException{
 
-    /**
-     * Creates a new instance of this class
-     * @param message error message
-     */
-    public AuthException(String message){
-        super(message);
-    }
+	/**
+	 * Creates a new instance of this class
+	 *
+	 * @param message error message
+	 */
+	public AuthException(String message){
+		super(message);
+	}
+
 }

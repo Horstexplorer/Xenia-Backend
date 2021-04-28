@@ -23,14 +23,14 @@ import de.netbeacon.xenia.backend.processor.root.info.pprivate.InfoPrivate;
 import de.netbeacon.xenia.backend.processor.root.info.ppublic.InfoPublic;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 
-public class InfoRoot extends RequestProcessor {
+public class InfoRoot extends RequestProcessor{
 
-    public InfoRoot(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
-        super("info", sqlConnectionPool, websocketProcessor,
-                new InfoPrivate(sqlConnectionPool, websocketProcessor),
-                new InfoPublic(sqlConnectionPool, websocketProcessor),
-                new InfoMetrics(sqlConnectionPool, websocketProcessor)
-        );
-    }
+	public InfoRoot(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
+		super("info", sqlConnectionPool, websocketProcessor,
+			new InfoPrivate(sqlConnectionPool, websocketProcessor),
+			new InfoPublic(sqlConnectionPool, websocketProcessor),
+			new InfoMetrics(sqlConnectionPool, websocketProcessor)
+		);
+	}
 
 }

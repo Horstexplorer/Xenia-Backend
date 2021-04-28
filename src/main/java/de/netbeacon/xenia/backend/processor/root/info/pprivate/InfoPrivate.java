@@ -28,63 +28,66 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InfoPrivate extends RequestProcessor {
+public class InfoPrivate extends RequestProcessor{
 
-    private final Logger logger = LoggerFactory.getLogger(InfoPrivate.class);
+	private final Logger logger = LoggerFactory.getLogger(InfoPrivate.class);
 
-    public InfoPrivate(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
-        super("private", sqlConnectionPool, websocketProcessor);
-    }
+	public InfoPrivate(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
+		super("private", sqlConnectionPool, websocketProcessor);
+	}
 
-    @Override
-    public RequestProcessor preProcessor(Client client, Context context) {
-        if(client.getClientType().equals(ClientType.DISCORD)){
-            throw new ForbiddenResponse();
-        }
-        return this;
-    }
+	@Override
+	public RequestProcessor preProcessor(Client client, Context context){
+		if(client.getClientType().equals(ClientType.DISCORD)){
+			throw new ForbiddenResponse();
+		}
+		return this;
+	}
 
-    @Override
-    public void get(Client client, Context ctx) {
-        try(var con = getSqlConnectionPool().getConnection()){
-            var sqlContext = getSqlConnectionPool().getContext(con);
-            // the number of known users
-            int users = sqlContext.fetchCount(Tables.USERS);
-            // get the number of known guilds
-            int guilds = sqlContext.fetchCount(Tables.GUILDS);
-            // get the number of known members
-            int members = sqlContext.fetchCount(Tables.MEMBERS);
-            // get number of channels
-            int channels = sqlContext.fetchCount(Tables.CHANNELS);
-            // get number of messages
-            int messages = sqlContext.fetchCount(Tables.MESSAGES);
-            int forbidden = sqlContext.selectCount().from(Tables.CHANNELS).where(Tables.CHANNELS.ACCESS_MODE.bitAnd(1).eq(1).or(Tables.CHANNELS.ACCESS_MODE.bitAnd(2).eq(2))).execute();
-            // build json
-            JSONObject jsonObject = new JSONObject()
-                    .put("version", AppInfo.get("buildVersion")+"_"+ AppInfo.get("buildNumber"))
-                    .put("guilds", guilds)
-                    .put("users", users)
-                    .put("members", members)
-                    .put("channels", new JSONObject()
-                            .put("total", channels)
-                            .put("forbidden", forbidden))
-                    .put("messages", messages);
-            // return
-            ctx.status(200);
-            ctx.header("Content-Type", "application/json");
-            ctx.result(jsonObject.toString());
-        }catch (HttpResponseException e){
-            if(e instanceof InternalServerErrorResponse){
-                logger.error("An Error Occurred Processing InfoPrivate#GET ", e);
-            }
-            throw e;
-        }catch (NullPointerException e){
-            // dont log
-            throw new BadRequestResponse();
-        }catch (Exception e){
-            logger.warn("An Error Occurred Processing InfoPrivate#GET ", e);
-            throw new BadRequestResponse();
-        }
-    }
+	@Override
+	public void get(Client client, Context ctx){
+		try(var con = getSqlConnectionPool().getConnection()){
+			var sqlContext = getSqlConnectionPool().getContext(con);
+			// the number of known users
+			int users = sqlContext.fetchCount(Tables.USERS);
+			// get the number of known guilds
+			int guilds = sqlContext.fetchCount(Tables.GUILDS);
+			// get the number of known members
+			int members = sqlContext.fetchCount(Tables.MEMBERS);
+			// get number of channels
+			int channels = sqlContext.fetchCount(Tables.CHANNELS);
+			// get number of messages
+			int messages = sqlContext.fetchCount(Tables.MESSAGES);
+			int forbidden = sqlContext.selectCount().from(Tables.CHANNELS).where(Tables.CHANNELS.ACCESS_MODE.bitAnd(1).eq(1).or(Tables.CHANNELS.ACCESS_MODE.bitAnd(2).eq(2))).execute();
+			// build json
+			JSONObject jsonObject = new JSONObject()
+				.put("version", AppInfo.get("buildVersion") + "_" + AppInfo.get("buildNumber"))
+				.put("guilds", guilds)
+				.put("users", users)
+				.put("members", members)
+				.put("channels", new JSONObject()
+					.put("total", channels)
+					.put("forbidden", forbidden))
+				.put("messages", messages);
+			// return
+			ctx.status(200);
+			ctx.header("Content-Type", "application/json");
+			ctx.result(jsonObject.toString());
+		}
+		catch(HttpResponseException e){
+			if(e instanceof InternalServerErrorResponse){
+				logger.error("An Error Occurred Processing InfoPrivate#GET ", e);
+			}
+			throw e;
+		}
+		catch(NullPointerException e){
+			// dont log
+			throw new BadRequestResponse();
+		}
+		catch(Exception e){
+			logger.warn("An Error Occurred Processing InfoPrivate#GET ", e);
+			throw new BadRequestResponse();
+		}
+	}
 
 }

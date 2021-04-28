@@ -21,153 +21,154 @@ import org.json.JSONObject;
 import java.security.SecureRandom;
 import java.util.Base64;
 
-public class WSRequest {
+public class WSRequest{
 
-    private final String requestId;
-    private final Mode requestMode;
-    private long sender;
-    private long recipient;
-    private final String action;
-    private JSONObject payload;
+	private final String requestId;
+	private final Mode requestMode;
+	private long sender;
+	private long recipient;
+	private final String action;
+	private JSONObject payload;
 
-    public final IO way;
-    public final ExitOn exitOn;
-    public final long timeout;
+	public final IO way;
+	public final ExitOn exitOn;
+	public final long timeout;
 
-    private static final SecureRandom secureRandom = new SecureRandom();
+	private static final SecureRandom secureRandom = new SecureRandom();
 
-    public enum Mode {
-        UNICAST,
-        BROADCAST
-    }
+	public enum Mode{
+		UNICAST,
+		BROADCAST
+	}
 
-    public enum IO {
-        IN,
-        OUT
-    }
+	public enum IO{
+		IN,
+		OUT
+	}
 
-    public enum ExitOn {
-        INSTANT,
-        FIRST_RESULT,
-        TIMEOUT
-    }
+	public enum ExitOn{
+		INSTANT,
+		FIRST_RESULT,
+		TIMEOUT
+	}
 
-    public WSRequest(JSONObject jsonObject, IO way, ExitOn exitOn, long timeout){
-        this.requestId = jsonObject.getString("requestId");
-        this.requestMode = Mode.valueOf(jsonObject.getString("requestMode"));
-        if(jsonObject.has("recipient")){
-            this.recipient = jsonObject.getLong("recipient");
-        }
-        if(jsonObject.has("sender")){
-            this.sender = jsonObject.getLong("sender");
-        }
-        this.action = jsonObject.getString("action").toLowerCase();
-        if(jsonObject.has("payload")){
-            this.payload = jsonObject.getJSONObject("payload");
-        }
+	public WSRequest(JSONObject jsonObject, IO way, ExitOn exitOn, long timeout){
+		this.requestId = jsonObject.getString("requestId");
+		this.requestMode = Mode.valueOf(jsonObject.getString("requestMode"));
+		if(jsonObject.has("recipient")){
+			this.recipient = jsonObject.getLong("recipient");
+		}
+		if(jsonObject.has("sender")){
+			this.sender = jsonObject.getLong("sender");
+		}
+		this.action = jsonObject.getString("action").toLowerCase();
+		if(jsonObject.has("payload")){
+			this.payload = jsonObject.getJSONObject("payload");
+		}
 
-        this.way = way;
-        this.exitOn = exitOn;
-        this.timeout = timeout;
-    }
+		this.way = way;
+		this.exitOn = exitOn;
+		this.timeout = timeout;
+	}
 
-    // PRIMARY
+	// PRIMARY
 
-    public String getRequestId() {
-        return requestId;
-    }
+	public String getRequestId(){
+		return requestId;
+	}
 
-    public Mode getRequestMode() {
-        return requestMode;
-    }
+	public Mode getRequestMode(){
+		return requestMode;
+	}
 
-    public long getSender() {
-        return sender;
-    }
+	public long getSender(){
+		return sender;
+	}
 
-    public long getRecipient() {
-        return recipient;
-    }
+	public long getRecipient(){
+		return recipient;
+	}
 
-    public String getAction() {
-        return action;
-    }
+	public String getAction(){
+		return action;
+	}
 
-    public JSONObject getPayload() {
-        return payload;
-    }
+	public JSONObject getPayload(){
+		return payload;
+	}
 
-    // SECONDARY
+	// SECONDARY
 
-    public IO getWay() {
-        return way;
-    }
+	public IO getWay(){
+		return way;
+	}
 
-    public ExitOn getExitOn() {
-        return exitOn;
-    }
+	public ExitOn getExitOn(){
+		return exitOn;
+	}
 
-    public long getTimeout() {
-        return timeout;
-    }
+	public long getTimeout(){
+		return timeout;
+	}
 
-    // EXPORT
+	// EXPORT
 
-    public JSONObject asJSON(){
-        return new JSONObject()
-                .put("requestId", requestId)
-                .put("requestMode", requestMode)
-                .put("recipient", recipient)
-                .put("sender", sender)
-                .put("action", action)
-                .put("payload", payload);
-    }
+	public JSONObject asJSON(){
+		return new JSONObject()
+			.put("requestId", requestId)
+			.put("requestMode", requestMode)
+			.put("recipient", recipient)
+			.put("sender", sender)
+			.put("action", action)
+			.put("payload", payload);
+	}
 
-    public static class Builder {
+	public static class Builder{
 
-        private final JSONObject jsonObject = new JSONObject();
-        private ExitOn exitOn = ExitOn.FIRST_RESULT;
-        private long timeout = 5000;
+		private final JSONObject jsonObject = new JSONObject();
+		private ExitOn exitOn = ExitOn.FIRST_RESULT;
+		private long timeout = 5000;
 
-        public Builder mode(Mode mode){
-            jsonObject.put("requestMode", mode.toString());
-            return this;
-        }
+		public Builder mode(Mode mode){
+			jsonObject.put("requestMode", mode.toString());
+			return this;
+		}
 
-        public Builder recipient(long id){
-            jsonObject.put("recipient", id);
-            return this;
-        }
+		public Builder recipient(long id){
+			jsonObject.put("recipient", id);
+			return this;
+		}
 
-        public Builder action(String action){
-            jsonObject.put("action", action);
-            return this;
-        }
+		public Builder action(String action){
+			jsonObject.put("action", action);
+			return this;
+		}
 
-        public Builder payload(JSONObject payload){
-            jsonObject.put("payload", payload);
-            return this;
-        }
+		public Builder payload(JSONObject payload){
+			jsonObject.put("payload", payload);
+			return this;
+		}
 
-        public Builder exitOn(ExitOn exitOn){
-            this.exitOn = exitOn;
-            return this;
-        }
+		public Builder exitOn(ExitOn exitOn){
+			this.exitOn = exitOn;
+			return this;
+		}
 
-        public Builder timeout(long ms){
-            this.timeout = ms;
-            return this;
-        }
+		public Builder timeout(long ms){
+			this.timeout = ms;
+			return this;
+		}
 
-        public WSRequest build(){
-            return new WSRequest(jsonObject.put("requestId", getRandomId()), IO.OUT, exitOn, timeout);
-        }
+		public WSRequest build(){
+			return new WSRequest(jsonObject.put("requestId", getRandomId()), IO.OUT, exitOn, timeout);
+		}
 
-        private String getRandomId(){
-            byte[] bytes = new byte[128];
-            secureRandom.nextBytes(bytes);
-            return Base64.getEncoder().encodeToString(bytes);
-        }
-    }
+		private String getRandomId(){
+			byte[] bytes = new byte[128];
+			secureRandom.nextBytes(bytes);
+			return Base64.getEncoder().encodeToString(bytes);
+		}
+
+	}
 
 }

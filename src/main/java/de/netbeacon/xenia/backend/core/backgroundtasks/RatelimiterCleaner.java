@@ -20,30 +20,32 @@ import de.netbeacon.xenia.backend.security.SecurityManager;
 
 public class RatelimiterCleaner extends BackgroundServiceScheduler.Task{
 
-    private final SecurityManager securityManager;
-    public RatelimiterCleaner(SecurityManager securityManager) {
-        super(null, null, null);
-        this.securityManager = securityManager;
-    }
+	private final SecurityManager securityManager;
 
-    @Override
-    void onExecution() {
-        var noamap = securityManager.getNoAuthRateLimiterMap();
-        noamap.forEach((k,v)->{
-            if(v.getMaxUsages() == v.getRemainingUsages()){
-                noamap.remove(k);
-            }
-        });
-        var amap = securityManager.getAuthRateLimiterMap();
-        amap.forEach((k,v)->{
-            v.forEach((k2,v2)->{
-                if(v2.getMaxUsages() == v2.getRemainingUsages()){
-                    v.remove(k2);
-                }
-            });
-            if(v.isEmpty()){
-                amap.remove(k);
-            }
-        });
-    }
+	public RatelimiterCleaner(SecurityManager securityManager){
+		super(null, null, null);
+		this.securityManager = securityManager;
+	}
+
+	@Override
+	void onExecution(){
+		var noamap = securityManager.getNoAuthRateLimiterMap();
+		noamap.forEach((k, v) -> {
+			if(v.getMaxUsages() == v.getRemainingUsages()){
+				noamap.remove(k);
+			}
+		});
+		var amap = securityManager.getAuthRateLimiterMap();
+		amap.forEach((k, v) -> {
+			v.forEach((k2, v2) -> {
+				if(v2.getMaxUsages() == v2.getRemainingUsages()){
+					v.remove(k2);
+				}
+			});
+			if(v.isEmpty()){
+				amap.remove(k);
+			}
+		});
+	}
+
 }

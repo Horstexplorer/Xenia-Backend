@@ -16,33 +16,34 @@
 
 package de.netbeacon.utils.tuples;
 
-public class Quartet<V1, V2, V3, V4> {
+public class Quartet<V1, V2, V3, V4>{
 
-    private final V1 value1;
-    private final V2 value2;
-    private final V3 value3;
-    private final V4 value4;
+	private final V1 value1;
+	private final V2 value2;
+	private final V3 value3;
+	private final V4 value4;
 
-    public Quartet(V1 v1, V2 v2, V3 v3, V4 v4){
-        this.value1 = v1;
-        this.value2 = v2;
-        this.value3 = v3;
-        this.value4 = v4;
-    }
+	public Quartet(V1 v1, V2 v2, V3 v3, V4 v4){
+		this.value1 = v1;
+		this.value2 = v2;
+		this.value3 = v3;
+		this.value4 = v4;
+	}
 
-    public V1 getValue1() {
-        return value1;
-    }
+	public V1 getValue1(){
+		return value1;
+	}
 
-    public V2 getValue2() {
-        return value2;
-    }
+	public V2 getValue2(){
+		return value2;
+	}
 
-    public V3 getValue3() {
-        return value3;
-    }
+	public V3 getValue3(){
+		return value3;
+	}
 
-    public V4 getValue4() {
-        return value4;
-    }
+	public V4 getValue4(){
+		return value4;
+	}
+
 }

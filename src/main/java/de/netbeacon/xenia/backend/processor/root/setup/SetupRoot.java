@@ -21,12 +21,12 @@ import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.root.setup.bot.SetupBot;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 
-public class SetupRoot extends RequestProcessor {
+public class SetupRoot extends RequestProcessor{
 
-    public SetupRoot(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor) {
-        super("setup", sqlConnectionPool, websocketProcessor,
-                new SetupBot(sqlConnectionPool, websocketProcessor)
-        );
-    }
+	public SetupRoot(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
+		super("setup", sqlConnectionPool, websocketProcessor,
+			new SetupBot(sqlConnectionPool, websocketProcessor)
+		);
+	}
 
 }

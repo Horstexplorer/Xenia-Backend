@@ -35,97 +35,110 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class TwitchWrap implements IShutdown{
 
-    private final OkHttpClient okHttpClient;
-    private final ApplicationBearerToken applicationBearerToken;
-    private final ReentrantLock reentrantLock = new ReentrantLock();
-    private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-    private final Logger logger = LoggerFactory.getLogger(TwitchWrap.class);
+	private final OkHttpClient okHttpClient;
+	private final ApplicationBearerToken applicationBearerToken;
+	private final ReentrantLock reentrantLock = new ReentrantLock();
+	private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+	private final Logger logger = LoggerFactory.getLogger(TwitchWrap.class);
 
-    /**
-     * Used to create a new instance of this class
-     * @param userID twitch user id
-     * @param userSecret twitch user secret
-     */
-    public TwitchWrap(String userID, String userSecret){
-        okHttpClient = new OkHttpClient.Builder().addInterceptor(new RateLimitInterceptor()).build();
-        this.applicationBearerToken = new ApplicationBearerToken(this, userID, userSecret, "");
-        scheduledExecutorService.scheduleAtFixedRate(()->{
-            try{
-                applicationBearerToken.update();
-            }catch (Exception e){
-                logger.error("Failed To Update Token");
-            }
-        }, 2, 2, TimeUnit.MINUTES);
-    }
+	/**
+	 * Used to create a new instance of this class
+	 *
+	 * @param userID     twitch user id
+	 * @param userSecret twitch user secret
+	 */
+	public TwitchWrap(String userID, String userSecret){
+		okHttpClient = new OkHttpClient.Builder().addInterceptor(new RateLimitInterceptor()).build();
+		this.applicationBearerToken = new ApplicationBearerToken(this, userID, userSecret, "");
+		scheduledExecutorService.scheduleAtFixedRate(() -> {
+			try{
+				applicationBearerToken.update();
+			}
+			catch(Exception e){
+				logger.error("Failed To Update Token");
+			}
+		}, 2, 2, TimeUnit.MINUTES);
+	}
 
-    /**
-     * Used to create a new instance of this class
-     * @param userID twitch user id
-     * @param userSecret twitch user secret
-     * @param knownToken an already existing token
-     */
-    public TwitchWrap(String userID, String userSecret, String knownToken){
-        okHttpClient = new OkHttpClient.Builder().addInterceptor(new RateLimitInterceptor()).build();
-        this.applicationBearerToken = new ApplicationBearerToken(this, userID, userSecret, knownToken);
-        scheduledExecutorService.scheduleAtFixedRate(()->{
-            try{
-                applicationBearerToken.update();
-            }catch (Exception e){
-                logger.error("Failed To Update Token");
-            }
-        }, 2, 2, TimeUnit.MINUTES);
-    }
+	/**
+	 * Used to create a new instance of this class
+	 *
+	 * @param userID     twitch user id
+	 * @param userSecret twitch user secret
+	 * @param knownToken an already existing token
+	 */
+	public TwitchWrap(String userID, String userSecret, String knownToken){
+		okHttpClient = new OkHttpClient.Builder().addInterceptor(new RateLimitInterceptor()).build();
+		this.applicationBearerToken = new ApplicationBearerToken(this, userID, userSecret, knownToken);
+		scheduledExecutorService.scheduleAtFixedRate(() -> {
+			try{
+				applicationBearerToken.update();
+			}
+			catch(Exception e){
+				logger.error("Failed To Update Token");
+			}
+		}, 2, 2, TimeUnit.MINUTES);
+	}
 
-    /**
-     * Used to get the OKHTTPClient
-     * @return OKHTTPClient
-     */
-    public OkHttpClient getOKHTTPClient(){
-        return okHttpClient;
-    }
+	/**
+	 * Used to get the OKHTTPClient
+	 *
+	 * @return OKHTTPClient
+	 */
+	public OkHttpClient getOKHTTPClient(){
+		return okHttpClient;
+	}
 
-    /**
-     * Can be used to execute a new request
-     * @param url String with parameter
-     * @return JSONObject
-     */
-    public JSONObject request(String url){
-        try{
-            reentrantLock.lock();
-            if(!applicationBearerToken.isValid()){
-                applicationBearerToken.update();
-            }
-            Request request = new Request.Builder()
-                    .get()
-                    .header("Client-ID", applicationBearerToken.getClientID())
-                    .header("Authorization", "Bearer "+applicationBearerToken.getBearerToken())
-                    .url(url)
-                    .build();
-            try(Response response = okHttpClient.newCall(request).execute()){
-                int code = response.code();
-                if(code == 200){
-                    try(ResponseBody responseBody = response.body()){
-                        if(responseBody == null){
-                            throw new Exception("Unexpected Response: No Data Received");
-                        }
-                        return new JSONObject(new String(responseBody.bytes()));
-                    }
-                }else{
-                    throw new Exception("Unexpected Response Code: "+code);
-                }
-            }
-        }catch (Exception e){
-            throw new ProcessingException("Failed To Execute Request: "+e.getMessage());
-        }finally {
-            reentrantLock.unlock();
-        }
-    }
+	/**
+	 * Can be used to execute a new request
+	 *
+	 * @param url String with parameter
+	 *
+	 * @return JSONObject
+	 */
+	public JSONObject request(String url){
+		try{
+			reentrantLock.lock();
+			if(!applicationBearerToken.isValid()){
+				applicationBearerToken.update();
+			}
+			Request request = new Request.Builder()
+				.get()
+				.header("Client-ID", applicationBearerToken.getClientID())
+				.header("Authorization", "Bearer " + applicationBearerToken.getBearerToken())
+				.url(url)
+				.build();
+			try(Response response = okHttpClient.newCall(request).execute()){
+				int code = response.code();
+				if(code == 200){
+					try(ResponseBody responseBody = response.body()){
+						if(responseBody == null){
+							throw new Exception("Unexpected Response: No Data Received");
+						}
+						return new JSONObject(new String(responseBody.bytes()));
+					}
+				}
+				else{
+					throw new Exception("Unexpected Response Code: " + code);
+				}
+			}
+		}
+		catch(Exception e){
+			throw new ProcessingException("Failed To Execute Request: " + e.getMessage());
+		}
+		finally{
+			reentrantLock.unlock();
+		}
+	}
 
-    @Override
-    public void onShutdown() throws Exception {
-        try{
-            applicationBearerToken.revoke();
-        }catch (Exception ignore){}
-        scheduledExecutorService.shutdown();
-    }
+	@Override
+	public void onShutdown() throws Exception{
+		try{
+			applicationBearerToken.revoke();
+		}
+		catch(Exception ignore){
+		}
+		scheduledExecutorService.shutdown();
+	}
+
 }
