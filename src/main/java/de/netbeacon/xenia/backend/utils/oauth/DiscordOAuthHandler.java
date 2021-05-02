@@ -77,6 +77,7 @@ public class DiscordOAuthHandler{
 			}
 		}
 		catch(java.lang.Exception e){
+			e.printStackTrace();
 			throw new DiscordOAuthHandler.Exception(e);
 		}
 	}
