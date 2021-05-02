@@ -52,6 +52,10 @@ public class DiscordOAuthHandler{
 	}
 
 	public Token retrieve(String code, Scopes scopes){
+		return retrieve(code, scopes, appRedirectUrl);
+	}
+
+	public Token retrieve(String code, Scopes scopes, String appRedirectUrl){
 		try{
 			RequestBody requestBody = new FormBody.Builder()
 				.add("client_id", String.valueOf(appId))

@@ -76,7 +76,7 @@ public class AuthDiscord extends RequestProcessor{
 			}
 			DiscordOAuthHandler.Token token;
 			try{
-				token = DiscordOAuthHandler.getInstance().retrieve(ctx.queryParam("code"), new DiscordOAuthHandler.Scopes(ctx.queryParams("scope")));
+				token = DiscordOAuthHandler.getInstance().retrieve(ctx.queryParam("code"), new DiscordOAuthHandler.Scopes(ctx.queryParams("scope")), ctx.queryParam("rurl"));
 			}
 			catch(DiscordOAuthHandler.Exception e){
 				throw new BadRequestResponse();
