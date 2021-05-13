@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.List;
 
 public class DataGuildChannelMessage extends RequestProcessor{
 
@@ -214,8 +213,9 @@ public class DataGuildChannelMessage extends RequestProcessor{
 				throw new InternalServerErrorResponse();
 			}
 			var attachmentInsertStep = sqlContext.insertInto(Tables.MESSAGE_ATTACHMENTS, Tables.MESSAGE_ATTACHMENTS.MESSAGE_ID, Tables.MESSAGE_ATTACHMENTS.ATTACHMENT_URL);
-			for(String url : (List<String>)(List<?>)newData.getJSONArray("messageAttachments")){
-				attachmentInsertStep.values(messageId, url);
+			var attachmentData = newData.getJSONArray("messageAttachments");
+			for(int i = 0; i < attachmentData.length(); i++){
+				attachmentInsertStep.values(messageId, attachmentData.getString(i));
 			}
 			Result<MessageAttachmentsRecord> attachmentRecords = attachmentInsertStep.returning().fetch();
 			JSONArray attachments = new JSONArray();
