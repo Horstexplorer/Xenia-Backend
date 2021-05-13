@@ -156,7 +156,11 @@ public class DataGuildChannelMessage extends RequestProcessor{
 			// update db
 			sqlContext.executeUpdate(messagesRecord);
 			// attachments cannot be updated
-
+			Result<MessageAttachmentsRecord> attachmentRecords = sqlContext.selectFrom(Tables.MESSAGE_ATTACHMENTS).where(Tables.MESSAGE_ATTACHMENTS.MESSAGE_ID.eq(messagesRecord.getMessageId())).fetch();
+			JSONArray attachments = new JSONArray();
+			for(var attachment : attachmentRecords){
+				attachments.put(attachment.getAttachmentUrl());
+			}
 			JSONObject jsonObject = new JSONObject()
 				.put("guildId", messagesRecord.getGuildId())
 				.put("channelId", messagesRecord.getChannelId())
@@ -164,6 +168,7 @@ public class DataGuildChannelMessage extends RequestProcessor{
 				.put("userId", messagesRecord.getUserId())
 				.put("creationTimestamp", messagesRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
 				.put("creationTimestampDiscord", messagesRecord.getCreationTimestampDiscord().toInstant(ZoneOffset.UTC).toEpochMilli())
+				.put("messageAttachments", attachments)
 				.put("messageSalt", messagesRecord.getMessageSalt())
 				.put("messageContent", messagesRecord.getMessageContent());
 			// return
