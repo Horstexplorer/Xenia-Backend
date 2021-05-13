@@ -21,6 +21,11 @@ public class Sequences {
     public static final Sequence<Long> LICENSES_LICENSE_ID_SEQ = Internal.createSequence("licenses_license_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, 2147483647, false, null);
 
     /**
+     * The sequence <code>public.message_attachments_attachment_id_seq</code>
+     */
+    public static final Sequence<Long> MESSAGE_ATTACHMENTS_ATTACHMENT_ID_SEQ = Internal.createSequence("message_attachments_attachment_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.notification_notification_id_seq</code>
      */
     public static final Sequence<Long> NOTIFICATION_NOTIFICATION_ID_SEQ = Internal.createSequence("notification_notification_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, 2147483647, false, null);

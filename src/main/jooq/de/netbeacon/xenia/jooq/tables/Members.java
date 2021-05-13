@@ -69,6 +69,11 @@ public class Members extends TableImpl<MembersRecord> {
      */
     public final TableField<MembersRecord, Boolean> META_IS_ADMINISTRATOR = createField(DSL.name("meta_is_administrator"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
+    /**
+     * The column <code>public.members.level_points</code>.
+     */
+    public final TableField<MembersRecord, Long> LEVEL_POINTS = createField(DSL.name("level_points"), SQLDataType.BIGINT.defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
+
     private Members(Name alias, Table<MembersRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -157,11 +162,11 @@ public class Members extends TableImpl<MembersRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, Long, LocalDateTime, String, Boolean, Boolean> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Long, Long, LocalDateTime, String, Boolean, Boolean, Long> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }
