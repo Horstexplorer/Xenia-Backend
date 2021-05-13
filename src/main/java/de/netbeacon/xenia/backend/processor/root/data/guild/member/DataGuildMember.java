@@ -131,6 +131,7 @@ public class DataGuildMember extends RequestProcessor{
 						.put("userId", membersRecord.getUserId())
 						.put("creationTimestamp", membersRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
 						.put("roles", roles)
+						.put("levelPoints", membersRecord.getLevelPoints())
 						.put("meta", new JSONObject()
 							.put("nickname", membersRecord.getMetaNickname())
 							.put("isAdministrator", membersRecord.getMetaIsAdministrator())
@@ -155,6 +156,7 @@ public class DataGuildMember extends RequestProcessor{
 					.put("userId", membersRecord.getUserId())
 					.put("creationTimestamp", membersRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
 					.put("roles", roles)
+					.put("levelPoints", membersRecord.getLevelPoints())
 					.put("meta", new JSONObject()
 						.put("nickname", membersRecord.getMetaNickname())
 						.put("isAdministrator", membersRecord.getMetaIsAdministrator())
@@ -197,6 +199,8 @@ public class DataGuildMember extends RequestProcessor{
 			// get new data
 			JSONObject newData = new JSONObject(ctx.body());
 			// update data
+			membersRecord.setLevelPoints(newData.getLong("levelPoints"));
+
 			JSONObject meta = newData.getJSONObject("meta");
 			membersRecord.setMetaNickname(meta.getString("nickname"));
 			membersRecord.setMetaIsAdministrator(meta.getBoolean("isAdministrator"));
@@ -223,6 +227,7 @@ public class DataGuildMember extends RequestProcessor{
 				.put("userId", membersRecord.getUserId())
 				.put("creationTimestamp", membersRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
 				.put("roles", jsonArray)
+				.put("levelPoints", membersRecord.getLevelPoints())
 				.put("meta", new JSONObject()
 					.put("nickname", membersRecord.getMetaNickname())
 					.put("isAdministrator", membersRecord.getMetaIsAdministrator())
@@ -276,6 +281,7 @@ public class DataGuildMember extends RequestProcessor{
 				.put("userId", membersRecord.getUserId())
 				.put("creationTimestamp", membersRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
 				.put("roles", jsonArray)
+				.put("levelPoints", membersRecord.getLevelPoints())
 				.put("meta", new JSONObject()
 					.put("nickname", membersRecord.getMetaNickname())
 					.put("isAdministrator", membersRecord.getMetaIsAdministrator())

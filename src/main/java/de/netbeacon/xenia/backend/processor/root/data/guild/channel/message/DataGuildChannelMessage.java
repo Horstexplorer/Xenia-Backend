@@ -24,6 +24,7 @@ import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
+import de.netbeacon.xenia.jooq.tables.records.MessageAttachmentsRecord;
 import de.netbeacon.xenia.jooq.tables.records.MessagesRecord;
 import io.javalin.http.*;
 import org.jooq.Result;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.List;
 
 public class DataGuildChannelMessage extends RequestProcessor{
 
@@ -72,6 +74,11 @@ public class DataGuildChannelMessage extends RequestProcessor{
 					messagesRecords = sqlContext.selectFrom(Tables.MESSAGES).where(Tables.MESSAGES.GUILD_ID.eq(guildId).and(Tables.MESSAGES.CHANNEL_ID.eq(channelId))).orderBy(Tables.MESSAGES.CREATION_TIMESTAMP_DISCORD.desc()).limit(Integer.parseInt(ctx.queryParam("limit"))).fetch();
 				}
 				for(MessagesRecord messagesRecord : messagesRecords){
+					Result<MessageAttachmentsRecord> attachmentRecords = sqlContext.selectFrom(Tables.MESSAGE_ATTACHMENTS).where(Tables.MESSAGE_ATTACHMENTS.MESSAGE_ID.eq(messagesRecord.getMessageId())).fetch();
+					JSONArray attachments = new JSONArray();
+					for(var attachment : attachmentRecords){
+						attachments.put(attachment.getAttachmentUrl());
+					}
 					messages.put(new JSONObject()
 						.put("guildId", messagesRecord.getGuildId())
 						.put("channelId", messagesRecord.getChannelId())
@@ -79,6 +86,7 @@ public class DataGuildChannelMessage extends RequestProcessor{
 						.put("userId", messagesRecord.getUserId())
 						.put("creationTimestamp", messagesRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
 						.put("creationTimestampDiscord", messagesRecord.getCreationTimestampDiscord().toEpochSecond(ZoneOffset.UTC))
+						.put("messageAttachments", attachments)
 						.put("messageSalt", messagesRecord.getMessageSalt())
 						.put("messageContent", messagesRecord.getMessageContent())
 					);
@@ -91,6 +99,11 @@ public class DataGuildChannelMessage extends RequestProcessor{
 					throw new NotFoundResponse();
 				}
 				MessagesRecord messagesRecord = messagesRecords.get(0);
+				Result<MessageAttachmentsRecord> attachmentRecords = sqlContext.selectFrom(Tables.MESSAGE_ATTACHMENTS).where(Tables.MESSAGE_ATTACHMENTS.MESSAGE_ID.eq(messagesRecord.getMessageId())).fetch();
+				JSONArray attachments = new JSONArray();
+				for(var attachment : attachmentRecords){
+					attachments.put(attachment.getAttachmentUrl());
+				}
 				jsonObject
 					.put("guildId", messagesRecord.getGuildId())
 					.put("channelId", messagesRecord.getChannelId())
@@ -98,6 +111,7 @@ public class DataGuildChannelMessage extends RequestProcessor{
 					.put("userId", messagesRecord.getUserId())
 					.put("creationTimestamp", messagesRecord.getCreationTimestamp().toEpochSecond(ZoneOffset.UTC))
 					.put("creationTimestampDiscord", messagesRecord.getCreationTimestampDiscord().toEpochSecond(ZoneOffset.UTC))
+					.put("messageAttachments", attachments)
 					.put("messageSalt", messagesRecord.getMessageSalt())
 					.put("messageContent", messagesRecord.getMessageContent());
 			}
@@ -141,6 +155,7 @@ public class DataGuildChannelMessage extends RequestProcessor{
 			messagesRecord.setMessageContent(newData.getString("messageContent"));
 			// update db
 			sqlContext.executeUpdate(messagesRecord);
+			// attachments cannot be updated
 
 			JSONObject jsonObject = new JSONObject()
 				.put("guildId", messagesRecord.getGuildId())
@@ -193,6 +208,15 @@ public class DataGuildChannelMessage extends RequestProcessor{
 			if(messagesRecords.isEmpty()){
 				throw new InternalServerErrorResponse();
 			}
+			var attachmentInsertStep = sqlContext.insertInto(Tables.MESSAGE_ATTACHMENTS, Tables.MESSAGE_ATTACHMENTS.MESSAGE_ID, Tables.MESSAGE_ATTACHMENTS.ATTACHMENT_URL);
+			for(String url : (List<String>)(List<?>)newData.getJSONArray("messageAttachments")){
+				attachmentInsertStep.values(messageId, url);
+			}
+			Result<MessageAttachmentsRecord> attachmentRecords = attachmentInsertStep.returning().fetch();
+			JSONArray attachments = new JSONArray();
+			for(var attachment : attachmentRecords){
+				attachments.put(attachment.getAttachmentUrl());
+			}
 			MessagesRecord messagesRecord = messagesRecords.get(0);
 			JSONObject jsonObject = new JSONObject()
 				.put("guildId", messagesRecord.getGuildId())
@@ -201,6 +225,7 @@ public class DataGuildChannelMessage extends RequestProcessor{
 				.put("userId", messagesRecord.getUserId())
 				.put("creationTimestamp", messagesRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
 				.put("creationTimestampDiscord", messagesRecord.getCreationTimestampDiscord().toInstant(ZoneOffset.UTC).toEpochMilli())
+				.put("messageAttachments", attachments)
 				.put("messageSalt", messagesRecord.getMessageSalt())
 				.put("messageContent", messagesRecord.getMessageContent());
 			// return

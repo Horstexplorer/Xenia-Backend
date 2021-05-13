@@ -28,7 +28,6 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Executors;
@@ -42,45 +41,18 @@ import java.util.concurrent.TimeUnit;
  */
 public class DiscordWebhookAppender extends AppenderSkeleton{
 
-	private final WebhookClient webhookClient;
+	private File configFile;
+	private String username;
+	private boolean started = false;
+
+	private WebhookClient webhookClient;
 	private final Queue<LogContainer> eventCache = new LinkedList<>();
 	private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 
 	/**
-	 * Creates a new instance of this class
-	 *
-	 * @throws IOException on exception
+	 * Creates a new instance of this class (does not start the logger)
 	 */
-	public DiscordWebhookAppender() throws IOException{
-		Config config = new Config(new File("./xenia-backend/config/webhook"));
-		String webhookURL = config.getString("webhookURL");
-		webhookClient = WebhookClient.withUrl(webhookURL);
-		scheduledExecutorService.scheduleAtFixedRate(() -> {
-			if(eventCache.isEmpty()){
-				return;
-			}
-			WebhookMessageBuilder webhookMessageBuilder = new WebhookMessageBuilder()
-				.setUsername("Xenia-Backend");
-			int i = 0;
-			while(i++ < 10 && !eventCache.isEmpty()){
-				LogContainer logContainer = eventCache.remove();
-				WebhookEmbedBuilder webhookEmbedBuilder = new WebhookEmbedBuilder()
-					.setColor(logContainer.getLevel() == Level.INFO ? Color.WHITE.getRGB() : (logContainer.getLevel() == Level.WARN ? Color.ORANGE.getRGB() : logContainer.getLevel() == Level.ERROR ? Color.RED.getRGB() : Color.BLACK.getRGB()))
-					.setTitle(new WebhookEmbed.EmbedTitle(logContainer.getLogger().substring(logContainer.getLogger().lastIndexOf(".") + 1), null))
-					.addField(new WebhookEmbed.EmbedField(false, "Message", logContainer.getMessage()))
-					.addField(new WebhookEmbed.EmbedField(true, "Level", logContainer.getLevel().toString()))
-					.addField(new WebhookEmbed.EmbedField(true, "Timestamp", String.valueOf(logContainer.getTimestamp())))
-					.addField(new WebhookEmbed.EmbedField(true, "Logger", logContainer.getLogger()))
-					.setFooter(new WebhookEmbed.EmbedFooter("Additional logs cached: " + eventCache.size(), null));
-				if(logContainer.getStacktrace() != null){
-					var st = logContainer.getStacktrace();
-					webhookEmbedBuilder.setDescription(st.substring(0, Math.min(st.length(), 1950)) + ".....");
-				}
-				webhookMessageBuilder.addEmbeds(webhookEmbedBuilder.build());
-			}
-			webhookClient.send(webhookMessageBuilder.build());
-		}, 5, 5, TimeUnit.SECONDS);
-	}
+	public DiscordWebhookAppender(){}
 
 	@Override
 	protected void append(LoggingEvent event){
@@ -92,6 +64,7 @@ public class DiscordWebhookAppender extends AppenderSkeleton{
 	@Override
 	public void close(){
 		this.closed = true;
+		this.started = false;
 		webhookClient.close();
 		scheduledExecutorService.shutdownNow();
 	}
@@ -99,6 +72,72 @@ public class DiscordWebhookAppender extends AppenderSkeleton{
 	@Override
 	public boolean requiresLayout(){
 		return false;
+	}
+
+	/**
+	 * Set the path to the config file
+	 *
+	 * @param fileName
+	 */
+	public synchronized void setFile(String fileName){
+		this.configFile = new File(fileName);
+	}
+
+	/**
+	 * Set the username shown in the webhook
+	 *
+	 * @param username
+	 */
+	public synchronized void setUser(String username){
+		this.username = username;
+	}
+
+	/**
+	 * Actually just starts the logger lol
+	 *
+	 * @param start
+	 */
+	public synchronized void setStart(boolean start){
+		if(start && !started){
+			if(configFile == null || username == null){
+				System.err.println("No config file / username set");
+				return;
+			}
+			started = true;
+			try{
+				Config config = new Config(configFile);
+				String webhookURL = config.getString("webhookURL");
+				webhookClient = WebhookClient.withUrl(webhookURL);
+				scheduledExecutorService.scheduleAtFixedRate(() -> {
+					if(eventCache.isEmpty()){
+						return;
+					}
+					WebhookMessageBuilder webhookMessageBuilder = new WebhookMessageBuilder()
+						.setUsername(username);
+					int i = 0;
+					while(i++ < 10 && !eventCache.isEmpty()){
+						LogContainer logContainer = eventCache.remove();
+						WebhookEmbedBuilder webhookEmbedBuilder = new WebhookEmbedBuilder()
+							.setColor(logContainer.getLevel() == Level.INFO ? Color.WHITE.getRGB() : (logContainer.getLevel() == Level.WARN ? Color.ORANGE.getRGB() : logContainer.getLevel() == Level.ERROR ? Color.RED.getRGB() : Color.BLACK.getRGB()))
+							.setTitle(new WebhookEmbed.EmbedTitle(logContainer.getLogger().substring(logContainer.getLogger().lastIndexOf(".") + 1), null))
+							.addField(new WebhookEmbed.EmbedField(false, "Message", logContainer.getMessage()))
+							.addField(new WebhookEmbed.EmbedField(true, "Level", logContainer.getLevel().toString()))
+							.addField(new WebhookEmbed.EmbedField(true, "Timestamp", String.valueOf(logContainer.getTimestamp())))
+							.addField(new WebhookEmbed.EmbedField(true, "Logger", logContainer.getLogger()))
+							.setFooter(new WebhookEmbed.EmbedFooter("Additional logs cached: " + eventCache.size(), null));
+						if(logContainer.getStacktrace() != null){
+							var st = logContainer.getStacktrace();
+							webhookEmbedBuilder.setDescription(st.substring(0, Math.min(st.length(), 1850)) + ".....");
+						}
+						webhookMessageBuilder.addEmbeds(webhookEmbedBuilder.build());
+					}
+					webhookClient.send(webhookMessageBuilder.build());
+				}, 5, 5, TimeUnit.SECONDS);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private static class LogContainer{

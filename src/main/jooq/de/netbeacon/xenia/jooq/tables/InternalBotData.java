@@ -66,7 +66,7 @@ public class InternalBotData extends TableImpl<InternalBotDataRecord> {
     /**
      * The column <code>public.internal_bot_data.client_location</code>.
      */
-    public final TableField<InternalBotDataRecord, String> CLIENT_LOCATION = createField(DSL.name("client_location"), SQLDataType.VARCHAR(8).nullable(false).defaultValue(DSL.field("'UNKNOWN'::character varying", SQLDataType.VARCHAR)), this, "");
+    public final TableField<InternalBotDataRecord, String> CLIENT_LOCATION = createField(DSL.name("client_location"), SQLDataType.VARCHAR(32).nullable(false).defaultValue(DSL.field("'UNKNOWN'::character varying", SQLDataType.VARCHAR)), this, "");
 
     private InternalBotData(Name alias, Table<InternalBotDataRecord> aliased) {
         this(alias, aliased, null);

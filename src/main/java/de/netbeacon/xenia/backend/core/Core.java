@@ -128,7 +128,7 @@ public class Core{
 			// prepare processor
 			RequestProcessor processor = new Root(clientManager, connectionPool, primaryWebsocketProcessor);
 			// prepare oAuth handler
-			DiscordOAuthHandler.createInstance(config.getLong("discord_client_id"), config.getString("discord_client_secret"), "https://xenia.netbeacon.de/auth/returning");
+			DiscordOAuthHandler.createInstance(config.getLong("discord_client_id"), config.getString("discord_client_secret"), config.getString("discord_redirect_url"));
 			// prepare BotListUpdater
 			shutdownHook.addShutdownAble(new BotListUpdater(connectionPool));
 			// start PrometheusQOL

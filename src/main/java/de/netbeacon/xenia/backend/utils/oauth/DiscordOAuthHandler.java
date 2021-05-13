@@ -71,6 +71,9 @@ public class DiscordOAuthHandler{
 				return new Token(new JSONObject(response.body().string()));
 			}
 		}
+		catch(DiscordOAuthHandler.Exception e){
+			throw e;
+		}
 		catch(java.lang.Exception e){
 			throw new DiscordOAuthHandler.Exception(e);
 		}
@@ -97,6 +100,9 @@ public class DiscordOAuthHandler{
 				return new Token(new JSONObject(response.body().string()));
 			}
 		}
+		catch(DiscordOAuthHandler.Exception e){
+			throw e;
+		}
 		catch(java.lang.Exception e){
 			throw new DiscordOAuthHandler.Exception(e);
 		}
@@ -114,6 +120,9 @@ public class DiscordOAuthHandler{
 				}
 				return new JSONObject(response.body().string()).getLong("id");
 			}
+		}
+		catch(DiscordOAuthHandler.Exception e){
+			throw e;
 		}
 		catch(java.lang.Exception e){
 			return null;

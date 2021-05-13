@@ -68,6 +68,11 @@ public class Public extends SchemaImpl {
     public final MembersRoles MEMBERS_ROLES = MembersRoles.MEMBERS_ROLES;
 
     /**
+     * The table <code>public.message_attachments</code>.
+     */
+    public final MessageAttachments MESSAGE_ATTACHMENTS = MessageAttachments.MESSAGE_ATTACHMENTS;
+
+    /**
      * The table <code>public.messages</code>.
      */
     public final Messages MESSAGES = Messages.MESSAGES;
@@ -124,6 +129,7 @@ public class Public extends SchemaImpl {
     public final List<Sequence<?>> getSequences() {
         return Arrays.<Sequence<?>>asList(
             Sequences.LICENSES_LICENSE_ID_SEQ,
+            Sequences.MESSAGE_ATTACHMENTS_ATTACHMENT_ID_SEQ,
             Sequences.NOTIFICATION_NOTIFICATION_ID_SEQ,
             Sequences.OAUTH_STATES_STATE_ID_SEQ,
             Sequences.ROLES_ROLE_ID_SEQ,
@@ -141,6 +147,7 @@ public class Public extends SchemaImpl {
             Licenses.LICENSES,
             Members.MEMBERS,
             MembersRoles.MEMBERS_ROLES,
+            MessageAttachments.MESSAGE_ATTACHMENTS,
             Messages.MESSAGES,
             Notifications.NOTIFICATIONS,
             Oauth.OAUTH,
