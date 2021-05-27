@@ -94,6 +94,7 @@ public class Core{
 			// prepare security manager
 			SecurityManager securityManager = new SecurityManager(clientManager, new File("./xenia-backend/config/security")).loadFromFile();
 			// prepare security settings
+			SecuritySettings openDataAccessSetting = new SecuritySettings(SecuritySettings.AuthType.OPTIONAL, ClientType.ANY);
 			SecuritySettings regularDataAccessSetting = new SecuritySettings(SecuritySettings.AuthType.BEARER, ClientType.ANY)
 				.putRateLimiterSetting(ClientType.DISCORD, TimeUnit.MINUTES, 1, 60L)
 				.putRateLimiterSetting(ClientType.BOT, TimeUnit.MINUTES, 1, 200000L);
@@ -532,7 +533,7 @@ public class Core{
 						path("public", () -> {
 							before(ctx -> Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), ctx.method(), "*").inc());
 							get(ctx -> {
-								Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+								Client client = securityManager.authorizeConnection(openDataAccessSetting, ctx);
 								processor.next("info").next("public").preProcessor(client, ctx).get(client, ctx); // get public stats
 							});
 						});
