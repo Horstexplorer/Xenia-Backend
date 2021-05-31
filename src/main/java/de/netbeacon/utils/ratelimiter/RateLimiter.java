@@ -29,10 +29,10 @@ public class RateLimiter{
 	private final TimeUnit refillUnit;
 	private final long refillUnitNumbers;
 	private final long nsWindowSize;
+	private final ReentrantLock reentrantLock = new ReentrantLock();
 	private long filler;
 	private long maxUsages;
 	private long nsPerUsage;
-	private final ReentrantLock reentrantLock = new ReentrantLock();
 
 	/**
 	 * This creates a new RateLimiter object
@@ -76,6 +76,22 @@ public class RateLimiter{
 	}
 
 	/**
+	 * Used to set the number of usages within each refill cycle
+	 *
+	 * @param maxUsages long
+	 */
+	public void setMaxUsages(long maxUsages){
+		try{
+			reentrantLock.lock();
+			this.maxUsages = maxUsages;
+			nsPerUsage = nsWindowSize / maxUsages;
+		}
+		finally{
+			reentrantLock.unlock();
+		}
+	}
+
+	/**
 	 * Calculates an estimate on how many usages are probably left within the refill cycle
 	 *
 	 * @return long
@@ -95,6 +111,8 @@ public class RateLimiter{
 		}
 	}
 
+	/*                  SET                 */
+
 	/**
 	 * Returns an estimated timestamp at which the bucket should be completely refilled
 	 *
@@ -104,24 +122,6 @@ public class RateLimiter{
 		try{
 			reentrantLock.lock();
 			return System.currentTimeMillis() + ((nsWindowSize - (getRemainingUsages() * nsPerUsage)) / 1000000);
-		}
-		finally{
-			reentrantLock.unlock();
-		}
-	}
-
-	/*                  SET                 */
-
-	/**
-	 * Used to set the number of usages within each refill cycle
-	 *
-	 * @param maxUsages long
-	 */
-	public void setMaxUsages(long maxUsages){
-		try{
-			reentrantLock.lock();
-			this.maxUsages = maxUsages;
-			nsPerUsage = nsWindowSize / maxUsages;
 		}
 		finally{
 			reentrantLock.unlock();

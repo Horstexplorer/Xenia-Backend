@@ -21,18 +21,11 @@ import org.json.JSONObject;
 public class WSResponse{
 
 	private final String requestId;
+	private final String action;
+	private final IO way;
 	private long sender;
 	private long recipient;
-	private final String action;
 	private JSONObject payload;
-
-	private final IO way;
-
-	public enum IO{
-		IN,
-		OUT
-	}
-
 
 	public WSResponse(JSONObject jsonObject, IO way){
 		this.requestId = jsonObject.getString("requestId");
@@ -70,12 +63,11 @@ public class WSResponse{
 		return payload;
 	}
 
-	// SECONDARY
-
-
 	public IO getWay(){
 		return way;
 	}
+
+	// SECONDARY
 
 	public JSONObject asJSON(){
 		return new JSONObject()
@@ -85,6 +77,11 @@ public class WSResponse{
 			.put("sender", sender)
 			.put("action", action)
 			.put("payload", payload);
+	}
+
+	public enum IO{
+		IN,
+		OUT
 	}
 
 	public static class Builder{

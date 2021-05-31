@@ -54,28 +54,6 @@ public class ClientType{
 		this.childTypes.addAll(childTypes);
 	}
 
-	public String getName(){
-		return name;
-	}
-
-	public int getValue(){
-		return value;
-	}
-
-	public boolean containsType(ClientType clientType){
-		if(this.equals(clientType)){
-			return true;
-		}
-		else{
-			for(ClientType child : childTypes){
-				if(child.containsType(clientType)){
-					return true;
-				}
-			}
-			return false;
-		}
-	}
-
 	public static ClientType fromString(String string){
 		switch(string.toLowerCase()){
 			case "discord":
@@ -96,6 +74,28 @@ public class ClientType{
 				return ANY;
 			default:
 				return null;
+		}
+	}
+
+	public String getName(){
+		return name;
+	}
+
+	public int getValue(){
+		return value;
+	}
+
+	public boolean containsType(ClientType clientType){
+		if(this.equals(clientType)){
+			return true;
+		}
+		else{
+			for(ClientType child : childTypes){
+				if(child.containsType(clientType)){
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 

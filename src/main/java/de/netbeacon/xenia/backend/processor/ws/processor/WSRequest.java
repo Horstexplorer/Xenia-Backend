@@ -23,34 +23,16 @@ import java.util.Base64;
 
 public class WSRequest{
 
-	private final String requestId;
-	private final Mode requestMode;
-	private long sender;
-	private long recipient;
-	private final String action;
-	private JSONObject payload;
-
+	private static final SecureRandom secureRandom = new SecureRandom();
 	public final IO way;
 	public final ExitOn exitOn;
 	public final long timeout;
-
-	private static final SecureRandom secureRandom = new SecureRandom();
-
-	public enum Mode{
-		UNICAST,
-		BROADCAST
-	}
-
-	public enum IO{
-		IN,
-		OUT
-	}
-
-	public enum ExitOn{
-		INSTANT,
-		FIRST_RESULT,
-		TIMEOUT
-	}
+	private final String requestId;
+	private final Mode requestMode;
+	private final String action;
+	private long sender;
+	private long recipient;
+	private JSONObject payload;
 
 	public WSRequest(JSONObject jsonObject, IO way, ExitOn exitOn, long timeout){
 		this.requestId = jsonObject.getString("requestId");
@@ -71,8 +53,6 @@ public class WSRequest{
 		this.timeout = timeout;
 	}
 
-	// PRIMARY
-
 	public String getRequestId(){
 		return requestId;
 	}
@@ -84,6 +64,8 @@ public class WSRequest{
 	public long getSender(){
 		return sender;
 	}
+
+	// PRIMARY
 
 	public long getRecipient(){
 		return recipient;
@@ -97,8 +79,6 @@ public class WSRequest{
 		return payload;
 	}
 
-	// SECONDARY
-
 	public IO getWay(){
 		return way;
 	}
@@ -111,7 +91,7 @@ public class WSRequest{
 		return timeout;
 	}
 
-	// EXPORT
+	// SECONDARY
 
 	public JSONObject asJSON(){
 		return new JSONObject()
@@ -121,6 +101,24 @@ public class WSRequest{
 			.put("sender", sender)
 			.put("action", action)
 			.put("payload", payload);
+	}
+
+	public enum Mode{
+		UNICAST,
+		BROADCAST
+	}
+
+	public enum IO{
+		IN,
+		OUT
+	}
+
+	// EXPORT
+
+	public enum ExitOn{
+		INSTANT,
+		FIRST_RESULT,
+		TIMEOUT
 	}
 
 	public static class Builder{

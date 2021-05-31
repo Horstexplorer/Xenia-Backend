@@ -25,13 +25,19 @@ import java.util.List;
 
 public class DiscordOAuthHandler{
 
+	private static final String TOKEN_URL = "https://discord.com/api/oauth2/token";
 	private static DiscordOAuthHandler instance;
-
 	private final OkHttpClient okHttpClient;
 	private final long appId;
 	private final String appSecret;
 	private final String appRedirectUrl;
-	private static final String TOKEN_URL = "https://discord.com/api/oauth2/token";
+
+	private DiscordOAuthHandler(long appId, String appSecret, String appRedirectUrl){
+		okHttpClient = new OkHttpClient.Builder().build();
+		this.appId = appId;
+		this.appSecret = appSecret;
+		this.appRedirectUrl = appRedirectUrl;
+	}
 
 	public static DiscordOAuthHandler getInstance(){
 		return instance;
@@ -44,12 +50,6 @@ public class DiscordOAuthHandler{
 		return instance;
 	}
 
-	private DiscordOAuthHandler(long appId, String appSecret, String appRedirectUrl){
-		okHttpClient = new OkHttpClient.Builder().build();
-		this.appId = appId;
-		this.appSecret = appSecret;
-		this.appRedirectUrl = appRedirectUrl;
-	}
 	public Token retrieve(String code, Scopes scopes){
 		try{
 			RequestBody requestBody = new FormBody.Builder()

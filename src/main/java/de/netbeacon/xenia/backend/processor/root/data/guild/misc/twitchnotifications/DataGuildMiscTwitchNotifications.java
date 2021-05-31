@@ -39,13 +39,12 @@ import static org.jooq.impl.DSL.bitAnd;
 
 public class DataGuildMiscTwitchNotifications extends RequestProcessor{
 
+	private static final long DISCORD_USER_PERM_FILTER = 513; // interact, twitch_manage
 	private final Logger logger = LoggerFactory.getLogger(DataGuildMiscTwitchNotifications.class);
 
 	public DataGuildMiscTwitchNotifications(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("twitchnotifications", sqlConnectionPool, websocketProcessor);
 	}
-
-	private static final long DISCORD_USER_PERM_FILTER = 513; // interact, twitch_manage
 
 	@Override
 	public RequestProcessor preProcessor(Client client, Context context){

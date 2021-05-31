@@ -40,13 +40,12 @@ import static org.jooq.impl.DSL.bitAnd;
 
 public class DataGuildMiscNotification extends RequestProcessor{
 
+	private static final long DISCORD_USER_PERM_FILTER = 33; // interact, notif_ov
 	private final Logger logger = LoggerFactory.getLogger(DataGuildMiscNotification.class);
 
 	public DataGuildMiscNotification(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("notifications", sqlConnectionPool, websocketProcessor);
 	}
-
-	private static final long DISCORD_USER_PERM_FILTER = 33; // interact, notif_ov
 
 	@Override
 	public RequestProcessor preProcessor(Client client, Context context){

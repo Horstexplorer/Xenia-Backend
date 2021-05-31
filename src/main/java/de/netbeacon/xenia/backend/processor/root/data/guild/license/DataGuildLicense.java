@@ -42,13 +42,12 @@ import static org.jooq.impl.DSL.bitAnd;
 
 public class DataGuildLicense extends RequestProcessor{
 
+	private static final long DISCORD_USER_PERM_FILTER = 1073741825; // interact, guild_owner_ov
 	private final Logger logger = LoggerFactory.getLogger(DataGuildLicense.class);
 
 	public DataGuildLicense(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("license", sqlConnectionPool, websocketProcessor);
 	}
-
-	private static final long DISCORD_USER_PERM_FILTER = 1073741825; // interact, guild_owner_ov
 
 	@Override
 	public RequestProcessor preProcessor(Client client, Context context){

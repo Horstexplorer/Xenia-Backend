@@ -38,9 +38,9 @@ public class BotListUpdater implements IBLHUpdater, IShutdown{
 
 	private final SQLConnectionPool sqlConnectionPool;
 	private final long botId;
-	private int lastCount = 0;
 	private final BotListHandler botListHandler;
 	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private int lastCount = 0;
 
 	public BotListUpdater(SQLConnectionPool sqlConnectionPool) throws IOException{
 		this.sqlConnectionPool = sqlConnectionPool;

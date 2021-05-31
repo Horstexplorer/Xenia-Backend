@@ -21,9 +21,6 @@ import java.util.Properties;
 public class AppInfo{
 
 	private static final Properties properties = new Properties();
-
-	private AppInfo(){}
-
 	static{
 		try{
 			properties.load(AppInfo.class.getClassLoader().getResourceAsStream("app.properties"));
@@ -32,6 +29,8 @@ public class AppInfo{
 			e.printStackTrace();
 		}
 	}
+
+	private AppInfo(){}
 
 	public static String get(String property){
 		String prop = properties.getProperty(property);

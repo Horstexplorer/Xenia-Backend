@@ -40,6 +40,7 @@ import static org.jooq.impl.DSL.bitAnd;
 
 public class DataGuildChannel extends RequestProcessor{
 
+	private static final long DISCORD_USER_PERM_FILTER = 134217729; // interact, guild_channel_ov
 	private final Logger logger = LoggerFactory.getLogger(DataGuildChannel.class);
 
 	public DataGuildChannel(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
@@ -47,8 +48,6 @@ public class DataGuildChannel extends RequestProcessor{
 			new DataGuildChannelMessage(sqlConnectionPool, websocketProcessor)
 		);
 	}
-
-	private static final long DISCORD_USER_PERM_FILTER = 134217729; // interact, guild_channel_ov
 
 	@Override
 	public RequestProcessor preProcessor(Client client, Context context){

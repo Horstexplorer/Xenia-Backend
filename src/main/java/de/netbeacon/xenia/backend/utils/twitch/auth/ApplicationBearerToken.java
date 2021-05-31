@@ -40,12 +40,10 @@ public class ApplicationBearerToken{
 
 	private final String clientID;
 	private final String clientSecret;
-	private String bearerToken;
-
 	private final Lock lock = new ReentrantLock();
 	private final TwitchWrap twitchWrap;
-
 	private final Logger logger = LoggerFactory.getLogger(ApplicationBearerToken.class);
+	private String bearerToken;
 
 
 	/**
