@@ -44,7 +44,7 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.30' // https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12
     implementation group: 'club.minnced', name: 'discord-webhooks', version: '0.5.7' // https://mvnrepository.com/artifact/club.minnced/discord-webhooks
 
-    implementation group: 'io.prometheus', name: 'simpleclient', version: '0.10.0' // https://mvnrepository.com/artifact/io.prometheus/simpleclient
+    implementation group: 'io.prometheus', name: 'simpleclient', version: '0.11.0' // https://mvnrepository.com/artifact/io.prometheus/simpleclient
     implementation group: 'io.prometheus', name:'simpleclient_hotspot', version: '0.10.0' // https://mvnrepository.com/artifact/io.prometheus/simpleclient_hotspot
 
     // AUTH THINGS
