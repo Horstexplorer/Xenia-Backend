@@ -36,9 +36,22 @@ import java.util.Random;
 
 public class LocalClient extends Client implements IJSONSerializable{
 
+	private static final HashSet<Long> usedIDs = new HashSet<>();
 	private final String clientName;
 	private final LCAuth auth;
-	private static final HashSet<Long> usedIDs = new HashSet<>();
+
+	private LocalClient(long userId, ClientType clientType, String clientName, String password){
+		super(userId, clientType);
+		this.clientName = clientName;
+		this.auth = new LCAuth(this);
+		this.auth.setPassword(password);
+	}
+
+	private LocalClient(JSONObject jsonObject){
+		super(jsonObject.getLong("clientId"), ClientType.fromString(jsonObject.getString("clientType")));
+		this.clientName = jsonObject.getString("clientName");
+		this.auth = new LCAuth(this, jsonObject.getJSONObject("auth"));
+	}
 
 	public static LocalClient create(ClientType clientType, String clientName, String password){
 		Random random = new Random();
@@ -56,19 +69,6 @@ public class LocalClient extends Client implements IJSONSerializable{
 		}
 		usedIDs.add(jsonObject.getLong("clientId"));
 		return new LocalClient(jsonObject);
-	}
-
-	private LocalClient(long userId, ClientType clientType, String clientName, String password){
-		super(userId, clientType);
-		this.clientName = clientName;
-		this.auth = new LCAuth(this);
-		this.auth.setPassword(password);
-	}
-
-	private LocalClient(JSONObject jsonObject){
-		super(jsonObject.getLong("clientId"), ClientType.fromString(jsonObject.getString("clientType")));
-		this.clientName = jsonObject.getString("clientName");
-		this.auth = new LCAuth(this, jsonObject.getJSONObject("auth"));
 	}
 
 	public String getClientName(){

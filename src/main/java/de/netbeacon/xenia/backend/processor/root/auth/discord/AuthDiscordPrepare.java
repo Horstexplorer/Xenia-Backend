@@ -67,7 +67,8 @@ public class AuthDiscordPrepare extends RequestProcessor{
 			if(ctx.queryParamMap().containsKey("dev") && Boolean.parseBoolean(ctx.queryParam("dev"))){
 				// redirect to localhost
 				ctx.redirect("https://discord.com/api/oauth2/authorize?client_id=509065864763408385&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2Freturning&response_type=code&scope=" + scopes + "&state=" + randomState);
-			}else{
+			}
+			else{
 				ctx.redirect("https://discord.com/api/oauth2/authorize?client_id=509065864763408385&redirect_uri=https%3A%2F%2Fxenia.netbeacon.de%2Fauth%2Freturning&response_type=code&scope=" + scopes + "&state=" + randomState);
 			}
 		}

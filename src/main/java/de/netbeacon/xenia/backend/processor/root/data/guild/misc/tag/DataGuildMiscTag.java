@@ -39,13 +39,12 @@ import static org.jooq.impl.DSL.bitAnd;
 
 public class DataGuildMiscTag extends RequestProcessor{
 
+	private static final long DISCORD_USER_PERM_FILTER = 9; // interact, tag_ov
 	private final Logger logger = LoggerFactory.getLogger(DataGuildMiscTag.class);
 
 	public DataGuildMiscTag(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("tags", sqlConnectionPool, websocketProcessor);
 	}
-
-	private static final long DISCORD_USER_PERM_FILTER = 9; // interact, tag_ov
 
 	@Override
 	public RequestProcessor preProcessor(Client client, Context context){

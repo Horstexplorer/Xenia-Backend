@@ -41,13 +41,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class DiscordWebhookAppender extends AppenderSkeleton{
 
+	private final Queue<LogContainer> eventCache = new LinkedList<>();
+	private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 	private File configFile;
 	private String username;
 	private boolean started = false;
-
 	private WebhookClient webhookClient;
-	private final Queue<LogContainer> eventCache = new LinkedList<>();
-	private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 
 	/**
 	 * Creates a new instance of this class (does not start the logger)

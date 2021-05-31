@@ -25,21 +25,12 @@ import java.util.concurrent.TimeUnit;
 
 public class SecuritySettings{
 
-	public enum AuthType{
-		OPTIONAL,
-		REQUIRED,
-		BASIC,
-		BEARER;
-	}
-
-
+	private static final Triplet<TimeUnit, Integer, Long> DEFAULT_RATELIMITER_SETTING = new Triplet<>(TimeUnit.MINUTES, 1, 200000L);
 	private final UUID uuid = UUID.randomUUID();
 	private final AuthType authType;
 	private final ClientType clientType;
 
 	private final HashMap<ClientType, Triplet<TimeUnit, Integer, Long>> rateLimiterSettings = new HashMap<>();
-	private static final Triplet<TimeUnit, Integer, Long> DEFAULT_RATELIMITER_SETTING = new Triplet<>(TimeUnit.MINUTES, 1, 200000L);
-
 	public SecuritySettings(AuthType authType, ClientType clientType){
 		this.authType = authType;
 		this.clientType = clientType;
@@ -67,6 +58,13 @@ public class SecuritySettings{
 			return rateLimiterSettings.get(clientType);
 		}
 		return DEFAULT_RATELIMITER_SETTING;
+	}
+
+	public enum AuthType{
+		OPTIONAL,
+		REQUIRED,
+		BASIC,
+		BEARER;
 	}
 
 }

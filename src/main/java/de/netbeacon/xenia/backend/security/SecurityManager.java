@@ -242,24 +242,11 @@ public class SecurityManager implements IShutdown{
 
 	private static class AuthHeaderContent{
 
-		private final HashMap<String, Object> data = new HashMap<>();
 		private static final Pattern WS_SPLIT = Pattern.compile("\\s+");
 		private static final Pattern D_SPLIT = Pattern.compile("\\.");
+		private final HashMap<String, Object> data = new HashMap<>();
 
 		private AuthHeaderContent(){}
-
-		public AuthHeaderContent add(String key, Object object){
-			data.put(key, object);
-			return this;
-		}
-
-		public Object getObject(String key){
-			return data.get(key);
-		}
-
-		public <T> T getGeneric(String key){
-			return (T) data.get(key);
-		}
 
 		protected static AuthHeaderContent parseHeader(String content){
 			try{
@@ -289,6 +276,19 @@ public class SecurityManager implements IShutdown{
 			catch(Exception e){
 				return null;
 			}
+		}
+
+		public AuthHeaderContent add(String key, Object object){
+			data.put(key, object);
+			return this;
+		}
+
+		public Object getObject(String key){
+			return data.get(key);
+		}
+
+		public <T> T getGeneric(String key){
+			return (T) data.get(key);
 		}
 
 	}

@@ -30,8 +30,11 @@ import java.util.Base64;
 
 public class SecondaryWebsocketProcessor extends WebsocketProcessor{
 
+	private static final WsMessage CONNECTED_MESSAGE = new WsMessage(getMessage("0", "BROADCAST", null, 0L, "connected", null));
+	private static final WsMessage HEARTBEAT_MESSAGE = new WsMessage(getMessage("0", "BROADCAST", null, 0L, "heartbeat", null));
 	private final WSProcessorCore wsProcessorCore;
 	private final Logger logger = LoggerFactory.getLogger(SecondaryWebsocketProcessor.class);
+	private final SecureRandom secureRandom = new SecureRandom();
 
 	public SecondaryWebsocketProcessor(WSProcessorCore wsProcessorCore){
 		super();
@@ -39,14 +42,20 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor{
 		this.wsProcessorCore.setWSP(this);
 	}
 
-	private static final WsMessage CONNECTED_MESSAGE = new WsMessage(getMessage("0", "BROADCAST", null, 0L, "connected", null));
+	public static JSONObject getMessage(String id, String requestMode, Long recipient, Long sender, String action, JSONObject payload){
+		return new JSONObject()
+			.put("requestId", id)
+			.put("requestMode", requestMode)
+			.put("recipient", recipient)
+			.put("sender", sender)
+			.put("action", action)
+			.put("payload", payload);
+	}
 
 	@Override
 	public WsMessage getConnectedMessage(){
 		return CONNECTED_MESSAGE;
 	}
-
-	private static final WsMessage HEARTBEAT_MESSAGE = new WsMessage(getMessage("0", "BROADCAST", null, 0L, "heartbeat", null));
 
 	@Override
 	public WsMessage getHeartBeatMessage(){
@@ -77,7 +86,6 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor{
 		broadcast(new WsMessage(getMessage(getRandomId(), "BROADCAST", null, 0L, "join", new JSONObject().put("clientId", client.getClientId()))), client);
 	}
 
-
 	@Override
 	public void remove(WsContext wsContext){
 		Client client = getClientOf(wsContext);
@@ -88,7 +96,6 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor{
 		broadcast(new WsMessage(getMessage(getRandomId(), "BROADCAST", null, 0L, "leave", new JSONObject().put("clientId", client.getClientId()))), client);
 		super.remove(wsContext);
 	}
-
 
 	@Override
 	public void onMessage(WsMessageContext wsMessageContext){
@@ -140,22 +147,10 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor{
 		}
 	}
 
-	private final SecureRandom secureRandom = new SecureRandom();
-
 	public String getRandomId(){
 		byte[] bytes = new byte[128];
 		secureRandom.nextBytes(bytes);
 		return Base64.getEncoder().encodeToString(bytes);
-	}
-
-	public static JSONObject getMessage(String id, String requestMode, Long recipient, Long sender, String action, JSONObject payload){
-		return new JSONObject()
-			.put("requestId", id)
-			.put("requestMode", requestMode)
-			.put("recipient", recipient)
-			.put("sender", sender)
-			.put("action", action)
-			.put("payload", payload);
 	}
 
 	public WSProcessorCore getWsProcessorCore(){

@@ -42,10 +42,6 @@ public class DiscordClient extends Client{
 	private DCAuth dcAuth;
 	private String internalRole = "";
 
-	public static DiscordClient create(long clientId, SQLConnectionPool sqlConnectionPool){
-		return new DiscordClient(clientId, sqlConnectionPool);
-	}
-
 	private DiscordClient(long clientId, SQLConnectionPool sqlConnectionPool){
 		super(clientId, ClientType.DISCORD);
 		this.sqlConnectionPool = sqlConnectionPool;
@@ -69,6 +65,10 @@ public class DiscordClient extends Client{
 		}
 		catch(Exception ignore){
 		}
+	}
+
+	public static DiscordClient create(long clientId, SQLConnectionPool sqlConnectionPool){
+		return new DiscordClient(clientId, sqlConnectionPool);
 	}
 
 	public SQLConnectionPool getSqlConnectionPool(){
