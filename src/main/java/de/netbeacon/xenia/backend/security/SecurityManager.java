@@ -79,7 +79,7 @@ public class SecurityManager implements IShutdown{
 				}
 			}
 			else{
-				if(!securitySettings.getRequiredAuthType().equals(authHeaderContent.getGeneric("authType")) && !(securitySettings.getRequiredAuthType().equals(SecuritySettings.AuthType.BEARER))){
+				if(!(securitySettings.getRequiredAuthType().equals(authHeaderContent.getGeneric("authType")) || (securitySettings.getRequiredAuthType().equals(SecuritySettings.AuthType.BEARER))) && !securitySettings.getRequiredAuthType().equals(SecuritySettings.AuthType.OPTIONAL)){
 					throw new ForbiddenResponse();
 				}
 				Long id = authHeaderContent.getGeneric("userId");
