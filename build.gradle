@@ -50,7 +50,7 @@ dependencies {
     // AUTH THINGS
 
     implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4' // https://mvnrepository.com/artifact/org.mindrot/jbcrypt
-    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.68' // https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on
+    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.69' // https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on
     implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.69' // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on
 
     // SQL/DB
