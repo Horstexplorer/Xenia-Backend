@@ -40,8 +40,8 @@ dependencies {
 
     // LOGGING
 
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30' // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.30' // https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.31' // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.31' // https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12
     implementation group: 'club.minnced', name: 'discord-webhooks', version: '0.5.7' // https://mvnrepository.com/artifact/club.minnced/discord-webhooks
 
     implementation group: 'io.prometheus', name: 'simpleclient', version: '0.11.0' // https://mvnrepository.com/artifact/io.prometheus/simpleclient
@@ -50,26 +50,26 @@ dependencies {
     // AUTH THINGS
 
     implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4' // https://mvnrepository.com/artifact/org.mindrot/jbcrypt
-    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.68' // https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on
-    implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.68' // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on
+    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.69' // https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on
+    implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.69' // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on
 
     // SQL/DB
 
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '4.0.3' // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.20' // https://mvnrepository.com/artifact/org.postgresql/postgresql
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.22' // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation group: 'org.jooq', name: 'jooq', version: '3.14.11' // https://mvnrepository.com/artifact/org.jooq/jooq
     implementation group: 'org.jooq', name: 'jooq-meta', version: '3.14.11' // https://mvnrepository.com/artifact/org.jooq/jooq-meta
     implementation group: 'org.jooq', name: 'jooq-codegen', version: '3.14.11' // https://mvnrepository.com/artifact/org.jooq/jooq-codegen
-    jooqGenerator group: 'org.postgresql', name: 'postgresql', version: '42.2.20'
+    jooqGenerator group: 'org.postgresql', name: 'postgresql', version: '42.2.22'
 
     // OTHER THINGS
 
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0' // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9' // https://mvnrepository.com/artifact/org.apache.commons/commons-text
     implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4' // https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
-    implementation group: 'commons-io', name: 'commons-io', version: '2.9.0' // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation group: 'commons-io', name: 'commons-io', version: '2.10.0' // https://mvnrepository.com/artifact/commons-io/commons-io
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1' // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
-    implementation group: 'dev.mlnr', name: 'BotListHandler-core', version: '2.0.0_4'
+    implementation group: 'dev.mlnr', name: 'BotListHandler-core', version: '2.0.0_5'
 
 }
 

@@ -33,6 +33,7 @@ import de.netbeacon.xenia.jooq.tables.records.GuildsRecord;
 import io.javalin.http.*;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -220,7 +221,20 @@ public class DataGuild extends RequestProcessor{
 		try(var con = getSqlConnectionPool().getConnection()){
 			var sqlContext = getSqlConnectionPool().getContext(con);
 			long guildId = Long.parseLong(ctx.pathParam("guildId"));
-			Result<GuildsRecord> guildsRecords = sqlContext.insertInto(Tables.GUILDS, Tables.GUILDS.GUILD_ID).values(guildId).returning().fetch();
+
+			Result<GuildsRecord> guildsRecords;
+			if(ctx.queryParamMap().containsKey("goc") && Boolean.parseBoolean(ctx.queryParam("goc"))){
+				guildsRecords = sqlContext.transactionResult(transactionConfig -> {
+					var withTransaction = DSL.using(transactionConfig);
+					Result<GuildsRecord> guildsRecordsL = withTransaction.insertInto(Tables.GUILDS, Tables.GUILDS.GUILD_ID).values(guildId).onConflict(Tables.GUILDS.GUILD_ID).doNothing().returning().fetch();
+					if(guildsRecordsL.isEmpty()){ // if there are no records the entry should already exist so we just need to fetch it
+						guildsRecordsL = withTransaction.selectFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetch();
+					}
+					return guildsRecordsL;
+				});
+			}else{
+				guildsRecords = sqlContext.insertInto(Tables.GUILDS, Tables.GUILDS.GUILD_ID).values(guildId).returning().fetch();
+			}
 			if(guildsRecords.isEmpty()){
 				throw new InternalServerErrorResponse();
 			}
