@@ -29,6 +29,7 @@ import de.netbeacon.xenia.jooq.tables.records.ChannelsRecord;
 import io.javalin.http.*;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -248,8 +249,20 @@ public class DataGuildChannel extends RequestProcessor{
 			var sqlContext = getSqlConnectionPool().getContext(con);
 			long guildId = Long.parseLong(ctx.pathParam("guildId"));
 			long channelId = Long.parseLong(ctx.pathParam("channelId"));
-			// insert
-			Result<ChannelsRecord> channelsRecords = sqlContext.insertInto(Tables.CHANNELS, Tables.CHANNELS.CHANNEL_ID, Tables.CHANNELS.GUILD_ID).values(channelId, guildId).returning().fetch();
+
+			Result<ChannelsRecord> channelsRecords;
+			if(ctx.queryParamMap().containsKey("goc") && Boolean.parseBoolean(ctx.queryParam("goc"))){
+				channelsRecords = sqlContext.transactionResult(transactionConfig -> {
+					var withTransaction = DSL.using(transactionConfig);
+					Result<ChannelsRecord> channelsRecordsL = withTransaction.insertInto(Tables.CHANNELS, Tables.CHANNELS.CHANNEL_ID, Tables.CHANNELS.GUILD_ID).values(channelId, guildId).onConflict(Tables.CHANNELS.CHANNEL_ID).doNothing().returning().fetch();
+					if(channelsRecordsL.isEmpty()){ // if there are no records the entry should already exist so we just need to fetch it
+						channelsRecordsL = withTransaction.selectFrom(Tables.CHANNELS).where(Tables.CHANNELS.CHANNEL_ID.eq(channelId).and(Tables.CHANNELS.GUILD_ID.eq(guildId))).fetch();
+					}
+					return channelsRecordsL;
+				});
+			}else{
+				channelsRecords = sqlContext.insertInto(Tables.CHANNELS, Tables.CHANNELS.CHANNEL_ID, Tables.CHANNELS.GUILD_ID).values(channelId, guildId).returning().fetch();
+			}
 			if(channelsRecords.isEmpty()){
 				throw new InternalServerErrorResponse();
 			}

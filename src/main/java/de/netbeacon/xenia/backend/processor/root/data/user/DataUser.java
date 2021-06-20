@@ -27,6 +27,7 @@ import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.UsersRecord;
 import io.javalin.http.*;
 import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,7 +157,20 @@ public class DataUser extends RequestProcessor{
 		try(var con = getSqlConnectionPool().getConnection()){
 			var sqlContext = getSqlConnectionPool().getContext(con);
 			long userId = Long.parseLong(ctx.pathParam("userId"));
-			Result<UsersRecord> usersRecordResult = sqlContext.insertInto(Tables.USERS, Tables.USERS.USER_ID).values(userId).returning().fetch();
+
+			Result<UsersRecord> usersRecordResult;
+			if(ctx.queryParamMap().containsKey("goc") && Boolean.parseBoolean(ctx.queryParam("goc"))){
+				usersRecordResult = sqlContext.transactionResult(transactionConfig -> {
+					var withTransaction = DSL.using(transactionConfig);
+					Result<UsersRecord> usersRecordResultL = withTransaction.insertInto(Tables.USERS, Tables.USERS.USER_ID).values(userId).onConflict(Tables.USERS.USER_ID).doNothing().returning().fetch();
+					if(usersRecordResultL.isEmpty()){ // if there are no records the entry should already exist so we just need to fetch it
+						usersRecordResultL = withTransaction.selectFrom(Tables.USERS).where(Tables.USERS.USER_ID.eq(userId)).fetch();
+					}
+					return usersRecordResultL;
+				});
+			}else{
+				usersRecordResult = sqlContext.insertInto(Tables.USERS, Tables.USERS.USER_ID).values(userId).returning().fetch();
+			}
 			if(usersRecordResult.isEmpty()){
 				throw new InternalServerErrorResponse();
 			}

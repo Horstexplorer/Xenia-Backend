@@ -31,6 +31,7 @@ import io.javalin.http.*;
 import org.jooq.InsertValuesStep3;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -263,8 +264,20 @@ public class DataGuildMember extends RequestProcessor{
 			var sqlContext = getSqlConnectionPool().getContext(con);
 			long guildId = Long.parseLong(ctx.pathParam("guildId"));
 			long userId = Long.parseLong(ctx.pathParam("userId"));
-			// insert
-			Result<MembersRecord> membersRecords = sqlContext.insertInto(Tables.MEMBERS, Tables.MEMBERS.USER_ID, Tables.MEMBERS.GUILD_ID).values(userId, guildId).returning().fetch();
+
+			Result<MembersRecord> membersRecords;
+			if(ctx.queryParamMap().containsKey("goc") && Boolean.parseBoolean(ctx.queryParam("goc"))){
+				membersRecords = sqlContext.transactionResult(transactionConfig -> {
+					var withTransaction = DSL.using(transactionConfig);
+					Result<MembersRecord> membersRecordsL = withTransaction.insertInto(Tables.MEMBERS, Tables.MEMBERS.USER_ID, Tables.MEMBERS.GUILD_ID).values(userId, guildId).onConflict(Tables.MEMBERS.USER_ID).doNothing().returning().fetch();
+					if(membersRecordsL.isEmpty()){ // if there are no records the entry should already exist so we just need to fetch it
+						membersRecordsL = withTransaction.selectFrom(Tables.MEMBERS).where(Tables.MEMBERS.USER_ID.eq(userId).and(Tables.MEMBERS.GUILD_ID.eq(guildId))).fetch();
+					}
+					return membersRecordsL;
+				});
+			}else{
+				membersRecords = sqlContext.insertInto(Tables.MEMBERS, Tables.MEMBERS.USER_ID, Tables.MEMBERS.GUILD_ID).values(userId, guildId).returning().fetch();
+			}
 			Result<MembersRolesRecord> membersRolesRecords = sqlContext.selectFrom(Tables.MEMBERS_ROLES).where(Tables.MEMBERS_ROLES.USER_ID.eq(userId).and(Tables.MEMBERS_ROLES.GUILD_ID.eq(guildId))).fetch();
 			if(membersRecords.isEmpty()){
 				throw new InternalServerErrorResponse();
