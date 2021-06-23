@@ -269,7 +269,7 @@ public class DataGuildMember extends RequestProcessor{
 			if(ctx.queryParamMap().containsKey("goc") && Boolean.parseBoolean(ctx.queryParam("goc"))){
 				membersRecords = sqlContext.transactionResult(transactionConfig -> {
 					var withTransaction = DSL.using(transactionConfig);
-					Result<MembersRecord> membersRecordsL = withTransaction.insertInto(Tables.MEMBERS, Tables.MEMBERS.USER_ID, Tables.MEMBERS.GUILD_ID).values(userId, guildId).onConflict(Tables.MEMBERS.USER_ID).doNothing().returning().fetch();
+					Result<MembersRecord> membersRecordsL = withTransaction.insertInto(Tables.MEMBERS, Tables.MEMBERS.USER_ID, Tables.MEMBERS.GUILD_ID).values(userId, guildId).onConflict(Tables.MEMBERS.GUILD_ID, Tables.MEMBERS.USER_ID).doNothing().returning().fetch();
 					if(membersRecordsL.isEmpty()){ // if there are no records the entry should already exist so we just need to fetch it
 						membersRecordsL = withTransaction.selectFrom(Tables.MEMBERS).where(Tables.MEMBERS.USER_ID.eq(userId).and(Tables.MEMBERS.GUILD_ID.eq(guildId))).fetch();
 					}
