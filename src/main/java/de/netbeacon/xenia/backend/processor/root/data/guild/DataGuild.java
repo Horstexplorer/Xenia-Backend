@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.ZoneOffset;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.jooq.impl.DSL.bitAnd;
 
@@ -223,12 +224,15 @@ public class DataGuild extends RequestProcessor{
 			long guildId = Long.parseLong(ctx.pathParam("guildId"));
 
 			Result<GuildsRecord> guildsRecords;
+			AtomicBoolean getOC = new AtomicBoolean(false);
 			if(ctx.queryParamMap().containsKey("goc") && Boolean.parseBoolean(ctx.queryParam("goc"))){
 				guildsRecords = sqlContext.transactionResult(transactionConfig -> {
 					var withTransaction = DSL.using(transactionConfig);
 					Result<GuildsRecord> guildsRecordsL = withTransaction.insertInto(Tables.GUILDS, Tables.GUILDS.GUILD_ID).values(guildId).onConflict(Tables.GUILDS.GUILD_ID).doNothing().returning().fetch();
 					if(guildsRecordsL.isEmpty()){ // if there are no records the entry should already exist so we just need to fetch it
 						guildsRecordsL = withTransaction.selectFrom(Tables.GUILDS).where(Tables.GUILDS.GUILD_ID.eq(guildId)).fetch();
+					}else {
+						getOC.set(true);
 					}
 					return guildsRecordsL;
 				});
@@ -256,6 +260,7 @@ public class DataGuild extends RequestProcessor{
 			ctx.header("Content-Type", "application/json");
 			ctx.result(jsonObject.toString());
 			// send ws notification
+			if(getOC.get()) return;
 			WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
 			wsMessage.get().put("type", "GUILD").put("action", "CREATE").put("guildId", guildId);
 			getWebsocketProcessor().broadcast(wsMessage, client);

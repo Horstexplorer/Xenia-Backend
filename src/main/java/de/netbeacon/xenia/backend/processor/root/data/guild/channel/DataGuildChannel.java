@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.ZoneOffset;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.jooq.impl.DSL.bitAnd;
 
@@ -251,12 +252,15 @@ public class DataGuildChannel extends RequestProcessor{
 			long channelId = Long.parseLong(ctx.pathParam("channelId"));
 
 			Result<ChannelsRecord> channelsRecords;
+			AtomicBoolean getOC = new AtomicBoolean(false);
 			if(ctx.queryParamMap().containsKey("goc") && Boolean.parseBoolean(ctx.queryParam("goc"))){
 				channelsRecords = sqlContext.transactionResult(transactionConfig -> {
 					var withTransaction = DSL.using(transactionConfig);
 					Result<ChannelsRecord> channelsRecordsL = withTransaction.insertInto(Tables.CHANNELS, Tables.CHANNELS.CHANNEL_ID, Tables.CHANNELS.GUILD_ID).values(channelId, guildId).onConflict(Tables.CHANNELS.CHANNEL_ID).doNothing().returning().fetch();
 					if(channelsRecordsL.isEmpty()){ // if there are no records the entry should already exist so we just need to fetch it
 						channelsRecordsL = withTransaction.selectFrom(Tables.CHANNELS).where(Tables.CHANNELS.CHANNEL_ID.eq(channelId).and(Tables.CHANNELS.GUILD_ID.eq(guildId))).fetch();
+					}else{
+						getOC.set(true);
 					}
 					return channelsRecordsL;
 				});
@@ -286,6 +290,7 @@ public class DataGuildChannel extends RequestProcessor{
 			ctx.header("Content-Type", "application/json");
 			ctx.result(jsonObject.toString());
 			// send ws notification
+			if(getOC.get()) return;
 			WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
 			wsMessage.get().put("type", "GUILD_CHANNEL").put("action", "CREATE").put("guildId", guildId).put("channelId", channelId);
 			getWebsocketProcessor().broadcast(wsMessage, client);
