@@ -84,11 +84,6 @@ public class Guilds extends TableImpl<GuildsRecord> {
      */
     public final TableField<GuildsRecord, Integer> GUILD_D43Z1_MODE = createField(DSL.name("guild_d43z1_mode"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("1", SQLDataType.INTEGER)), this, "");
 
-    /**
-     * The column <code>public.guilds.last_fetch_timestamp</code>.
-     */
-    public final TableField<GuildsRecord, LocalDateTime> LAST_FETCH_TIMESTAMP = createField(DSL.name("last_fetch_timestamp"), SQLDataType.LOCALDATETIME(6).defaultValue(DSL.field("now()", SQLDataType.LOCALDATETIME)), this, "");
-
     private Guilds(Name alias, Table<GuildsRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -173,11 +168,11 @@ public class Guilds extends TableImpl<GuildsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, LocalDateTime, String, Integer, String, String, String, Integer, Integer, LocalDateTime> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row9<Long, LocalDateTime, String, Integer, String, String, String, Integer, Integer> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }
