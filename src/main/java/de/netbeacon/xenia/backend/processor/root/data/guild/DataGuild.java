@@ -38,6 +38,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -125,6 +126,9 @@ public class DataGuild extends RequestProcessor{
 				throw new NotFoundResponse();
 			}
 			GuildsRecord guildsRecord = guildsRecords.get(0);
+			// update record
+			guildsRecord.setLastFetchTimestamp(LocalDateTime.now());
+			sqlContext.executeUpdate(guildsRecord);
 			// build json
 			JSONObject jsonObject = new JSONObject()
 				.put("guildId", guildsRecord.getGuildId())
@@ -178,6 +182,8 @@ public class DataGuild extends RequestProcessor{
 			JSONObject metaData = newData.getJSONObject("meta");
 			guildsRecord.setMetaGuildname(metaData.getString("name"));
 			guildsRecord.setMetaIconurl(metaData.get("iconUrl") != JSONObject.NULL ? metaData.getString("iconUrl") : null);
+			// update record
+			guildsRecord.setLastFetchTimestamp(LocalDateTime.now());
 			// update db
 			sqlContext.executeUpdate(guildsRecord);
 			// build json
