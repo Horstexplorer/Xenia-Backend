@@ -26,12 +26,8 @@ import de.netbeacon.xenia.jooq.tables.records.UsersRecord;
 import io.javalin.http.*;
 import org.jooq.Result;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FrontendMe extends RequestProcessor{
-
-	private final Logger logger = LoggerFactory.getLogger(FrontendMe.class);
 
 	public FrontendMe(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("me", sqlConnectionPool, websocketProcessor);

@@ -30,8 +30,6 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -41,7 +39,6 @@ import static org.jooq.impl.DSL.bitAnd;
 public class DataGuildMiscNotification extends RequestProcessor{
 
 	private static final long DISCORD_USER_PERM_FILTER = 33; // interact, notif_ov
-	private final Logger logger = LoggerFactory.getLogger(DataGuildMiscNotification.class);
 
 	public DataGuildMiscNotification(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("notifications", sqlConnectionPool, websocketProcessor);

@@ -30,8 +30,6 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.ZoneOffset;
 
@@ -40,7 +38,6 @@ import static org.jooq.impl.DSL.bitAnd;
 public class DataGuildMiscTwitchNotifications extends RequestProcessor{
 
 	private static final long DISCORD_USER_PERM_FILTER = 513; // interact, twitch_manage
-	private final Logger logger = LoggerFactory.getLogger(DataGuildMiscTwitchNotifications.class);
 
 	public DataGuildMiscTwitchNotifications(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("twitchnotifications", sqlConnectionPool, websocketProcessor);

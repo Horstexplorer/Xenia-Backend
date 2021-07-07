@@ -27,16 +27,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Date;
 
 public class AuthDiscord extends RequestProcessor{
-
-	private final Logger logger = LoggerFactory.getLogger(AuthDiscord.class);
 
 	public AuthDiscord(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("discord", sqlConnectionPool, websocketProcessor,

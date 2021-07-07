@@ -22,8 +22,6 @@ import de.netbeacon.xenia.backend.processor.ws.processor.WSProcessorCore;
 import io.javalin.websocket.WsContext;
 import io.javalin.websocket.WsMessageContext;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -33,7 +31,6 @@ public class SecondaryWebsocketProcessor extends WebsocketProcessor{
 	private static final WsMessage CONNECTED_MESSAGE = new WsMessage(getMessage("0", "BROADCAST", null, 0L, "connected", null));
 	private static final WsMessage HEARTBEAT_MESSAGE = new WsMessage(getMessage("0", "BROADCAST", null, 0L, "heartbeat", null));
 	private final WSProcessorCore wsProcessorCore;
-	private final Logger logger = LoggerFactory.getLogger(SecondaryWebsocketProcessor.class);
 	private final SecureRandom secureRandom = new SecureRandom();
 
 	public SecondaryWebsocketProcessor(WSProcessorCore wsProcessorCore){

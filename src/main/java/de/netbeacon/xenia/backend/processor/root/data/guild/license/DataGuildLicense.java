@@ -31,8 +31,6 @@ import io.javalin.http.*;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -43,7 +41,6 @@ import static org.jooq.impl.DSL.bitAnd;
 public class DataGuildLicense extends RequestProcessor{
 
 	private static final long DISCORD_USER_PERM_FILTER = 1073741825; // interact, guild_owner_ov
-	private final Logger logger = LoggerFactory.getLogger(DataGuildLicense.class);
 
 	public DataGuildLicense(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("license", sqlConnectionPool, websocketProcessor);

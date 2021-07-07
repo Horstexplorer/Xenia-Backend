@@ -22,6 +22,8 @@ import de.netbeacon.xenia.backend.utils.prometheus.Metrics;
 import io.javalin.websocket.WsContext;
 import io.javalin.websocket.WsMessageContext;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,6 +37,7 @@ public abstract class WebsocketProcessor implements IShutdown{
 	private final ConcurrentHashMap<Client, WsContext> clientWSContextConcurrentHashMap = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<WsContext, Client> wsContextClientConcurrentHashMap = new ConcurrentHashMap<>();
 	private final ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public WebsocketProcessor(){
 		scheduledExecutorService.scheduleAtFixedRate(() -> broadcast(getHeartBeatMessage()), 0, 30000, TimeUnit.MILLISECONDS);

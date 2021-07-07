@@ -26,12 +26,8 @@ import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AuthToken extends RequestProcessor{
-
-	private final Logger logger = LoggerFactory.getLogger(AuthToken.class);
 
 	public AuthToken(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("token", sqlConnectionPool, websocketProcessor,
