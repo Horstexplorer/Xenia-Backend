@@ -83,7 +83,7 @@ public class InternalBotShards extends TableImpl<InternalBotShardsRecord> {
 
     @Override
     public Schema getSchema() {
-        return Public.PUBLIC;
+        return aliased() ? null : Public.PUBLIC;
     }
 
     @Override
@@ -92,17 +92,17 @@ public class InternalBotShards extends TableImpl<InternalBotShardsRecord> {
     }
 
     @Override
-    public List<UniqueKey<InternalBotShardsRecord>> getKeys() {
-        return Arrays.<UniqueKey<InternalBotShardsRecord>>asList(Keys.INTERNAL_BOT_SHARDS_SHARD_ID);
+    public List<ForeignKey<InternalBotShardsRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.INTERNAL_BOT_SHARDS__INTERNAL_BOT_SHARDS_CLIENT_ID_FKEY);
     }
 
-    @Override
-    public List<ForeignKey<InternalBotShardsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<InternalBotShardsRecord, ?>>asList(Keys.INTERNAL_BOT_SHARDS__INTERNAL_BOT_SHARDS_CLIENT_ID_FKEY);
-    }
+    private transient InternalBotData _internalBotData;
 
     public InternalBotData internalBotData() {
-        return new InternalBotData(this, Keys.INTERNAL_BOT_SHARDS__INTERNAL_BOT_SHARDS_CLIENT_ID_FKEY);
+        if (_internalBotData == null)
+            _internalBotData = new InternalBotData(this, Keys.INTERNAL_BOT_SHARDS__INTERNAL_BOT_SHARDS_CLIENT_ID_FKEY);
+
+        return _internalBotData;
     }
 
     @Override

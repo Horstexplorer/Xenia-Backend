@@ -109,7 +109,7 @@ public class Notifications extends TableImpl<NotificationsRecord> {
 
     @Override
     public Schema getSchema() {
-        return Public.PUBLIC;
+        return aliased() ? null : Public.PUBLIC;
     }
 
     @Override
@@ -123,25 +123,33 @@ public class Notifications extends TableImpl<NotificationsRecord> {
     }
 
     @Override
-    public List<UniqueKey<NotificationsRecord>> getKeys() {
-        return Arrays.<UniqueKey<NotificationsRecord>>asList(Keys.NOTIFICATION_NOTIFICATION_ID);
+    public List<ForeignKey<NotificationsRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.NOTIFICATIONS__NOTIFICATION_GUILD_ID_FKEY, Keys.NOTIFICATIONS__NOTIFICATION_GUILD_ID_USER_ID_FKEY, Keys.NOTIFICATIONS__NOTIFICATION_CHANNEL_ID_FKEY);
     }
 
-    @Override
-    public List<ForeignKey<NotificationsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<NotificationsRecord, ?>>asList(Keys.NOTIFICATIONS__NOTIFICATION_GUILD_ID_FKEY, Keys.NOTIFICATIONS__NOTIFICATION_GUILD_ID_USER_ID_FKEY, Keys.NOTIFICATIONS__NOTIFICATION_CHANNEL_ID_FKEY);
-    }
+    private transient Guilds _guilds;
+    private transient Members _members;
+    private transient Channels _channels;
 
     public Guilds guilds() {
-        return new Guilds(this, Keys.NOTIFICATIONS__NOTIFICATION_GUILD_ID_FKEY);
+        if (_guilds == null)
+            _guilds = new Guilds(this, Keys.NOTIFICATIONS__NOTIFICATION_GUILD_ID_FKEY);
+
+        return _guilds;
     }
 
     public Members members() {
-        return new Members(this, Keys.NOTIFICATIONS__NOTIFICATION_GUILD_ID_USER_ID_FKEY);
+        if (_members == null)
+            _members = new Members(this, Keys.NOTIFICATIONS__NOTIFICATION_GUILD_ID_USER_ID_FKEY);
+
+        return _members;
     }
 
     public Channels channels() {
-        return new Channels(this, Keys.NOTIFICATIONS__NOTIFICATION_CHANNEL_ID_FKEY);
+        if (_channels == null)
+            _channels = new Channels(this, Keys.NOTIFICATIONS__NOTIFICATION_CHANNEL_ID_FKEY);
+
+        return _channels;
     }
 
     @Override

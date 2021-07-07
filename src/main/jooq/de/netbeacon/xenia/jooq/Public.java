@@ -28,6 +28,11 @@ public class Public extends SchemaImpl {
     public static final Public PUBLIC = new Public();
 
     /**
+     * The table <code>public.channel_auto_mod</code>.
+     */
+    public final ChannelAutoMod CHANNEL_AUTO_MOD = ChannelAutoMod.CHANNEL_AUTO_MOD;
+
+    /**
      * The table <code>public.channels</code>.
      */
     public final Channels CHANNELS = Channels.CHANNELS;
@@ -127,18 +132,16 @@ public class Public extends SchemaImpl {
 
     @Override
     public final List<Sequence<?>> getSequences() {
-        return Arrays.<Sequence<?>>asList(
-            Sequences.LICENSES_LICENSE_ID_SEQ,
-            Sequences.MESSAGE_ATTACHMENTS_ATTACHMENT_ID_SEQ,
+        return Arrays.asList(
             Sequences.NOTIFICATION_NOTIFICATION_ID_SEQ,
-            Sequences.OAUTH_STATES_STATE_ID_SEQ,
-            Sequences.ROLES_ROLE_ID_SEQ,
-            Sequences.TWITCHNOTIFICATIONS_TWITCHNOTIFICATION_ID_SEQ);
+            Sequences.ROLES_ROLE_ID_SEQ
+        );
     }
 
     @Override
     public final List<Table<?>> getTables() {
-        return Arrays.<Table<?>>asList(
+        return Arrays.asList(
+            ChannelAutoMod.CHANNEL_AUTO_MOD,
             Channels.CHANNELS,
             Guilds.GUILDS,
             InternalBotData.INTERNAL_BOT_DATA,
@@ -155,6 +158,7 @@ public class Public extends SchemaImpl {
             Tags.TAGS,
             Twitchnotifications.TWITCHNOTIFICATIONS,
             Users.USERS,
-            Vroles.VROLES);
+            Vroles.VROLES
+        );
     }
 }

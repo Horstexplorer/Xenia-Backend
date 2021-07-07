@@ -62,7 +62,7 @@ public class Vroles extends TableImpl<VrolesRecord> {
     /**
      * The column <code>public.vroles.vrole_permission</code>.
      */
-    public final TableField<VrolesRecord, Long> VROLE_PERMISSION = createField(DSL.name("vrole_permission"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("'0'::bigint", SQLDataType.BIGINT)), this, "");
+    public final TableField<VrolesRecord, Long> VROLE_PERMISSION = createField(DSL.name("vrole_permission"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("'1283'::bigint", SQLDataType.BIGINT)), this, "");
 
     private Vroles(Name alias, Table<VrolesRecord> aliased) {
         this(alias, aliased, null);
@@ -99,7 +99,7 @@ public class Vroles extends TableImpl<VrolesRecord> {
 
     @Override
     public Schema getSchema() {
-        return Public.PUBLIC;
+        return aliased() ? null : Public.PUBLIC;
     }
 
     @Override
@@ -113,8 +113,8 @@ public class Vroles extends TableImpl<VrolesRecord> {
     }
 
     @Override
-    public List<UniqueKey<VrolesRecord>> getKeys() {
-        return Arrays.<UniqueKey<VrolesRecord>>asList(Keys.ROLES_ROLE_ID, Keys.ROLES_GUILD_ID_ROLE_NAME);
+    public List<UniqueKey<VrolesRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.ROLES_GUILD_ID_ROLE_NAME);
     }
 
     @Override

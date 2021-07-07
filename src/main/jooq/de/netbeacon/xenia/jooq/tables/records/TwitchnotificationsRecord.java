@@ -83,7 +83,8 @@ public class TwitchnotificationsRecord extends UpdatableRecordImpl<Twitchnotific
     }
 
     /**
-     * Setter for <code>public.twitchnotifications.twitchnotification_twitch_channel_name</code>.
+     * Setter for
+     * <code>public.twitchnotifications.twitchnotification_twitch_channel_name</code>.
      */
     public TwitchnotificationsRecord setTwitchnotificationTwitchChannelName(String value) {
         set(4, value);
@@ -91,14 +92,16 @@ public class TwitchnotificationsRecord extends UpdatableRecordImpl<Twitchnotific
     }
 
     /**
-     * Getter for <code>public.twitchnotifications.twitchnotification_twitch_channel_name</code>.
+     * Getter for
+     * <code>public.twitchnotifications.twitchnotification_twitch_channel_name</code>.
      */
     public String getTwitchnotificationTwitchChannelName() {
         return (String) get(4);
     }
 
     /**
-     * Setter for <code>public.twitchnotifications.twitchnotification_twitch_channel_id</code>.
+     * Setter for
+     * <code>public.twitchnotifications.twitchnotification_twitch_channel_id</code>.
      */
     public TwitchnotificationsRecord setTwitchnotificationTwitchChannelId(Long value) {
         set(5, value);
@@ -106,14 +109,16 @@ public class TwitchnotificationsRecord extends UpdatableRecordImpl<Twitchnotific
     }
 
     /**
-     * Getter for <code>public.twitchnotifications.twitchnotification_twitch_channel_id</code>.
+     * Getter for
+     * <code>public.twitchnotifications.twitchnotification_twitch_channel_id</code>.
      */
     public Long getTwitchnotificationTwitchChannelId() {
         return (Long) get(5);
     }
 
     /**
-     * Setter for <code>public.twitchnotifications.twitchnotification_custom_message</code>.
+     * Setter for
+     * <code>public.twitchnotifications.twitchnotification_custom_message</code>.
      */
     public TwitchnotificationsRecord setTwitchnotificationCustomMessage(String value) {
         set(6, value);
@@ -121,7 +126,8 @@ public class TwitchnotificationsRecord extends UpdatableRecordImpl<Twitchnotific
     }
 
     /**
-     * Getter for <code>public.twitchnotifications.twitchnotification_custom_message</code>.
+     * Getter for
+     * <code>public.twitchnotifications.twitchnotification_custom_message</code>.
      */
     public String getTwitchnotificationCustomMessage() {
         return (String) get(6);

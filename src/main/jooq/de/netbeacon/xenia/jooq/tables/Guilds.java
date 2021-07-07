@@ -77,7 +77,7 @@ public class Guilds extends TableImpl<GuildsRecord> {
     /**
      * The column <code>public.guilds.guild_settings</code>.
      */
-    public final TableField<GuildsRecord, Integer> GUILD_SETTINGS = createField(DSL.name("guild_settings"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+    public final TableField<GuildsRecord, Integer> GUILD_SETTINGS = createField(DSL.name("guild_settings"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("12", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.guilds.guild_d43z1_mode</code>.
@@ -119,7 +119,7 @@ public class Guilds extends TableImpl<GuildsRecord> {
 
     @Override
     public Schema getSchema() {
-        return Public.PUBLIC;
+        return aliased() ? null : Public.PUBLIC;
     }
 
     @Override
@@ -128,17 +128,22 @@ public class Guilds extends TableImpl<GuildsRecord> {
     }
 
     @Override
-    public List<UniqueKey<GuildsRecord>> getKeys() {
-        return Arrays.<UniqueKey<GuildsRecord>>asList(Keys.GUILDS_GUILD_ID, Keys.GUILDS_LICENSE_ID);
+    public List<UniqueKey<GuildsRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.GUILDS_LICENSE_ID);
     }
 
     @Override
     public List<ForeignKey<GuildsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<GuildsRecord, ?>>asList(Keys.GUILDS__GUILDS_LICENSE_ID_FKEY);
+        return Arrays.asList(Keys.GUILDS__GUILDS_LICENSE_ID_FKEY);
     }
 
+    private transient Licenses _licenses;
+
     public Licenses licenses() {
-        return new Licenses(this, Keys.GUILDS__GUILDS_LICENSE_ID_FKEY);
+        if (_licenses == null)
+            _licenses = new Licenses(this, Keys.GUILDS__GUILDS_LICENSE_ID_FKEY);
+
+        return _licenses;
     }
 
     @Override

@@ -14,8 +14,6 @@ import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -104,17 +102,12 @@ public class Users extends TableImpl<UsersRecord> {
 
     @Override
     public Schema getSchema() {
-        return Public.PUBLIC;
+        return aliased() ? null : Public.PUBLIC;
     }
 
     @Override
     public UniqueKey<UsersRecord> getPrimaryKey() {
         return Keys.USERS_USER_ID;
-    }
-
-    @Override
-    public List<UniqueKey<UsersRecord>> getKeys() {
-        return Arrays.<UniqueKey<UsersRecord>>asList(Keys.USERS_USER_ID);
     }
 
     @Override

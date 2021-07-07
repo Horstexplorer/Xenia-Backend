@@ -114,7 +114,7 @@ public class Messages extends TableImpl<MessagesRecord> {
 
     @Override
     public Schema getSchema() {
-        return Public.PUBLIC;
+        return aliased() ? null : Public.PUBLIC;
     }
 
     @Override
@@ -123,25 +123,33 @@ public class Messages extends TableImpl<MessagesRecord> {
     }
 
     @Override
-    public List<UniqueKey<MessagesRecord>> getKeys() {
-        return Arrays.<UniqueKey<MessagesRecord>>asList(Keys.MESSAGES_MESSAGE_ID);
+    public List<ForeignKey<MessagesRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.MESSAGES__MESSAGES_GUILD_ID_FKEY, Keys.MESSAGES__MESSAGES_CHANNEL_ID_FKEY, Keys.MESSAGES__MESSAGES_USER_ID_FKEY);
     }
 
-    @Override
-    public List<ForeignKey<MessagesRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<MessagesRecord, ?>>asList(Keys.MESSAGES__MESSAGES_GUILD_ID_FKEY, Keys.MESSAGES__MESSAGES_CHANNEL_ID_FKEY, Keys.MESSAGES__MESSAGES_USER_ID_FKEY);
-    }
+    private transient Guilds _guilds;
+    private transient Channels _channels;
+    private transient Users _users;
 
     public Guilds guilds() {
-        return new Guilds(this, Keys.MESSAGES__MESSAGES_GUILD_ID_FKEY);
+        if (_guilds == null)
+            _guilds = new Guilds(this, Keys.MESSAGES__MESSAGES_GUILD_ID_FKEY);
+
+        return _guilds;
     }
 
     public Channels channels() {
-        return new Channels(this, Keys.MESSAGES__MESSAGES_CHANNEL_ID_FKEY);
+        if (_channels == null)
+            _channels = new Channels(this, Keys.MESSAGES__MESSAGES_CHANNEL_ID_FKEY);
+
+        return _channels;
     }
 
     public Users users() {
-        return new Users(this, Keys.MESSAGES__MESSAGES_USER_ID_FKEY);
+        if (_users == null)
+            _users = new Users(this, Keys.MESSAGES__MESSAGES_USER_ID_FKEY);
+
+        return _users;
     }
 
     @Override

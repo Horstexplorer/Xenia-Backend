@@ -126,7 +126,8 @@ public class LicenseTypesRecord extends UpdatableRecordImpl<LicenseTypesRecord> 
     }
 
     /**
-     * Setter for <code>public.license_types.perk_misc_twitchnotifications_c</code>.
+     * Setter for
+     * <code>public.license_types.perk_misc_twitchnotifications_c</code>.
      */
     public LicenseTypesRecord setPerkMiscTwitchnotificationsC(Integer value) {
         set(7, value);
@@ -134,14 +135,16 @@ public class LicenseTypesRecord extends UpdatableRecordImpl<LicenseTypesRecord> 
     }
 
     /**
-     * Getter for <code>public.license_types.perk_misc_twitchnotifications_c</code>.
+     * Getter for
+     * <code>public.license_types.perk_misc_twitchnotifications_c</code>.
      */
     public Integer getPerkMiscTwitchnotificationsC() {
         return (Integer) get(7);
     }
 
     /**
-     * Setter for <code>public.license_types.perk_channel_d43z1_selflearning_c</code>.
+     * Setter for
+     * <code>public.license_types.perk_channel_d43z1_selflearning_c</code>.
      */
     public LicenseTypesRecord setPerkChannelD43z1SelflearningC(Integer value) {
         set(8, value);
@@ -149,7 +152,8 @@ public class LicenseTypesRecord extends UpdatableRecordImpl<LicenseTypesRecord> 
     }
 
     /**
-     * Getter for <code>public.license_types.perk_channel_d43z1_selflearning_c</code>.
+     * Getter for
+     * <code>public.license_types.perk_channel_d43z1_selflearning_c</code>.
      */
     public Integer getPerkChannelD43z1SelflearningC() {
         return (Integer) get(8);

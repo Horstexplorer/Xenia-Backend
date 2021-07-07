@@ -104,7 +104,7 @@ public class Licenses extends TableImpl<LicensesRecord> {
 
     @Override
     public Schema getSchema() {
-        return Public.PUBLIC;
+        return aliased() ? null : Public.PUBLIC;
     }
 
     @Override
@@ -118,17 +118,22 @@ public class Licenses extends TableImpl<LicensesRecord> {
     }
 
     @Override
-    public List<UniqueKey<LicensesRecord>> getKeys() {
-        return Arrays.<UniqueKey<LicensesRecord>>asList(Keys.LICENSES_LICENSE_ID, Keys.LICENSES_LICENSE_KEY);
+    public List<UniqueKey<LicensesRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.LICENSES_LICENSE_KEY);
     }
 
     @Override
     public List<ForeignKey<LicensesRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LicensesRecord, ?>>asList(Keys.LICENSES__LICENSES_LICENSE_TYPE_FKEY);
+        return Arrays.asList(Keys.LICENSES__LICENSES_LICENSE_TYPE_FKEY);
     }
 
+    private transient LicenseTypes _licenseTypes;
+
     public LicenseTypes licenseTypes() {
-        return new LicenseTypes(this, Keys.LICENSES__LICENSES_LICENSE_TYPE_FKEY);
+        if (_licenseTypes == null)
+            _licenseTypes = new LicenseTypes(this, Keys.LICENSES__LICENSES_LICENSE_TYPE_FKEY);
+
+        return _licenseTypes;
     }
 
     @Override
