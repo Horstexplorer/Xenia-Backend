@@ -21,11 +21,15 @@ import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.client.objects.imp.DiscordClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
+import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
+import de.netbeacon.xenia.jooq.tables.records.ChannelAutoModRecord;
+import de.netbeacon.xenia.jooq.tables.records.ChannelsRecord;
 import io.javalin.http.*;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.json.JSONObject;
 
 import static org.jooq.impl.DSL.bitAnd;
 
@@ -96,12 +100,118 @@ public class DataGuildChannelAutoMod extends RequestProcessor{
 
 	@Override
 	public void get(Client client, Context ctx){
-		super.get(client, ctx);
+		try(var con = getSqlConnectionPool().getConnection()){
+			var sqlContext = getSqlConnectionPool().getContext(con);
+			long guildId = Long.parseLong(ctx.pathParam("guildId"));
+			long channelId = Long.parseLong(ctx.pathParam("channelId"));
+			// fetch channel
+			Result<ChannelsRecord> channelsRecords = sqlContext.selectFrom(Tables.CHANNELS).where(Tables.CHANNELS.GUILD_ID.eq(guildId).and(Tables.CHANNELS.CHANNEL_ID.eq(channelId))).fetch();
+			if(channelsRecords.isEmpty()){
+				throw new NotFoundResponse();
+			}
+			// fetch record
+			Result<ChannelAutoModRecord> channelAutoModRecords = sqlContext.selectFrom(Tables.CHANNEL_AUTO_MOD).where(Tables.CHANNEL_AUTO_MOD.CHANNEL_ID.eq(channelId)).fetch();
+			if(channelAutoModRecords.isEmpty()){
+				channelAutoModRecords = sqlContext.insertInto(Tables.CHANNEL_AUTO_MOD, Tables.CHANNEL_AUTO_MOD.CHANNEL_ID).values(channelId).returning().fetch();
+			}
+			if(channelAutoModRecords.isEmpty()){
+				throw new InternalServerErrorResponse();
+			}
+			ChannelAutoModRecord channelAutoModRecord = channelAutoModRecords.get(0);
+			// json
+			JSONObject jsonObject = new JSONObject()
+				.put("guildId", guildId)
+				.put("channelId", channelAutoModRecord.getChannelId())
+				.put("filterWordBlacklist", channelAutoModRecord.getFilterWordBlacklist())
+				.put("filterWordWhitelist", channelAutoModRecord.getFilterWordWhitelist())
+				.put("filterInviteUrl", channelAutoModRecord.getFilterInviteUrl())
+				.put("filterOtherUrl", channelAutoModRecord.getFilterOtherUrl())
+				.put("filterSpecialChars", channelAutoModRecord.getFilterSpecialChars())
+				.put("filterMultilineSpam", channelAutoModRecord.getFilterMultilineSpam())
+				.put("filterChatFlood", channelAutoModRecord.getFilterChatFlood());
+			// respond
+			ctx.status(200);
+			ctx.header("Content-Type", "application/json");
+			ctx.result(jsonObject.toString());
+
+		}catch(HttpResponseException e){
+			if(e instanceof InternalServerErrorResponse){
+				logger.error("An Error Occurred Processing DataGuildChannelAutoMod#GET ", e);
+			}
+			throw e;
+		}
+		catch(NullPointerException e){
+			// dont log
+			throw new BadRequestResponse();
+		}
+		catch(Exception e){
+			logger.warn("An Error Occurred Processing DataGuildChannelAutoMod#GET ", e);
+			throw new BadRequestResponse();
+		}
 	}
 
 	@Override
 	public void put(Client client, Context ctx){
-		super.put(client, ctx);
+		try(var con = getSqlConnectionPool().getConnection()){
+			var sqlContext = getSqlConnectionPool().getContext(con);
+			long guildId = Long.parseLong(ctx.pathParam("guildId"));
+			long channelId = Long.parseLong(ctx.pathParam("channelId"));
+			// fetch channel
+			Result<ChannelsRecord> channelsRecords = sqlContext.selectFrom(Tables.CHANNELS).where(Tables.CHANNELS.GUILD_ID.eq(guildId).and(Tables.CHANNELS.CHANNEL_ID.eq(channelId))).fetch();
+			if(channelsRecords.isEmpty()){
+				throw new NotFoundResponse();
+			}
+			// fetch record
+			Result<ChannelAutoModRecord> channelAutoModRecords = sqlContext.selectFrom(Tables.CHANNEL_AUTO_MOD).where(Tables.CHANNEL_AUTO_MOD.CHANNEL_ID.eq(channelId)).fetch();
+			if(channelAutoModRecords.isEmpty()){
+				throw new NotFoundResponse();
+			}
+			ChannelAutoModRecord channelAutoModRecord = channelAutoModRecords.get(0);
+			// update
+			JSONObject newData = new JSONObject(ctx.body());
+
+			channelAutoModRecord.setFilterWordBlacklist(newData.getInt("filterWordBlacklist"));
+			channelAutoModRecord.setFilterWordWhitelist(newData.getInt("filterWordWhitelist"));
+			channelAutoModRecord.setFilterInviteUrl(newData.getInt("filterInviteUrl"));
+			channelAutoModRecord.setFilterOtherUrl(newData.getInt("filterOtherUrl"));
+			channelAutoModRecord.setFilterSpecialChars(newData.getInt("filterSpecialChars"));
+			channelAutoModRecord.setFilterMultilineSpam(newData.getInt("filterMultilineSpam"));
+			channelAutoModRecord.setFilterChatFlood(newData.getInt("filterChatFlood"));
+
+			sqlContext.executeUpdate(channelAutoModRecord);
+			// json
+			JSONObject jsonObject = new JSONObject()
+				.put("guildId", guildId)
+				.put("channelId", channelAutoModRecord.getChannelId())
+				.put("filterWordBlacklist", channelAutoModRecord.getFilterWordBlacklist())
+				.put("filterWordWhitelist", channelAutoModRecord.getFilterWordWhitelist())
+				.put("filterInviteUrl", channelAutoModRecord.getFilterInviteUrl())
+				.put("filterOtherUrl", channelAutoModRecord.getFilterOtherUrl())
+				.put("filterSpecialChars", channelAutoModRecord.getFilterSpecialChars())
+				.put("filterMultilineSpam", channelAutoModRecord.getFilterMultilineSpam())
+				.put("filterChatFlood", channelAutoModRecord.getFilterChatFlood());
+			// respond
+			ctx.status(200);
+			ctx.header("Content-Type", "application/json");
+			ctx.result(jsonObject.toString());
+			// send ws notification
+			WebsocketProcessor.WsMessage wsMessage = new WebsocketProcessor.WsMessage();
+			wsMessage.get().put("type", "GUILD_CHANNEL_AUTO_MOD").put("action", "UPDATE").put("guildId", guildId).put("channelId", channelId);
+			getWebsocketProcessor().broadcast(wsMessage, client);
+		}catch(HttpResponseException e){
+			if(e instanceof InternalServerErrorResponse){
+				logger.error("An Error Occurred Processing DataGuildChannelAutoMod#GET ", e);
+			}
+			throw e;
+		}
+		catch(NullPointerException e){
+			// dont log
+			throw new BadRequestResponse();
+		}
+		catch(Exception e){
+			logger.warn("An Error Occurred Processing DataGuildChannelAutoMod#PUT ", e);
+			throw new BadRequestResponse();
+		}
 	}
 
 }
