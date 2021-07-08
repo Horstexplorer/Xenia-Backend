@@ -122,8 +122,10 @@ public class DataGuildChannelAutoMod extends RequestProcessor{
 			JSONObject jsonObject = new JSONObject()
 				.put("guildId", guildId)
 				.put("channelId", channelAutoModRecord.getChannelId())
-				.put("filterContent", channelAutoModRecord.getFilterContent())
-				.put("filterBehaviour", channelAutoModRecord.getFilterBehaviour());
+				.put("filterContentWords", channelAutoModRecord.getFilterContentWords())
+				.put("filterContentURLs", channelAutoModRecord.getFilterContentUrls())
+				.put("filterBehaviourSpam", channelAutoModRecord.getFilterBehaviourSpam())
+				.put("filterBehaviourRaid", channelAutoModRecord.getFilterBehaviourRaid());
 			// respond
 			ctx.status(200);
 			ctx.header("Content-Type", "application/json");
@@ -165,16 +167,20 @@ public class DataGuildChannelAutoMod extends RequestProcessor{
 			// update
 			JSONObject newData = new JSONObject(ctx.body());
 
-			channelAutoModRecord.setFilterContent(newData.getLong("filterContent"));
-			channelAutoModRecord.setFilterBehaviour(newData.getLong("filterBehaviour"));
+			channelAutoModRecord.setFilterContentWords(newData.getInt("filterContentWords"));
+			channelAutoModRecord.setFilterContentUrls(newData.getInt("filterContentURLs"));
+			channelAutoModRecord.setFilterBehaviourSpam(newData.getInt("filterBehaviourSpam"));
+			channelAutoModRecord.setFilterBehaviourRaid(newData.getInt("filterBehaviourRaid"));
 
 			sqlContext.executeUpdate(channelAutoModRecord);
 			// json
 			JSONObject jsonObject = new JSONObject()
 				.put("guildId", guildId)
 				.put("channelId", channelAutoModRecord.getChannelId())
-				.put("filterContent", channelAutoModRecord.getFilterContent())
-				.put("filterBehaviour", channelAutoModRecord.getFilterBehaviour());
+				.put("filterContentWords", channelAutoModRecord.getFilterContentWords())
+				.put("filterContentURLs", channelAutoModRecord.getFilterContentUrls())
+				.put("filterBehaviourSpam", channelAutoModRecord.getFilterBehaviourSpam())
+				.put("filterBehaviourRaid", channelAutoModRecord.getFilterBehaviourRaid());
 			// respond
 			ctx.status(200);
 			ctx.header("Content-Type", "application/json");

@@ -44,14 +44,24 @@ public class ChannelAutoMod extends TableImpl<ChannelAutoModRecord> {
     public final TableField<ChannelAutoModRecord, Long> CHANNEL_ID = createField(DSL.name("channel_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.channel_auto_mod.filter_content</code>.
+     * The column <code>public.channel_auto_mod.filter_content_words</code>.
      */
-    public final TableField<ChannelAutoModRecord, Long> FILTER_CONTENT = createField(DSL.name("filter_content"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
+    public final TableField<ChannelAutoModRecord, Integer> FILTER_CONTENT_WORDS = createField(DSL.name("filter_content_words"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>public.channel_auto_mod.filter_behaviour</code>.
+     * The column <code>public.channel_auto_mod.filter_content_urls</code>.
      */
-    public final TableField<ChannelAutoModRecord, Long> FILTER_BEHAVIOUR = createField(DSL.name("filter_behaviour"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
+    public final TableField<ChannelAutoModRecord, Integer> FILTER_CONTENT_URLS = createField(DSL.name("filter_content_urls"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.channel_auto_mod.filter_behaviour_spam</code>.
+     */
+    public final TableField<ChannelAutoModRecord, Integer> FILTER_BEHAVIOUR_SPAM = createField(DSL.name("filter_behaviour_spam"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.channel_auto_mod.filter_behaviour_raid</code>.
+     */
+    public final TableField<ChannelAutoModRecord, Integer> FILTER_BEHAVIOUR_RAID = createField(DSL.name("filter_behaviour_raid"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     private ChannelAutoMod(Name alias, Table<ChannelAutoModRecord> aliased) {
         this(alias, aliased, null);
@@ -137,11 +147,11 @@ public class ChannelAutoMod extends TableImpl<ChannelAutoModRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Long, Long, Long> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row5<Long, Integer, Integer, Integer, Integer> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }
