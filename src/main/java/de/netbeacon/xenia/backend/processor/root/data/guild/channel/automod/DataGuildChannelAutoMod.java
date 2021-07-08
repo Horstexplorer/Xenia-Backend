@@ -123,7 +123,6 @@ public class DataGuildChannelAutoMod extends RequestProcessor{
 				.put("guildId", guildId)
 				.put("channelId", channelAutoModRecord.getChannelId())
 				.put("filterWordBlacklist", channelAutoModRecord.getFilterWordBlacklist())
-				.put("filterWordWhitelist", channelAutoModRecord.getFilterWordWhitelist())
 				.put("filterInviteUrl", channelAutoModRecord.getFilterInviteUrl())
 				.put("filterOtherUrl", channelAutoModRecord.getFilterOtherUrl())
 				.put("filterSpecialChars", channelAutoModRecord.getFilterSpecialChars())
@@ -171,7 +170,6 @@ public class DataGuildChannelAutoMod extends RequestProcessor{
 			JSONObject newData = new JSONObject(ctx.body());
 
 			channelAutoModRecord.setFilterWordBlacklist(newData.getInt("filterWordBlacklist"));
-			channelAutoModRecord.setFilterWordWhitelist(newData.getInt("filterWordWhitelist"));
 			channelAutoModRecord.setFilterInviteUrl(newData.getInt("filterInviteUrl"));
 			channelAutoModRecord.setFilterOtherUrl(newData.getInt("filterOtherUrl"));
 			channelAutoModRecord.setFilterSpecialChars(newData.getInt("filterSpecialChars"));
@@ -184,7 +182,6 @@ public class DataGuildChannelAutoMod extends RequestProcessor{
 				.put("guildId", guildId)
 				.put("channelId", channelAutoModRecord.getChannelId())
 				.put("filterWordBlacklist", channelAutoModRecord.getFilterWordBlacklist())
-				.put("filterWordWhitelist", channelAutoModRecord.getFilterWordWhitelist())
 				.put("filterInviteUrl", channelAutoModRecord.getFilterInviteUrl())
 				.put("filterOtherUrl", channelAutoModRecord.getFilterOtherUrl())
 				.put("filterSpecialChars", channelAutoModRecord.getFilterSpecialChars())

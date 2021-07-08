@@ -49,11 +49,6 @@ public class ChannelAutoMod extends TableImpl<ChannelAutoModRecord> {
     public final TableField<ChannelAutoModRecord, Integer> FILTER_WORD_BLACKLIST = createField(DSL.name("filter_word_blacklist"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>public.channel_auto_mod.filter_word_whitelist</code>.
-     */
-    public final TableField<ChannelAutoModRecord, Integer> FILTER_WORD_WHITELIST = createField(DSL.name("filter_word_whitelist"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
-
-    /**
      * The column <code>public.channel_auto_mod.filter_invite_url</code>.
      */
     public final TableField<ChannelAutoModRecord, Integer> FILTER_INVITE_URL = createField(DSL.name("filter_invite_url"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
@@ -162,11 +157,11 @@ public class ChannelAutoMod extends TableImpl<ChannelAutoModRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Long, Integer, Integer, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row7<Long, Integer, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }
