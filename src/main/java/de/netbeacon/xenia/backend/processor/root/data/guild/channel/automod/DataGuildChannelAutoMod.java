@@ -122,12 +122,8 @@ public class DataGuildChannelAutoMod extends RequestProcessor{
 			JSONObject jsonObject = new JSONObject()
 				.put("guildId", guildId)
 				.put("channelId", channelAutoModRecord.getChannelId())
-				.put("filterWordBlacklist", channelAutoModRecord.getFilterWordBlacklist())
-				.put("filterInviteUrl", channelAutoModRecord.getFilterInviteUrl())
-				.put("filterOtherUrl", channelAutoModRecord.getFilterOtherUrl())
-				.put("filterSpecialChars", channelAutoModRecord.getFilterSpecialChars())
-				.put("filterMultilineSpam", channelAutoModRecord.getFilterMultilineSpam())
-				.put("filterChatFlood", channelAutoModRecord.getFilterChatFlood());
+				.put("filterContent", channelAutoModRecord.getFilterContent())
+				.put("filterBehaviour", channelAutoModRecord.getFilterBehaviour());
 			// respond
 			ctx.status(200);
 			ctx.header("Content-Type", "application/json");
@@ -169,24 +165,16 @@ public class DataGuildChannelAutoMod extends RequestProcessor{
 			// update
 			JSONObject newData = new JSONObject(ctx.body());
 
-			channelAutoModRecord.setFilterWordBlacklist(newData.getInt("filterWordBlacklist"));
-			channelAutoModRecord.setFilterInviteUrl(newData.getInt("filterInviteUrl"));
-			channelAutoModRecord.setFilterOtherUrl(newData.getInt("filterOtherUrl"));
-			channelAutoModRecord.setFilterSpecialChars(newData.getInt("filterSpecialChars"));
-			channelAutoModRecord.setFilterMultilineSpam(newData.getInt("filterMultilineSpam"));
-			channelAutoModRecord.setFilterChatFlood(newData.getInt("filterChatFlood"));
+			channelAutoModRecord.setFilterContent(newData.getLong("filterContent"));
+			channelAutoModRecord.setFilterBehaviour(newData.getLong("filterBehaviour"));
 
 			sqlContext.executeUpdate(channelAutoModRecord);
 			// json
 			JSONObject jsonObject = new JSONObject()
 				.put("guildId", guildId)
 				.put("channelId", channelAutoModRecord.getChannelId())
-				.put("filterWordBlacklist", channelAutoModRecord.getFilterWordBlacklist())
-				.put("filterInviteUrl", channelAutoModRecord.getFilterInviteUrl())
-				.put("filterOtherUrl", channelAutoModRecord.getFilterOtherUrl())
-				.put("filterSpecialChars", channelAutoModRecord.getFilterSpecialChars())
-				.put("filterMultilineSpam", channelAutoModRecord.getFilterMultilineSpam())
-				.put("filterChatFlood", channelAutoModRecord.getFilterChatFlood());
+				.put("filterContent", channelAutoModRecord.getFilterContent())
+				.put("filterBehaviour", channelAutoModRecord.getFilterBehaviour());
 			// respond
 			ctx.status(200);
 			ctx.header("Content-Type", "application/json");

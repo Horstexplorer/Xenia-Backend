@@ -44,34 +44,14 @@ public class ChannelAutoMod extends TableImpl<ChannelAutoModRecord> {
     public final TableField<ChannelAutoModRecord, Long> CHANNEL_ID = createField(DSL.name("channel_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.channel_auto_mod.filter_word_blacklist</code>.
+     * The column <code>public.channel_auto_mod.filter_content</code>.
      */
-    public final TableField<ChannelAutoModRecord, Integer> FILTER_WORD_BLACKLIST = createField(DSL.name("filter_word_blacklist"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+    public final TableField<ChannelAutoModRecord, Long> FILTER_CONTENT = createField(DSL.name("filter_content"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.channel_auto_mod.filter_invite_url</code>.
+     * The column <code>public.channel_auto_mod.filter_behaviour</code>.
      */
-    public final TableField<ChannelAutoModRecord, Integer> FILTER_INVITE_URL = createField(DSL.name("filter_invite_url"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
-
-    /**
-     * The column <code>public.channel_auto_mod.filter_other_url</code>.
-     */
-    public final TableField<ChannelAutoModRecord, Integer> FILTER_OTHER_URL = createField(DSL.name("filter_other_url"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
-
-    /**
-     * The column <code>public.channel_auto_mod.filter_special_chars</code>.
-     */
-    public final TableField<ChannelAutoModRecord, Integer> FILTER_SPECIAL_CHARS = createField(DSL.name("filter_special_chars"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
-
-    /**
-     * The column <code>public.channel_auto_mod.filter_multiline_spam</code>.
-     */
-    public final TableField<ChannelAutoModRecord, Integer> FILTER_MULTILINE_SPAM = createField(DSL.name("filter_multiline_spam"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
-
-    /**
-     * The column <code>public.channel_auto_mod.filter_chat_flood</code>.
-     */
-    public final TableField<ChannelAutoModRecord, Integer> FILTER_CHAT_FLOOD = createField(DSL.name("filter_chat_flood"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+    public final TableField<ChannelAutoModRecord, Long> FILTER_BEHAVIOUR = createField(DSL.name("filter_behaviour"), SQLDataType.BIGINT.nullable(false).defaultValue(DSL.field("0", SQLDataType.BIGINT)), this, "");
 
     private ChannelAutoMod(Name alias, Table<ChannelAutoModRecord> aliased) {
         this(alias, aliased, null);
@@ -157,11 +137,11 @@ public class ChannelAutoMod extends TableImpl<ChannelAutoModRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, Integer, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row3<Long, Long, Long> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }
