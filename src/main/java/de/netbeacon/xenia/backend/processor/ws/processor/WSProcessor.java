@@ -19,9 +19,14 @@ package de.netbeacon.xenia.backend.processor.ws.processor;
 public abstract class WSProcessor{
 
 	private final String action;
+	protected WSProcessorCore wsProcessorCore;
 
 	public WSProcessor(String action){
 		this.action = action.toLowerCase();
+	}
+
+	protected void registerOn(WSProcessorCore wsProcessorCore){
+		this.wsProcessorCore = wsProcessorCore;
 	}
 
 	public abstract WSResponse process(WSRequest wsRequest);
