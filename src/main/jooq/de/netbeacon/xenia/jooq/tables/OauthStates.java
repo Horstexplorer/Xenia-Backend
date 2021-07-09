@@ -91,7 +91,7 @@ public class OauthStates extends TableImpl<OauthStatesRecord> {
 
     @Override
     public Schema getSchema() {
-        return Public.PUBLIC;
+        return aliased() ? null : Public.PUBLIC;
     }
 
     @Override

@@ -23,12 +23,8 @@ import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
 import io.javalin.http.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AuthDiscordRevoke extends RequestProcessor{
-
-	private final Logger logger = LoggerFactory.getLogger(AuthDiscordRevoke.class);
 
 	public AuthDiscordRevoke(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("revoke", sqlConnectionPool, websocketProcessor);

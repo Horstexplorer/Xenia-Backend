@@ -20,6 +20,8 @@ import de.netbeacon.utils.sql.connectionpool.SQLConnectionPool;
 import de.netbeacon.xenia.backend.client.objects.Client;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import io.javalin.http.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,6 +32,7 @@ public abstract class RequestProcessor{
 	private final SQLConnectionPool sqlConnectionPool;
 	private final PrimaryWebsocketProcessor websocketProcessor;
 	private final ConcurrentHashMap<String, RequestProcessor> processorHashMap = new ConcurrentHashMap<>();
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public RequestProcessor(String identifier, SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		this.identifier = identifier;

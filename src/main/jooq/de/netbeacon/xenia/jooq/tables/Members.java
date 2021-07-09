@@ -109,7 +109,7 @@ public class Members extends TableImpl<MembersRecord> {
 
     @Override
     public Schema getSchema() {
-        return Public.PUBLIC;
+        return aliased() ? null : Public.PUBLIC;
     }
 
     @Override
@@ -118,21 +118,25 @@ public class Members extends TableImpl<MembersRecord> {
     }
 
     @Override
-    public List<UniqueKey<MembersRecord>> getKeys() {
-        return Arrays.<UniqueKey<MembersRecord>>asList(Keys.MEMBERS_GUILD_ID_USER_ID);
+    public List<ForeignKey<MembersRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.MEMBERS__MEMBERS_GUILD_ID_FKEY, Keys.MEMBERS__MEMBERS_USER_ID_FKEY);
     }
 
-    @Override
-    public List<ForeignKey<MembersRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<MembersRecord, ?>>asList(Keys.MEMBERS__MEMBERS_GUILD_ID_FKEY, Keys.MEMBERS__MEMBERS_USER_ID_FKEY);
-    }
+    private transient Guilds _guilds;
+    private transient Users _users;
 
     public Guilds guilds() {
-        return new Guilds(this, Keys.MEMBERS__MEMBERS_GUILD_ID_FKEY);
+        if (_guilds == null)
+            _guilds = new Guilds(this, Keys.MEMBERS__MEMBERS_GUILD_ID_FKEY);
+
+        return _guilds;
     }
 
     public Users users() {
-        return new Users(this, Keys.MEMBERS__MEMBERS_USER_ID_FKEY);
+        if (_users == null)
+            _users = new Users(this, Keys.MEMBERS__MEMBERS_USER_ID_FKEY);
+
+        return _users;
     }
 
     @Override

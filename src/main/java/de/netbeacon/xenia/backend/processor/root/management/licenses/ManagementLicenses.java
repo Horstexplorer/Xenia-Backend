@@ -27,12 +27,8 @@ import io.javalin.http.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jooq.Result;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ManagementLicenses extends RequestProcessor{
-
-	public final Logger logger = LoggerFactory.getLogger(ManagementLicenses.class);
 
 	public ManagementLicenses(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("licenses", sqlConnectionPool, websocketProcessor);

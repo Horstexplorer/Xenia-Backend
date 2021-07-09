@@ -104,7 +104,7 @@ public class Oauth extends TableImpl<OauthRecord> {
 
     @Override
     public Schema getSchema() {
-        return Public.PUBLIC;
+        return aliased() ? null : Public.PUBLIC;
     }
 
     @Override
@@ -113,17 +113,17 @@ public class Oauth extends TableImpl<OauthRecord> {
     }
 
     @Override
-    public List<UniqueKey<OauthRecord>> getKeys() {
-        return Arrays.<UniqueKey<OauthRecord>>asList(Keys.OAUTH_USER_ID);
+    public List<ForeignKey<OauthRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.OAUTH__OAUTH_USER_ID_FKEY);
     }
 
-    @Override
-    public List<ForeignKey<OauthRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<OauthRecord, ?>>asList(Keys.OAUTH__OAUTH_USER_ID_FKEY);
-    }
+    private transient Users _users;
 
     public Users users() {
-        return new Users(this, Keys.OAUTH__OAUTH_USER_ID_FKEY);
+        if (_users == null)
+            _users = new Users(this, Keys.OAUTH__OAUTH_USER_ID_FKEY);
+
+        return _users;
     }
 
     @Override

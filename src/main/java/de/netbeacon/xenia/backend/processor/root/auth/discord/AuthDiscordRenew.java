@@ -26,14 +26,10 @@ import de.netbeacon.xenia.jooq.Tables;
 import de.netbeacon.xenia.jooq.tables.records.OauthRecord;
 import io.javalin.http.*;
 import org.jooq.Result;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 
 public class AuthDiscordRenew extends RequestProcessor{
-
-	private final Logger logger = LoggerFactory.getLogger(AuthDiscordRenew.class);
 
 	public AuthDiscordRenew(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("renew", sqlConnectionPool, websocketProcessor);

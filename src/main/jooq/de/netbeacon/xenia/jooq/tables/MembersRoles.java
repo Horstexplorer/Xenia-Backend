@@ -88,7 +88,7 @@ public class MembersRoles extends TableImpl<MembersRolesRecord> {
 
     @Override
     public Schema getSchema() {
-        return Public.PUBLIC;
+        return aliased() ? null : Public.PUBLIC;
     }
 
     @Override
@@ -97,25 +97,33 @@ public class MembersRoles extends TableImpl<MembersRolesRecord> {
     }
 
     @Override
-    public List<UniqueKey<MembersRolesRecord>> getKeys() {
-        return Arrays.<UniqueKey<MembersRolesRecord>>asList(Keys.MEMBERS_ROLES_USER_ID_ROLE_ID);
+    public List<ForeignKey<MembersRolesRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_FKEY, Keys.MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_USER_ID_FKEY, Keys.MEMBERS_ROLES__MEMBERS_ROLES_ROLE_ID_FKEY);
     }
 
-    @Override
-    public List<ForeignKey<MembersRolesRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<MembersRolesRecord, ?>>asList(Keys.MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_FKEY, Keys.MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_USER_ID_FKEY, Keys.MEMBERS_ROLES__MEMBERS_ROLES_ROLE_ID_FKEY);
-    }
+    private transient Guilds _guilds;
+    private transient Members _members;
+    private transient Vroles _vroles;
 
     public Guilds guilds() {
-        return new Guilds(this, Keys.MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_FKEY);
+        if (_guilds == null)
+            _guilds = new Guilds(this, Keys.MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_FKEY);
+
+        return _guilds;
     }
 
     public Members members() {
-        return new Members(this, Keys.MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_USER_ID_FKEY);
+        if (_members == null)
+            _members = new Members(this, Keys.MEMBERS_ROLES__MEMBERS_ROLES_GUILD_ID_USER_ID_FKEY);
+
+        return _members;
     }
 
     public Vroles vroles() {
-        return new Vroles(this, Keys.MEMBERS_ROLES__MEMBERS_ROLES_ROLE_ID_FKEY);
+        if (_vroles == null)
+            _vroles = new Vroles(this, Keys.MEMBERS_ROLES__MEMBERS_ROLES_ROLE_ID_FKEY);
+
+        return _vroles;
     }
 
     @Override

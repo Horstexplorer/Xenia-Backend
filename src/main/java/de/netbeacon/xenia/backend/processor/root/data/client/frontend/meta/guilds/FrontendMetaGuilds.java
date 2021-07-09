@@ -29,15 +29,11 @@ import org.jooq.Record2;
 import org.jooq.Result;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class FrontendMetaGuilds extends RequestProcessor{
-
-	private final Logger logger = LoggerFactory.getLogger(FrontendMetaGuilds.class);
 
 	public FrontendMetaGuilds(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("meta_guilds", sqlConnectionPool, websocketProcessor);

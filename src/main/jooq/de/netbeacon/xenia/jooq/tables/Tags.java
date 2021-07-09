@@ -99,7 +99,7 @@ public class Tags extends TableImpl<TagsRecord> {
 
     @Override
     public Schema getSchema() {
-        return Public.PUBLIC;
+        return aliased() ? null : Public.PUBLIC;
     }
 
     @Override
@@ -108,17 +108,17 @@ public class Tags extends TableImpl<TagsRecord> {
     }
 
     @Override
-    public List<UniqueKey<TagsRecord>> getKeys() {
-        return Arrays.<UniqueKey<TagsRecord>>asList(Keys.TAGS_TAG_NAME_GUILD_ID);
+    public List<ForeignKey<TagsRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.TAGS__TAGS_GUILD_ID_USER_ID_FKEY);
     }
 
-    @Override
-    public List<ForeignKey<TagsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<TagsRecord, ?>>asList(Keys.TAGS__TAGS_GUILD_ID_USER_ID_FKEY);
-    }
+    private transient Members _members;
 
     public Members members() {
-        return new Members(this, Keys.TAGS__TAGS_GUILD_ID_USER_ID_FKEY);
+        if (_members == null)
+            _members = new Members(this, Keys.TAGS__TAGS_GUILD_ID_USER_ID_FKEY);
+
+        return _members;
     }
 
     @Override

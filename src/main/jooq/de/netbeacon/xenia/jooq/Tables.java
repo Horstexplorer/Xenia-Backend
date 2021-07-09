@@ -14,6 +14,11 @@ import de.netbeacon.xenia.jooq.tables.*;
 public class Tables {
 
     /**
+     * The table <code>public.channel_auto_mod</code>.
+     */
+    public static final ChannelAutoMod CHANNEL_AUTO_MOD = ChannelAutoMod.CHANNEL_AUTO_MOD;
+
+    /**
      * The table <code>public.channels</code>.
      */
     public static final Channels CHANNELS = Channels.CHANNELS;

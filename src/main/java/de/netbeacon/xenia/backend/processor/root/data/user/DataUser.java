@@ -29,15 +29,11 @@ import io.javalin.http.*;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.ZoneOffset;
 
 
 public class DataUser extends RequestProcessor{
-
-	private final Logger logger = LoggerFactory.getLogger(DataUser.class);
 
 	public DataUser(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("user", sqlConnectionPool, websocketProcessor);

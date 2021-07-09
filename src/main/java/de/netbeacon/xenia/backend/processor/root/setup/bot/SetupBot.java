@@ -27,15 +27,11 @@ import de.netbeacon.xenia.jooq.tables.records.InternalBotShardsRecord;
 import io.javalin.http.*;
 import org.jooq.Result;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SetupBot extends RequestProcessor{
-
-	private final Logger logger = LoggerFactory.getLogger(SetupBot.class);
 
 	public SetupBot(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("bot", sqlConnectionPool, websocketProcessor);

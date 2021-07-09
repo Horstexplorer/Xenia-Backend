@@ -88,7 +88,7 @@ public class MessageAttachments extends TableImpl<MessageAttachmentsRecord> {
 
     @Override
     public Schema getSchema() {
-        return Public.PUBLIC;
+        return aliased() ? null : Public.PUBLIC;
     }
 
     @Override
@@ -102,17 +102,17 @@ public class MessageAttachments extends TableImpl<MessageAttachmentsRecord> {
     }
 
     @Override
-    public List<UniqueKey<MessageAttachmentsRecord>> getKeys() {
-        return Arrays.<UniqueKey<MessageAttachmentsRecord>>asList(Keys.MESSAGE_ATTACHMENTS_PK);
+    public List<ForeignKey<MessageAttachmentsRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.MESSAGE_ATTACHMENTS__MESSAGE_ATTACHMENTS_MESSAGES_MESSAGE_ID_FK);
     }
 
-    @Override
-    public List<ForeignKey<MessageAttachmentsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<MessageAttachmentsRecord, ?>>asList(Keys.MESSAGE_ATTACHMENTS__MESSAGE_ATTACHMENTS_MESSAGES_MESSAGE_ID_FK);
-    }
+    private transient Messages _messages;
 
     public Messages messages() {
-        return new Messages(this, Keys.MESSAGE_ATTACHMENTS__MESSAGE_ATTACHMENTS_MESSAGES_MESSAGE_ID_FK);
+        if (_messages == null)
+            _messages = new Messages(this, Keys.MESSAGE_ATTACHMENTS__MESSAGE_ATTACHMENTS_MESSAGES_MESSAGE_ID_FK);
+
+        return _messages;
     }
 
     @Override

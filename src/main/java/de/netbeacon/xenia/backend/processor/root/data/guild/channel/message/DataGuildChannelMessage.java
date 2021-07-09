@@ -30,15 +30,11 @@ import io.javalin.http.*;
 import org.jooq.Result;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
 
 public class DataGuildChannelMessage extends RequestProcessor{
-
-	private final Logger logger = LoggerFactory.getLogger(DataGuildChannelMessage.class);
 
 	public DataGuildChannelMessage(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("message", sqlConnectionPool, websocketProcessor);

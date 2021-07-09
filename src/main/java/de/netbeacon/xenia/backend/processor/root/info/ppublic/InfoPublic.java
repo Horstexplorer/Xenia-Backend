@@ -27,12 +27,8 @@ import io.javalin.http.Context;
 import io.javalin.http.HttpResponseException;
 import io.javalin.http.InternalServerErrorResponse;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class InfoPublic extends RequestProcessor{
-
-	private final Logger logger = LoggerFactory.getLogger(InfoPublic.class);
 
 	public InfoPublic(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("public", sqlConnectionPool, websocketProcessor);

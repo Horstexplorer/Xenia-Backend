@@ -129,7 +129,7 @@ public class Channels extends TableImpl<ChannelsRecord> {
 
     @Override
     public Schema getSchema() {
-        return Public.PUBLIC;
+        return aliased() ? null : Public.PUBLIC;
     }
 
     @Override
@@ -138,17 +138,17 @@ public class Channels extends TableImpl<ChannelsRecord> {
     }
 
     @Override
-    public List<UniqueKey<ChannelsRecord>> getKeys() {
-        return Arrays.<UniqueKey<ChannelsRecord>>asList(Keys.CHANNELS_CHANNEL_ID);
+    public List<ForeignKey<ChannelsRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.CHANNELS__CHANNELS_GUILD_ID_FKEY);
     }
 
-    @Override
-    public List<ForeignKey<ChannelsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ChannelsRecord, ?>>asList(Keys.CHANNELS__CHANNELS_GUILD_ID_FKEY);
-    }
+    private transient Guilds _guilds;
 
     public Guilds guilds() {
-        return new Guilds(this, Keys.CHANNELS__CHANNELS_GUILD_ID_FKEY);
+        if (_guilds == null)
+            _guilds = new Guilds(this, Keys.CHANNELS__CHANNELS_GUILD_ID_FKEY);
+
+        return _guilds;
     }
 
     @Override

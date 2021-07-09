@@ -290,6 +290,17 @@ public class Core{
 								// channel
 								path("channels", () -> {
 									path(":channelId", () -> {
+										path("automod", () -> {
+											before(ctx -> Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), ctx.method(), "*").inc());
+											get(ctx -> {
+												Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+												processor.next("data").next("guild").next("channel").next("automod").preProcessor(client, ctx).get(client, ctx); // get full guild data
+											});
+											put(ctx -> {
+												Client client = securityManager.authorizeConnection(regularDataAccessSetting, ctx);
+												processor.next("data").next("guild").next("channel").next("automod").preProcessor(client, ctx).put(client, ctx); // update guild data
+											});
+										});
 										path("messages", () -> {
 											path(":messageId", () -> {
 												before(ctx -> Metrics.HTTP_REQUESTS.labels(ctx.matchedPath(), ctx.method(), "*").inc());
