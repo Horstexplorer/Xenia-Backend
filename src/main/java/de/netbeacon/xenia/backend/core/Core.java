@@ -33,10 +33,7 @@ import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.ws.SecondaryWebsocketProcessor;
 import de.netbeacon.xenia.backend.processor.ws.processor.WSProcessorCore;
 import de.netbeacon.xenia.backend.processor.ws.processor.WSRequest;
-import de.netbeacon.xenia.backend.processor.ws.processor.imp.HeartbeatProcessor;
-import de.netbeacon.xenia.backend.processor.ws.processor.imp.IdentifyProcessor;
-import de.netbeacon.xenia.backend.processor.ws.processor.imp.StatisticsProcessor;
-import de.netbeacon.xenia.backend.processor.ws.processor.imp.TwitchNotificationAccelerator;
+import de.netbeacon.xenia.backend.processor.ws.processor.imp.*;
 import de.netbeacon.xenia.backend.security.SecurityManager;
 import de.netbeacon.xenia.backend.security.SecuritySettings;
 import de.netbeacon.xenia.backend.utils.botlistupdater.BotListUpdater;
@@ -122,7 +119,8 @@ public class Core{
 					new HeartbeatProcessor(),
 					new IdentifyProcessor(),
 					new StatisticsProcessor(),
-					new TwitchNotificationAccelerator(connectionPool, primaryWebsocketProcessor, twitchWrap)
+					new TwitchNotificationAccelerator(connectionPool, primaryWebsocketProcessor, twitchWrap),
+					new ShardStartupProcessor()
 				);
 			SecondaryWebsocketProcessor secondaryWebsocketProcessor = new SecondaryWebsocketProcessor(wsProcessorCore);
 			shutdownHook.addShutdownAble(secondaryWebsocketProcessor);
