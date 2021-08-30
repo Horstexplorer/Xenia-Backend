@@ -68,6 +68,7 @@ public class DataUser extends RequestProcessor{
 				.put("creationTimestamp", usersRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
 				.put("internalRole", usersRecord.getInternalRole())
 				.put("preferredLanguage", usersRecord.getPreferredLanguage())
+				.put("trustFactor", usersRecord.getTrustFactor())
 				.put("meta", new JSONObject()
 					.put("username", usersRecord.getMetaUsername())
 					.put("iconUrl", (usersRecord.getMetaIconurl() != null) ? usersRecord.getMetaIconurl() : JSONObject.NULL)
@@ -108,6 +109,7 @@ public class DataUser extends RequestProcessor{
 			// update values
 			usersRecord.setInternalRole(newData.getString("internalRole"));
 			usersRecord.setPreferredLanguage(newData.getString("preferredLanguage"));
+			usersRecord.setTrustFactor(newData.getLong("trustFactor"));
 			JSONObject meta = newData.getJSONObject("meta");
 			usersRecord.setMetaUsername(meta.getString("username"));
 			usersRecord.setMetaIconurl(meta.get("iconUrl") != JSONObject.NULL ? meta.getString("iconUrl") : null);
@@ -119,6 +121,7 @@ public class DataUser extends RequestProcessor{
 				.put("creationTimestamp", usersRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
 				.put("internalRole", usersRecord.getInternalRole())
 				.put("preferredLanguage", usersRecord.getPreferredLanguage())
+				.put("trustFactor", usersRecord.getTrustFactor())
 				.put("meta", new JSONObject()
 					.put("username", usersRecord.getMetaUsername())
 					.put("iconUrl", (usersRecord.getMetaIconurl() != null) ? usersRecord.getMetaIconurl() : JSONObject.NULL)
@@ -177,6 +180,7 @@ public class DataUser extends RequestProcessor{
 				.put("creationTimestamp", usersRecord.getCreationTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli())
 				.put("internalRole", usersRecord.getInternalRole())
 				.put("preferredLanguage", usersRecord.getPreferredLanguage())
+				.put("trustFactor", usersRecord.getTrustFactor())
 				.put("meta", new JSONObject()
 					.put("username", usersRecord.getMetaUsername())
 					.put("iconUrl", (usersRecord.getMetaIconurl() != null) ? usersRecord.getMetaIconurl() : JSONObject.NULL)

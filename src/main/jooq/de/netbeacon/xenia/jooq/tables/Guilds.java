@@ -82,7 +82,7 @@ public class Guilds extends TableImpl<GuildsRecord> {
     /**
      * The column <code>public.guilds.guild_d43z1_mode</code>.
      */
-    public final TableField<GuildsRecord, Integer> GUILD_D43Z1_MODE = createField(DSL.name("guild_d43z1_mode"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("1", SQLDataType.INTEGER)), this, "");
+    public final TableField<GuildsRecord, Integer> GUILD_D43Z1_MODE = createField(DSL.name("guild_d43z1_mode"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("2", SQLDataType.INTEGER)), this, "");
 
     private Guilds(Name alias, Table<GuildsRecord> aliased) {
         this(alias, aliased, null);

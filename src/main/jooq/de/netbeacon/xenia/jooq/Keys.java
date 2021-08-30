@@ -24,7 +24,6 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<ChannelAutoModRecord> CHANNEL_AUTO_MOD_PK = Internal.createUniqueKey(ChannelAutoMod.CHANNEL_AUTO_MOD, DSL.name("channel_auto_mod_pk"), new TableField[] { ChannelAutoMod.CHANNEL_AUTO_MOD.CHANNEL_ID }, true);
     public static final UniqueKey<ChannelsRecord> CHANNELS_CHANNEL_ID = Internal.createUniqueKey(Channels.CHANNELS, DSL.name("channels_channel_id"), new TableField[] { Channels.CHANNELS.CHANNEL_ID }, true);
     public static final UniqueKey<GuildsRecord> GUILDS_GUILD_ID = Internal.createUniqueKey(Guilds.GUILDS, DSL.name("guilds_guild_id"), new TableField[] { Guilds.GUILDS.GUILD_ID }, true);
     public static final UniqueKey<GuildsRecord> GUILDS_LICENSE_ID = Internal.createUniqueKey(Guilds.GUILDS, DSL.name("guilds_license_id"), new TableField[] { Guilds.GUILDS.LICENSE_ID }, true);
@@ -49,7 +48,6 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final ForeignKey<ChannelAutoModRecord, ChannelsRecord> CHANNEL_AUTO_MOD__CHANNEL_AUTOMOD_CHANNELS_CHANNEL_ID_FK = Internal.createForeignKey(ChannelAutoMod.CHANNEL_AUTO_MOD, DSL.name("channel_automod_channels_channel_id_fk"), new TableField[] { ChannelAutoMod.CHANNEL_AUTO_MOD.CHANNEL_ID }, Keys.CHANNELS_CHANNEL_ID, new TableField[] { Channels.CHANNELS.CHANNEL_ID }, true);
     public static final ForeignKey<ChannelsRecord, GuildsRecord> CHANNELS__CHANNELS_GUILD_ID_FKEY = Internal.createForeignKey(Channels.CHANNELS, DSL.name("channels_guild_id_fkey"), new TableField[] { Channels.CHANNELS.GUILD_ID }, Keys.GUILDS_GUILD_ID, new TableField[] { Guilds.GUILDS.GUILD_ID }, true);
     public static final ForeignKey<GuildsRecord, LicensesRecord> GUILDS__GUILDS_LICENSE_ID_FKEY = Internal.createForeignKey(Guilds.GUILDS, DSL.name("guilds_license_id_fkey"), new TableField[] { Guilds.GUILDS.LICENSE_ID }, Keys.LICENSES_LICENSE_ID, new TableField[] { Licenses.LICENSES.LICENSE_ID }, true);
     public static final ForeignKey<InternalBotShardsRecord, InternalBotDataRecord> INTERNAL_BOT_SHARDS__INTERNAL_BOT_SHARDS_CLIENT_ID_FKEY = Internal.createForeignKey(InternalBotShards.INTERNAL_BOT_SHARDS, DSL.name("internal_bot_shards_client_id_fkey"), new TableField[] { InternalBotShards.INTERNAL_BOT_SHARDS.CLIENT_ID }, Keys.INTERNAL_BOT_DATA_CLIENT_ID, new TableField[] { InternalBotData.INTERNAL_BOT_DATA.CLIENT_ID }, true);

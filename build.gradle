@@ -10,7 +10,7 @@ plugins {
     id 'java'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
-    id 'nu.studer.jooq' version '6.0'
+    id 'nu.studer.jooq' version '6.0.1'
 }
 
 group 'de.netbeacon'
@@ -26,7 +26,7 @@ dependencies {
     
     // JAVALIN
 
-    implementation group: 'io.javalin', name: 'javalin', version: '3.13.9' // https://mvnrepository.com/artifact/io.javalin/javalin
+    implementation group: 'io.javalin', name: 'javalin', version: '3.13.11' // https://mvnrepository.com/artifact/io.javalin/javalin
 
     // JSON
 
@@ -40,9 +40,9 @@ dependencies {
 
     // LOGGING
 
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.31' // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.31' // https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12
-    implementation group: 'club.minnced', name: 'discord-webhooks', version: '0.5.7' // https://mvnrepository.com/artifact/club.minnced/discord-webhooks
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32' // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.32' // https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12
+    implementation group: 'club.minnced', name: 'discord-webhooks', version: '0.5.8' // https://mvnrepository.com/artifact/club.minnced/discord-webhooks
 
     implementation group: 'io.prometheus', name: 'simpleclient', version: '0.11.0' // https://mvnrepository.com/artifact/io.prometheus/simpleclient
     implementation group: 'io.prometheus', name:'simpleclient_hotspot', version: '0.11.0' // https://mvnrepository.com/artifact/io.prometheus/simpleclient_hotspot
@@ -57,9 +57,9 @@ dependencies {
 
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '5.0.0' // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.23' // https://mvnrepository.com/artifact/org.postgresql/postgresql
-    implementation group: 'org.jooq', name: 'jooq', version: '3.15.1' // https://mvnrepository.com/artifact/org.jooq/jooq
-    implementation group: 'org.jooq', name: 'jooq-meta', version: '3.15.1' // https://mvnrepository.com/artifact/org.jooq/jooq-meta
-    implementation group: 'org.jooq', name: 'jooq-codegen', version: '3.15.1' // https://mvnrepository.com/artifact/org.jooq/jooq-codegen
+    implementation group: 'org.jooq', name: 'jooq', version: '3.15.2' // https://mvnrepository.com/artifact/org.jooq/jooq
+    implementation group: 'org.jooq', name: 'jooq-meta', version: '3.15.2' // https://mvnrepository.com/artifact/org.jooq/jooq-meta
+    implementation group: 'org.jooq', name: 'jooq-codegen', version: '3.15.2' // https://mvnrepository.com/artifact/org.jooq/jooq-codegen
     jooqGenerator group: 'org.postgresql', name: 'postgresql', version: '42.2.22'
 
     // OTHER THINGS
