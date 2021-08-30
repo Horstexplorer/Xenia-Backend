@@ -22,7 +22,6 @@ import de.netbeacon.xenia.backend.client.objects.ClientType;
 import de.netbeacon.xenia.backend.client.objects.imp.DiscordClient;
 import de.netbeacon.xenia.backend.processor.RequestProcessor;
 import de.netbeacon.xenia.backend.processor.WebsocketProcessor;
-import de.netbeacon.xenia.backend.processor.root.data.guild.channel.automod.DataGuildChannelAutoMod;
 import de.netbeacon.xenia.backend.processor.root.data.guild.channel.message.DataGuildChannelMessage;
 import de.netbeacon.xenia.backend.processor.ws.PrimaryWebsocketProcessor;
 import de.netbeacon.xenia.jooq.Tables;
@@ -45,8 +44,7 @@ public class DataGuildChannel extends RequestProcessor{
 
 	public DataGuildChannel(SQLConnectionPool sqlConnectionPool, PrimaryWebsocketProcessor websocketProcessor){
 		super("channel", sqlConnectionPool, websocketProcessor,
-			new DataGuildChannelMessage(sqlConnectionPool, websocketProcessor),
-			new DataGuildChannelAutoMod(sqlConnectionPool, websocketProcessor)
+			new DataGuildChannelMessage(sqlConnectionPool, websocketProcessor)
 		);
 	}
 

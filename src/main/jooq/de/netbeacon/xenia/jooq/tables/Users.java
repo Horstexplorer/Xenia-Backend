@@ -67,6 +67,11 @@ public class Users extends TableImpl<UsersRecord> {
      */
     public final TableField<UsersRecord, String> META_ICONURL = createField(DSL.name("meta_iconurl"), SQLDataType.CLOB, this, "");
 
+    /**
+     * The column <code>public.users.trust_factor</code>.
+     */
+    public final TableField<UsersRecord, Long> TRUST_FACTOR = createField(DSL.name("trust_factor"), SQLDataType.BIGINT.defaultValue(DSL.field("10000", SQLDataType.BIGINT)), this, "");
+
     private Users(Name alias, Table<UsersRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -137,11 +142,11 @@ public class Users extends TableImpl<UsersRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, LocalDateTime, String, String, String, String> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Long, LocalDateTime, String, String, String, String, Long> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

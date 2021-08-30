@@ -28,11 +28,6 @@ public class Public extends SchemaImpl {
     public static final Public PUBLIC = new Public();
 
     /**
-     * The table <code>public.channel_auto_mod</code>.
-     */
-    public final ChannelAutoMod CHANNEL_AUTO_MOD = ChannelAutoMod.CHANNEL_AUTO_MOD;
-
-    /**
      * The table <code>public.channels</code>.
      */
     public final Channels CHANNELS = Channels.CHANNELS;
@@ -141,7 +136,6 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
-            ChannelAutoMod.CHANNEL_AUTO_MOD,
             Channels.CHANNELS,
             Guilds.GUILDS,
             InternalBotData.INTERNAL_BOT_DATA,
