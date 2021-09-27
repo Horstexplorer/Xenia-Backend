@@ -158,7 +158,7 @@ public class SecurityManager implements IShutdown{
 			}
 			// check auth if specified
 			Client client = null;
-			AuthHeaderContent authHeaderContent = AuthHeaderContent.parseHeader("Bearer " + ctx.queryParam("token", ""));
+			AuthHeaderContent authHeaderContent = AuthHeaderContent.parseHeader("Bearer " + (ctx.queryParamMap().containsKey("token") ? ctx.queryParam("token") : ""));
 			if(authHeaderContent == null || !SecuritySettings.AuthType.BEARER.equals(authHeaderContent.getGeneric("authType"))){
 				throw new ForbiddenResponse(); // not actually a valid status code
 			}
