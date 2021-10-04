@@ -26,7 +26,7 @@ dependencies {
     
     // JAVALIN
 
-    implementation group: 'io.javalin', name: 'javalin', version: '4.0.1' // https://mvnrepository.com/artifact/io.javalin/javalin
+    implementation group: 'io.javalin', name: 'javalin', version: '4.1.0' // https://mvnrepository.com/artifact/io.javalin/javalin
 
     // JSON
 
